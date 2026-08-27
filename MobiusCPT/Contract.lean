@@ -10,17 +10,22 @@ import Mathlib.Topology.Basic
 import MobiusCPT.TestFunctions.CNorm
 import MobiusCPT.TestFunctions.Inv
 import MobiusCPT.TestFunctions.Support
+import MobiusCPT.Wightman.Bundle
 
 /-!
 # MobiusCPT.Contract
 
-This file is the Issue #2 statement contract for [T26], Theorem 3.10.  Its
-placeholders are sound because they inhabit `ProofWanted T` or `DefWanted T`,
-never `T`, so no statement here is usable as a proof and no axiom is introduced.
+This file is the Issue #2 statement contract for [T26], Theorem 3.10.  Its opaque
+placeholders are sound because they inhabit `ProofWanted T` or `DefWanted T`, never
+`T`, so no statement here is usable as a proof and no axiom is introduced.  A
+transparent `def_wanted` is a genuine `@[reducible] def` returning `DerivedWanted T`,
+never `T`; its body can be inlined through `❰…❱`, but it cannot itself inhabit `T`.
+Thus the only unfilled pieces remain opaque `DefWanted` or `ProofWanted` placeholders,
+with no `axiom` or `sorry`.
 This file pins the capstone target of [T26] Thm. 3.10 together with the semantic
 decisions Issue #2 settled; it is deliberately not the full interface — the general
 `β_d` action on `C^∞(S¹)`, the Def. 3.5 cocycle, the `C^N` covariance estimate,
-Lemma 3.9, and the content of (W1)–(W3) are owned by the corresponding child Issues.
+Lemma 3.9, and the full locality axiom (W2) are owned by the corresponding child Issues.
 
 As each child Issue lands, its placeholders are deleted here and the remaining
 statements are re-expressed against the real definitions.  Issue #3 has landed:
@@ -28,6 +33,19 @@ statements are re-expressed against the real definitions.  Issue #3 has landed:
 definitions from `MobiusCPT.TestFunctions.*`, not holes, and the statements that
 Issue #3 owned (`tendsto_iff_cnorm`, `inv_add`, `inv_involutive`, `inv_supp`,
 `cnorm_inv`) are proved theorems in those modules.
+
+Issue #4 has also landed.  `W` is now the single bundle hole for the Wightman data,
+and `Dom`, `Field`, `dim`, `smear`, `vac`, `Compat`, `compatApply`, `boost`,
+`ActsRegularly`, `W1`, `W3`, `W4`, `smearedProduct`, `MemPUpperOmega`, and
+`MemPLowerOmega` are transparent projections of it.  `domTopologicalSpace` is one
+too, projecting the `𝓕`-strong topology; it is a `def_wanted` rather than an
+`instance_wanted` because `instance_wanted` is always an opaque hole, and it is
+deliberately not a global instance.  The instance holes `domAddCommGroup` and
+`domModule` are gone: the bundle carries them.  The #4-adjacent holes that remain
+are `W2` and `IsWightmanCFT`, owned by Issue #25, and `w3_vacuum_annihilation`,
+owned by Issue #26; both `W2` and `IsWightmanCFT` are still unconstrained `Prop`
+holes, so the capstone obligations that take `❰IsWightmanCFT❱` as a hypothesis
+remain stronger than [T26] Theorem 3.10 until #25 pins them.
 -/
 
 namespace MobiusCPT
@@ -62,103 +80,72 @@ theorem_wanted xRestrict_split :
     ∀ F : ❰AnalyticTestFn❱,
       ❰xRestrictS1❱ F = ❰xRestrictUpper❱ F + ❰xRestrictLower❱ F
 
-/-- [T26], §2; the domain `𝓓`, owned by Issue #4. -/
-def_wanted Dom : Type
+/-- [T26], Definitions 2.4–2.5; the Wightman CFT this contract is about. Its
+carriers are bundled so this is the only Wightman-data hole. -/
+def_wanted W : WightmanBundle
 
-/-- [T26], §2; the additive structure on `𝓓`, owned by Issue #4. -/
-instance_wanted domAddCommGroup : AddCommGroup ❰Dom❱
+/-- [T26], §2; the domain `𝓓`, now projected from the real interface landed by Issue #4. -/
+def_wanted Dom : Type := (❰W❱).𝓓
 
-/-- [T26], §2; the complex module structure on `𝓓`, owned by Issue #4. -/
-instance_wanted domModule : Module ℂ ❰Dom❱
+/-- [T26], §2; the `𝓕`-strong topology on `𝓓`, projected from the real interface
+landed by Issue #4 and deliberately not installed as a global instance. -/
+def_wanted domTopologicalSpace : TopologicalSpace ❰Dom❱ := (❰W❱).data.strongTop
 
-/-- [T26], §2; the topology on `𝓓`, owned by Issue #4. -/
-instance_wanted domTopologicalSpace : TopologicalSpace ❰Dom❱
-
-/-- [T26], §2; the field index type `𝓕`, owned by Issue #4. -/
-def_wanted Field : Type
-
-/-- [T26], §2 and (W1); the conformal dimension `dim : 𝓕 → ℤ_{≥0}`
-represented in Lean by naturals, owned by Issue #4. -/
-def_wanted dim : ❰Field❱ → ℕ
-
-/-- [T26], §2; the smeared field operator `φ(f)`, owned by Issue #4. -/
-def_wanted smear : ❰Field❱ → TestFn → ❰Dom❱ → ❰Dom❱
-
-/-- [T26], §2; linearity of the smeared field in the domain vector, owned by Issue #4. -/
-theorem_wanted smear_linear :
-    ∀ (φ : ❰Field❱) (f : TestFn) (Φ Ψ : ❰Dom❱),
-      (❰smear❱ φ f (Φ + Ψ) = ❰smear❱ φ f Φ + ❰smear❱ φ f Ψ) ∧
-        (∀ c : ℂ, ❰smear❱ φ f (c • Φ) = c • ❰smear❱ φ f Φ)
-
-/-- [T26], §2; linearity of the operator-valued distribution in the test function, owned by
+/-- [T26], §2; the field index type `𝓕`, now projected from the real interface landed by
 Issue #4. -/
-theorem_wanted smear_addLinear :
-    ∀ (φ : ❰Field❱) (f g : TestFn) (Φ : ❰Dom❱),
-      (❰smear❱ φ (f + g) Φ = ❰smear❱ φ f Φ + ❰smear❱ φ g Φ) ∧
-        (∀ c : ℂ, ❰smear❱ φ (c • f) Φ = c • ❰smear❱ φ f Φ)
+def_wanted Field : Type := (❰W❱).𝓕
 
-/-- [T26], §2; the vacuum vector `Ω`, owned by Issue #4. -/
-def_wanted vac : ❰Dom❱
+/-- [T26], §2 and (W1); the conformal dimension `dim : 𝓕 → ℤ_{≥0}` represented in
+Lean by naturals, now projected from the real interface landed by Issue #4. -/
+def_wanted dim : ❰Field❱ → ℕ := fun φ => (❰W❱).data.dim φ
 
-/-- [T26], §2; the compatible-function space `D*_𝓕`, owned by Issue #4. -/
-def_wanted Compat : Type
+/-- [T26], §2; the smeared field operator `φ(f)`, now projected from the real interface
+landed by Issue #4. -/
+def_wanted smear : ❰Field❱ → TestFn → ❰Dom❱ → ❰Dom❱ :=
+  fun φ f Φ => (❰W❱).data.smear φ f Φ
 
-/-- [T26], §2; evaluation of a compatible functional on `𝓓`, owned by Issue #4. -/
-def_wanted compatApply : ❰Compat❱ → ❰Dom❱ → ℂ
+/-- [T26], §2; the vacuum vector `Ω`, now projected from the real interface landed by
+Issue #4. -/
+def_wanted vac : ❰Dom❱ := (❰W❱).data.vac
 
-/-- [T26], §2; linearity of compatible-function evaluation, owned by Issue #4. -/
-theorem_wanted compatApply_linear :
-    ∀ (lam : ❰Compat❱) (Φ Ψ : ❰Dom❱),
-      (❰compatApply❱ lam (Φ + Ψ) = ❰compatApply❱ lam Φ + ❰compatApply❱ lam Ψ) ∧
-        (∀ c : ℂ, ❰compatApply❱ lam (c • Φ) = c • ❰compatApply❱ lam Φ)
+/-- [T26], §2; the compatible-function space `D*_𝓕`, now projected from the real
+interface landed by Issue #4. -/
+def_wanted Compat : Type := (❰W❱).data.toWightmanStruct.Compat
 
-/-- [T26], §2 and Definition 3.1; `V_t = U(v_t)`, owned by Issues #4 and #5. -/
-def_wanted boost : ℝ → ❰Dom❱ → ❰Dom❱
+/-- [T26], §2; evaluation of a compatible functional on `𝓓`, now projected from the real
+interface landed by Issue #4. -/
+def_wanted compatApply : ❰Compat❱ → ❰Dom❱ → ℂ :=
+  fun lam Φ => (❰W❱).data.toWightmanStruct.compatApply lam Φ
 
-/-- [T26], §2 and Definition 3.1; linearity of the real boost action, owned by Issues #4 and #5. -/
-theorem_wanted boost_linear :
-    ∀ (t : ℝ) (Φ Ψ : ❰Dom❱),
-      (❰boost❱ t (Φ + Ψ) = ❰boost❱ t Φ + ❰boost❱ t Ψ) ∧
-        (∀ c : ℂ, ❰boost❱ t (c • Φ) = c • ❰boost❱ t Φ)
+/-- [T26], §2 and Definition 3.1; `V_t = U(v_t)`, now projected from the real interface
+landed by Issue #4. -/
+def_wanted boost : ℝ → ❰Dom❱ → ❰Dom❱ := fun t Φ => (❰W❱).data.boost t Φ
 
-/-- [T26], Definition 3.1; the boost at zero is the identity, owned by Issues #4 and #5. -/
-theorem_wanted boost_zero : ∀ Φ : ❰Dom❱, ❰boost❱ 0 Φ = Φ
+/-- [T26], Definitions 2.4–2.5; regular action of `𝓕`, now projected from the real
+interface landed by Issue #4. -/
+def_wanted ActsRegularly : Prop := (❰W❱).data.toWightmanStruct.ActsRegularly
 
-/-- [T26], §3; the boosts form a one-parameter group, owned by Issues #4 and #5. -/
-theorem_wanted boost_add :
-    ∀ (s t : ℝ) (Φ : ❰Dom❱),
-      ❰boost❱ s (❰boost❱ t Φ) = ❰boost❱ (s + t) Φ
+/-- [T26], Definition 2.5 (W1); Möbius covariance, now projected from the real interface
+landed by Issue #4. -/
+def_wanted W1 : Prop := (❰W❱).data.W1
 
-/-- [T26], Definitions 2.4–2.5; `𝓕` acts regularly, owned by Issue #4. -/
-def_wanted ActsRegularly : Prop
-
-/-- [T26] Def. 2.4 — `𝓕` acts regularly iff `𝓓*_𝓕` separates points. Owner #4. -/
-theorem_wanted actsRegularly_iff :
-    ❰ActsRegularly❱ ↔
-      ∀ Φ Ψ : ❰Dom❱, (∀ lam : ❰Compat❱, ❰compatApply❱ lam Φ = ❰compatApply❱ lam Ψ) → Φ = Ψ
-
-/-- [T26], Definition 2.5 (W1); Möbius covariance, owned by Issue #4. -/
-def_wanted W1 : Prop
-
-/-- [T26], Definition 2.5 (W2); locality, owned by Issue #4. -/
+/-- [T26], Definition 2.5 (W2); locality, still owed by Issue #25. -/
 def_wanted W2 : Prop
 
-/-- [T26], Definition 2.5 (W3); the spectrum condition, owned by Issue #4. -/
-def_wanted W3 : Prop
+/-- [T26], Definition 2.5 (W3); the spectrum condition, now projected from the real interface
+landed by Issue #4. -/
+def_wanted W3 : Prop := (❰W❱).data.W3
 
-/-- [T26], Definition 2.5 (W4); the vacuum axiom, owned by Issue #4. -/
-def_wanted W4 : Prop
+/-- [T26], Definition 2.5 (W4); the vacuum axiom, now projected from the real interface
+landed by Issue #4. -/
+def_wanted W4 : Prop := (❰W❱).data.W4
 
-/-- [T26] Def. 2.5 (W4), the half of the vacuum axiom that §3 uses. Owner #4.
-(W1)–(W3) and the spanning half of (W4) deliberately stay opaque here and are
-owned by #4. -/
-theorem_wanted w4_vacuum_invariant :
-    ❰W4❱ → ∀ t : ℝ, ❰boost❱ t ❰vac❱ = ❰vac❱
-
-/-- [T26], Definition 2.5; the Möbius-covariant Wightman CFT conjunction, owned by Issue #4. -/
+/-- [T26], Definition 2.5; the Möbius-covariant Wightman CFT conjunction, still owed by
+Issue #25. -/
 def_wanted IsWightmanCFT : Prop
 
-/-- [T26], Definition 2.5; unpacking the named Wightman CFT conjunction, owned by Issue #4. -/
+/-- [T26], Definition 2.5; unpacking the named Wightman CFT conjunction, still owed by
+Issue #25. -/
 theorem_wanted isWightmanCFT_iff :
     ❰IsWightmanCFT❱ ↔
       (❰ActsRegularly❱ ∧ ❰W1❱ ∧ ❰W2❱ ∧ ❰W3❱ ∧ ❰W4❱)
@@ -226,66 +213,20 @@ theorem_wanted vtilde_vacuum :
     ❰IsWightmanCFT❱ →
       ∀ τ : ℂ, ❰VtildeDom❱ τ ❰vac❱ ∧ ❰VtildeMap❱ τ ❰vac❱ = ❰vac❱
 
-/-- [T26], §2; the left-to-right product `φ₁(f₁)⋯φ_k(f_k)Ω`, owned by Issue #4. -/
-def_wanted smearedProduct : List (❰Field❱ × TestFn) → ❰Dom❱
+/-- [T26], §2; the left-to-right product `φ₁(f₁)⋯φ_k(f_k)Ω`, now projected from
+the real interface landed by Issue #4. -/
+def_wanted smearedProduct : List (❰Field❱ × TestFn) → ❰Dom❱ :=
+  fun l => (❰W❱).data.toWightmanStruct.smearedProduct l
 
-/-- [T26], §2; membership in the localized subspace `P(I_+)Ω`, owned by Issue #4. -/
-def_wanted MemPUpperOmega : ❰Dom❱ → Prop
+/-- [T26], §2; membership in the localized subspace `P(I_+)Ω`, now projected from the
+real interface landed by Issue #4. -/
+def_wanted MemPUpperOmega : ❰Dom❱ → Prop :=
+  fun Φ => (❰W❱).data.toWightmanStruct.MemPUpperOmega Φ
 
-/-- [T26], §2; membership in the localized subspace `P(I_-)Ω`, owned by Issue #4. -/
-def_wanted MemPLowerOmega : ❰Dom❱ → Prop
-
-/-- [T26], §2; the empty product is `Ω`, fixing the left-to-right convention;
-owned by Issue #4. -/
-theorem_wanted smearedProduct_nil : ❰smearedProduct❱ [] = ❰vac❱
-
-/-- [T26], §2; cons acts on the product to its right, fixing the left-to-right
-convention; owned by Issue #4. -/
-theorem_wanted smearedProduct_cons :
-    ∀ (p : ❰Field❱ × TestFn) (l : List (❰Field❱ × TestFn)),
-      ❰smearedProduct❱ (p :: l) = ❰smear❱ p.1 p.2 (❰smearedProduct❱ l)
-
-/-- [T26], §2; upper localized vectors are exactly finite complex-linear combinations of
-upper-supported smeared products, owned by Issue #4. -/
-theorem_wanted memPUpperOmega_iff :
-    ∀ (Φ : ❰Dom❱),
-      ❰MemPUpperOmega❱ Φ ↔
-        ∃ (n : ℕ) (c : Fin n → ℂ)
-          (ls : Fin n → List (❰Field❱ × TestFn)),
-          (∀ i, ∀ p ∈ ls i, SuppUpper p.2) ∧
-            Φ = ∑ i, c i • ❰smearedProduct❱ (ls i)
-
-/-- [T26], §2; lower localized vectors are exactly finite complex-linear combinations of
-lower-supported smeared products, owned by Issue #4. -/
-theorem_wanted memPLowerOmega_iff :
-    ∀ (Φ : ❰Dom❱),
-      ❰MemPLowerOmega❱ Φ ↔
-        ∃ (n : ℕ) (c : Fin n → ℂ)
-          (ls : Fin n → List (❰Field❱ × TestFn)),
-          (∀ i, ∀ p ∈ ls i, SuppLower p.2) ∧
-            Φ = ∑ i, c i • ❰smearedProduct❱ (ls i)
-
-/-- [T26], §2; the upper localized subspace is closed under addition, owned by Issue #4. -/
-theorem_wanted memPUpperOmega_add :
-    ∀ (Φ Ψ : ❰Dom❱),
-      ❰MemPUpperOmega❱ Φ → ❰MemPUpperOmega❱ Ψ →
-        ❰MemPUpperOmega❱ (Φ + Ψ)
-
-/-- [T26], §2; the upper localized subspace is closed under complex scalars, owned by Issue #4. -/
-theorem_wanted memPUpperOmega_smul :
-    ∀ (c : ℂ) (Φ : ❰Dom❱),
-      ❰MemPUpperOmega❱ Φ → ❰MemPUpperOmega❱ (c • Φ)
-
-/-- [T26], §2; the lower localized subspace is closed under addition, owned by Issue #4. -/
-theorem_wanted memPLowerOmega_add :
-    ∀ (Φ Ψ : ❰Dom❱),
-      ❰MemPLowerOmega❱ Φ → ❰MemPLowerOmega❱ Ψ →
-        ❰MemPLowerOmega❱ (Φ + Ψ)
-
-/-- [T26], §2; the lower localized subspace is closed under complex scalars, owned by Issue #4. -/
-theorem_wanted memPLowerOmega_smul :
-    ∀ (c : ℂ) (Φ : ❰Dom❱),
-      ❰MemPLowerOmega❱ Φ → ❰MemPLowerOmega❱ (c • Φ)
+/-- [T26], §2; membership in the localized subspace `P(I_-)Ω`, now projected from the
+real interface landed by Issue #4. -/
+def_wanted MemPLowerOmega : ❰Dom❱ → Prop :=
+  fun Φ => (❰W❱).data.toWightmanStruct.MemPLowerOmega Φ
 
 /-- [T26], Lemma 3.4; upper-supported test functions lie in the closure of
 analytic restrictions, owned by Issue #7. -/
@@ -293,7 +234,7 @@ theorem_wanted lemma_3_4_density :
     { f : TestFn | SuppUpper f } ⊆
       closure { g : TestFn | ∃ F : ❰AnalyticTestFn❱, ❰xRestrictUpper❱ F = g }
 
-/-- [T26], the (W3) bridge used in the proof of Lemma 3.7; owned by Issues #4 and #9. -/
+/-- [T26], the (W3) bridge used in the proof of Lemma 3.7, still owed by Issue #26. -/
 theorem_wanted w3_vacuum_annihilation :
     ❰IsWightmanCFT❱ →
       ∀ (φ : ❰Field❱) (F : ❰AnalyticTestFn❱),

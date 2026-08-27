@@ -134,3 +134,29 @@ import MobiusCPT
 #print axioms MobiusCPT.monomial_ne_zero
 #print axioms MobiusCPT.support_monomial
 #print axioms MobiusCPT.inv_monomial
+
+-- Issue #28: the joint-vs-separate continuity adapter ([T26] Def. 2.4 vs [CRTT25] Def. 2.5).
+-- MobiusCPT/TestFunctions/Complete.lean — C^∞(S¹) is Fréchet: Baire, hence barrelled.
+#print axioms MobiusCPT.angleDerivsₗ_injective
+#print axioms MobiusCPT.isInducing_angleDerivs
+#print axioms MobiusCPT.contDiff_of_tendstoUniformly_iteratedDeriv
+#print axioms MobiusCPT.isClosed_range_angleDerivs
+#print axioms MobiusCPT.isCompletelyMetrizableSpace_testFn
+#print axioms MobiusCPT.testFnBaireSpace
+#print axioms MobiusCPT.testFnBarrelledSpace
+#print axioms MobiusCPT.testFnRealBarrelledSpace
+-- MobiusCPT/Analysis/SeparateJoint.lean — Banach-Steinhaus and [Treves, Thm. 34.1].
+#print axioms MobiusCPT.exists_nhds_zero_forall_norm_le
+#print axioms MobiusCPT.MultilinearMap.continuous_of_continuous_update
+#print axioms MobiusCPT.continuous_of_separately_continuous_multilinear
+-- MobiusCPT/Wightman/Continuity.lean — the two readings of D*_F and of ActsRegularly coincide.
+#print axioms MobiusCPT.WightmanStruct.multiSmear_succ
+#print axioms MobiusCPT.WightmanStruct.multiSmear_update_add
+#print axioms MobiusCPT.WightmanStruct.multiSmear_update_smul
+#print axioms MobiusCPT.WightmanStruct.multiSmearMultilinear_apply
+#print axioms MobiusCPT.WightmanStruct.isCompatibleSep_of_isCompatible
+#print axioms MobiusCPT.WightmanStruct.isCompatible_of_isCompatibleSep
+#print axioms MobiusCPT.WightmanStruct.isCompatible_iff_isCompatibleSep
+#print axioms MobiusCPT.WightmanStruct.setOf_isCompatible_eq
+#print axioms MobiusCPT.WightmanStruct.actsRegularly_iff_actsRegularlySep
+#print axioms MobiusCPT.WightmanStruct.actsRegularlySep_iff
