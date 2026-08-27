@@ -55,3 +55,5 @@ evidence record: Issue → branch → PR → independent review → CI → squas
 ## License
 
 Apache-2.0, see `LICENSE`.
+
+<!-- ci-smoke: temporary line to exercise the PR gate; this branch is closed without merging -->
