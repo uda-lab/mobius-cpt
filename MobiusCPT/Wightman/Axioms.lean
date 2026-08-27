@@ -22,6 +22,9 @@ support notion has been requested from Issue #3.
 
 Do not define `IsWightmanCFT` here either.  [T26], Definition 2.5, makes it the
 conjunction of regularity with (W1)--(W4), so it must wait for `W2`.
+Because `IsWightmanCFT` is absent, no bundled predicate yet collects regularity,
+(W1)--(W4), and the non-zero vacuum.  Downstream Issues must therefore carry
+these pieces explicitly until it lands.
 -/
 
 variable {G TF 𝓓 𝓕 : Type*}
@@ -32,7 +35,9 @@ variable [AddCommGroup 𝓓] [Module ℂ 𝓓]
 
 namespace WightmanCFT
 
-private abbrev strongTop (W : WightmanCFT G TF 𝓓 𝓕) : TopologicalSpace 𝓓 :=
+/-- [T26], Definition 2.5(3): the `𝓕`-strong topology of the underlying
+`WightmanStruct`, exposed so downstream continuity statements can name it. -/
+abbrev strongTop (W : WightmanCFT G TF 𝓓 𝓕) : TopologicalSpace 𝓓 :=
   W.toWightmanStruct.fStrongTopology
 
 /-- [T26], Definition 2.5(3) and (W1): Möbius covariance.  The first

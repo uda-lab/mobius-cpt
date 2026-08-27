@@ -16,6 +16,17 @@ Consequently, defining either axiom here would weaken its statement, and
 `IsWightmanCFT`, which combines them, must wait as well.
 -/
 
+/-!
+[T26], Definition 2.4: `MobiusAction` is deliberately an INTERFACE, not a
+construction.  Issue #5 owns the concrete `Möb = PSU(1,1)`, the boost `v_t`, the
+rotations `r_θ`, the conformal factor `X_γ`, and the action
+`β_d(γ)f = (X_γ^{d−1} · f) ∘ γ⁻¹`, and will supply the instance.  Consequently,
+the laws here are only the group/action laws; a group with no circle geometry can
+satisfy them.  That is sound: every theorem stated over an arbitrary instance
+applies in particular to the real one.  It means NO result in this branch is by
+itself a statement about the Möbius group.  The capstone must be stated over
+Issue #5's instance.
+-/
 /-- [T26], §2.2 and Definition 2.4: the Möbius-group data #4 consumes and
 Issue #5 supplies. -/
 class MobiusAction (G : Type*) [Group G] (TF : Type*) [AddCommGroup TF]
@@ -49,6 +60,8 @@ structure WightmanCFT (G : Type*) [Group G] (TF : Type*) [AddCommGroup TF]
     [Module ℂ TF] [TopologicalSpace TF] [TestFunctions TF]
     [MobiusAction G TF] (𝓓 : Type*) [AddCommGroup 𝓓] [Module ℂ 𝓓] (𝓕 : Type*)
     extends WightmanStruct TF 𝓓 𝓕 where
+  /-- [T26], Definition 2.5(4): the vacuum is non-zero. -/
+  vac_ne_zero : toWightmanStruct.vac ≠ 0
   /-- [T26], Definition 2.5: the Möbius representation `U(γ) ∈ End(𝓓)`. -/
   U : G → 𝓓 →ₗ[ℂ] 𝓓
   /-- [T26], Definition 2.5: the representation at the group identity. -/

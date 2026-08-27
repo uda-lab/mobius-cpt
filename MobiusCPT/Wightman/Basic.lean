@@ -102,6 +102,19 @@ def multiSmear (W : WightmanStruct TF 𝓓 𝓕) {k : ℕ}
     (φs : Fin k → 𝓕) (Φ : 𝓓) (f : Fin k → TF) : 𝓓 :=
   W.smearedProductOn (List.ofFn fun i => (φs i, f i)) Φ
 
+/-!
+[T26], Definition 2.4 fixes JOINT continuity as the literal wording "are
+(jointly) continuous in the `f_j`".  [CRTT25], Definition 2.5 uses SEPARATE
+continuity and records that the two agree because `C^∞(S¹)` is Fréchet
+([Trèves, Cor. 34.2]).  This project fixes the [T26] reading.
+
+The open obligation is to prove separate ⟹ joint.  This requires the
+test-function space to be a Fréchet space (in particular, a topological vector
+space).  The frozen `TestFunctions` interface does not yet state even that its
+topology is a vector topology, so that adapter is deferred and recorded against
+Issue #3.  Until it lands, `Compat` is the [T26] reading, and no claim is made
+that it coincides with the [CRTT25] reading.
+-/
 /-- [T26], Definition 2.4: a functional is compatible when every composition with
 `multiSmear` is jointly continuous in the product topology. -/
 def IsCompatible (W : WightmanStruct TF 𝓓 𝓕) (lam : 𝓓 →ₗ[ℂ] ℂ) : Prop :=
