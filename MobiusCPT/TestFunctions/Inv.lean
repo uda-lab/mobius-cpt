@@ -4,6 +4,12 @@ import MobiusCPT.TestFunctions.Basic
 import MobiusCPT.TestFunctions.CNorm
 import MobiusCPT.TestFunctions.Support
 
+/-!
+# MobiusCPT.TestFunctions.Inv
+
+The inversion of the circle and its action on smooth test functions.
+-/
+
 namespace MobiusCPT
 
 open scoped ContDiff Manifold Topology
@@ -119,9 +125,3 @@ theorem cnorm_inv (N : ℕ) (f : TestFn) : cnorm N (inv f) = cnorm N f := by
 end
 
 end MobiusCPT
-
-/-!
-# MobiusCPT.TestFunctions.Inv
-
-The inversion of the circle and its action on smooth test functions.
--/
