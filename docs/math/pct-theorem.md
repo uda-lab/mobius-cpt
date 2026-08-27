@@ -355,7 +355,7 @@ wording of the local note for cross-reference.
 | `𝓕` と compatible | compatible with `𝓕` | `λ ∈ D*_𝓕` |
 | 正則な作用 | `𝓕` acts regularly | `ActsRegularly 𝓕` |
 | `𝓕`-弱位相 / `𝓕`-強位相 | `𝓕`-weak topology / `𝓕`-strong topology | — |
-| メビウス共変Wightman共形場理論 | Möbius-covariant Wightman CFT | `(D, 𝓕, U, Ω)`; `MobiusCPT.WightmanCFT` |
+| メビウス共変Wightman共形場理論 | Möbius-covariant Wightman CFT | `(D, 𝓕, U, Ω)`; data `MobiusCPT.WightmanData`, axioms `IsWightmanCFT` |
 | 真空 | vacuum | `Ω` |
 | 局所性 | locality | (W2) |
 | (W3) | spectrum condition | (W3) |
