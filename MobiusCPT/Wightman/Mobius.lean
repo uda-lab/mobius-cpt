@@ -53,10 +53,11 @@ class MobiusAction (G : Type*) [Group G] (TF : Type*) [AddCommGroup TF]
 
 export MobiusAction (rot boostElt beta)
 
-/-- [T26], Definition 2.5: a Möbius-covariant Wightman CFT's data — the
-algebraic data of `WightmanStruct` together with the representation
-`U : G → End(𝓓)`. -/
-structure WightmanCFT (G : Type*) [Group G] (TF : Type*) [AddCommGroup TF]
+/-- The data of [T26], Definition 2.5: the quadruple `(𝓓, 𝓕, U, Ω)`, with the
+representation laws and `Ω ≠ 0`. This carries NO Wightman axiom: the available axioms
+are the separate predicates `W1`, `W3`, and `W4`, while the bundled `IsWightmanCFT`
+is not yet available. -/
+structure WightmanData (G : Type*) [Group G] (TF : Type*) [AddCommGroup TF]
     [Module ℂ TF] [TopologicalSpace TF] [TestFunctions TF]
     [MobiusAction G TF] (𝓓 : Type*) [AddCommGroup 𝓓] [Module ℂ 𝓓] (𝓕 : Type*)
     extends WightmanStruct TF 𝓓 𝓕 where
@@ -75,11 +76,11 @@ variable [AddCommGroup TF] [Module ℂ TF] [TopologicalSpace TF]
 variable [TestFunctions TF] [MobiusAction G TF]
 variable [AddCommGroup 𝓓] [Module ℂ 𝓓]
 
-namespace WightmanCFT
+namespace WightmanData
 
 /-- [T26], Definition 2.5: a representation sends each group element to an
 invertible linear map, expressed in both inverse-composition directions. -/
-theorem U_inv_apply (W : WightmanCFT G TF 𝓓 𝓕) (γ : G) (Φ : 𝓓) :
+theorem U_inv_apply (W : WightmanData G TF 𝓓 𝓕) (γ : G) (Φ : 𝓓) :
     W.U γ (W.U γ⁻¹ Φ) = Φ ∧ W.U γ⁻¹ (W.U γ Φ) = Φ := by
   constructor
   · have h := congrArg (fun L : 𝓓 →ₗ[ℂ] 𝓓 => L Φ) (W.U_mul γ γ⁻¹).symm
@@ -88,11 +89,11 @@ theorem U_inv_apply (W : WightmanCFT G TF 𝓓 𝓕) (γ : G) (Φ : 𝓓) :
     simpa [W.U_one] using h
 
 /-- [T26], §2 and Definition 3.1: `V_t = U(v_t)`. -/
-def boost (W : WightmanCFT G TF 𝓓 𝓕) (t : ℝ) : 𝓓 →ₗ[ℂ] 𝓓 :=
+def boost (W : WightmanData G TF 𝓓 𝓕) (t : ℝ) : 𝓓 →ₗ[ℂ] 𝓓 :=
   W.U (MobiusAction.boostElt (G := G) (TF := TF) t)
 
 /-- [T26], §2 and Definition 3.1: the boost action is linear on the domain. -/
-theorem boost_linear (W : WightmanCFT G TF 𝓓 𝓕) :
+theorem boost_linear (W : WightmanData G TF 𝓓 𝓕) :
     ∀ (t : ℝ) (Φ Ψ : 𝓓),
       (W.boost t (Φ + Ψ) = W.boost t Φ + W.boost t Ψ) ∧
         (∀ c : ℂ, W.boost t (c • Φ) = c • W.boost t Φ) := by
@@ -100,13 +101,13 @@ theorem boost_linear (W : WightmanCFT G TF 𝓓 𝓕) :
   exact ⟨(W.boost t).map_add Φ Ψ, fun c => (W.boost t).map_smul c Φ⟩
 
 /-- [T26], Definition 3.1: the boost at zero is the identity. -/
-theorem boost_zero (W : WightmanCFT G TF 𝓓 𝓕) :
+theorem boost_zero (W : WightmanData G TF 𝓓 𝓕) :
     ∀ Φ : 𝓓, W.boost 0 Φ = Φ := by
   intro Φ
   simp [boost, MobiusAction.boostElt_zero, W.U_one]
 
 /-- [T26], §3: the boosts form a one-parameter group. -/
-theorem boost_add (W : WightmanCFT G TF 𝓓 𝓕) :
+theorem boost_add (W : WightmanData G TF 𝓓 𝓕) :
     ∀ (s t : ℝ) (Φ : 𝓓),
       W.boost s (W.boost t Φ) = W.boost (s + t) Φ := by
   intro s t Φ
@@ -124,26 +125,26 @@ theorem boost_add (W : WightmanCFT G TF 𝓓 𝓕) :
 
 /-- [T26], Definition 2.4: `φ` is Möbius-covariant with conformal dimension
 `d`, i.e. `U(γ) φ(f) U(γ)⁻¹ = φ(β_d(γ) f)`. -/
-def IsCovariant (W : WightmanCFT G TF 𝓓 𝓕) (φ : 𝓕) (d : ℕ) : Prop :=
+def IsCovariant (W : WightmanData G TF 𝓓 𝓕) (φ : 𝓕) (d : ℕ) : Prop :=
   ∀ (γ : G) (f : TF) (Φ : 𝓓),
     W.U γ (W.smear φ f (W.U γ⁻¹ Φ)) =
       W.smear φ (MobiusAction.beta (G := G) (TF := TF) d γ f) Φ
 
 /-- [T26], Definition 2.4: `Φ ∈ 𝓓` has conformal dimension `d`, with vector
 dimensions ranging over `ℤ`. -/
-def HasConformalDim (W : WightmanCFT G TF 𝓓 𝓕) (Φ : 𝓓) (d : ℤ) : Prop :=
+def HasConformalDim (W : WightmanData G TF 𝓓 𝓕) (Φ : 𝓓) (d : ℤ) : Prop :=
   ∀ θ : ℝ, W.U (MobiusAction.rot (G := G) (TF := TF) θ) Φ =
     Complex.exp ((d : ℂ) * (θ : ℂ) * Complex.I) • Φ
 
 /-- [T26], Definition 2.4: the zero vector has every conformal dimension. -/
-theorem hasConformalDim_zero (W : WightmanCFT G TF 𝓓 𝓕) (d : ℤ) :
+theorem hasConformalDim_zero (W : WightmanData G TF 𝓓 𝓕) (d : ℤ) :
     W.HasConformalDim (0 : 𝓓) d := by
   intro θ
   simp
 
 /-- [T26], Definition 2.4: vectors of the same conformal dimension are
 closed under addition. -/
-theorem hasConformalDim_add (W : WightmanCFT G TF 𝓓 𝓕)
+theorem hasConformalDim_add (W : WightmanData G TF 𝓓 𝓕)
     (Φ Ψ : 𝓓) (d : ℤ) :
     W.HasConformalDim Φ d → W.HasConformalDim Ψ d →
       W.HasConformalDim (Φ + Ψ) d := by
@@ -152,7 +153,7 @@ theorem hasConformalDim_add (W : WightmanCFT G TF 𝓓 𝓕)
 
 /-- [T26], Definition 2.4: conformal dimension is preserved by complex scalar
 multiplication. -/
-theorem hasConformalDim_smul (W : WightmanCFT G TF 𝓓 𝓕)
+theorem hasConformalDim_smul (W : WightmanData G TF 𝓓 𝓕)
     (c : ℂ) (Φ : 𝓓) (d : ℤ) :
     W.HasConformalDim Φ d → W.HasConformalDim (c • Φ) d := by
   intro hΦ θ
@@ -167,19 +168,19 @@ theorem hasConformalDim_smul (W : WightmanCFT G TF 𝓓 𝓕)
 
 /-- [T26], Definition 2.5 (W3), the spectrum condition: a vector of negative
 conformal dimension vanishes. -/
-def W3 (W : WightmanCFT G TF 𝓓 𝓕) : Prop :=
+def W3 (W : WightmanData G TF 𝓓 𝓕) : Prop :=
   ∀ (Φ : 𝓓) (d : ℤ), d < 0 → W.HasConformalDim Φ d → Φ = 0
 
 /-- [T26], Definition 2.5 (W4), the vacuum axiom: `Ω` is Möbius-invariant
 and the smeared products applied to `Ω` span `𝓓`. -/
-def W4 (W : WightmanCFT G TF 𝓓 𝓕) : Prop :=
+def W4 (W : WightmanData G TF 𝓓 𝓕) : Prop :=
   (∀ γ : G, W.U γ W.vac = W.vac) ∧
     (⊤ : Submodule ℂ 𝓓) = Submodule.span ℂ
       { Φ | ∃ l : List (𝓕 × TF), Φ = W.smearedProduct l }
 
 /-- [T26], Definition 2.5 (W4): Möbius invariance of the vacuum implies
 invariance under every real boost. -/
-theorem w4_vacuum_invariant (W : WightmanCFT G TF 𝓓 𝓕) :
+theorem w4_vacuum_invariant (W : WightmanData G TF 𝓓 𝓕) :
     W.W4 → ∀ t : ℝ, W.boost t W.vac = W.vac := by
   intro h t
   change W.U (MobiusAction.boostElt (G := G) (TF := TF) t) W.vac = W.vac
@@ -187,12 +188,12 @@ theorem w4_vacuum_invariant (W : WightmanCFT G TF 𝓓 𝓕) :
 
 /-- [T26], Definition 2.5 (W4): Möbius invariance of the vacuum implies
 invariance under every rotation. -/
-theorem w4_rotation_invariant (W : WightmanCFT G TF 𝓓 𝓕) :
+theorem w4_rotation_invariant (W : WightmanData G TF 𝓓 𝓕) :
     W.W4 → ∀ θ : ℝ,
       W.U (MobiusAction.rot (G := G) (TF := TF) θ) W.vac = W.vac := by
   intro h θ
   exact h.1 _
 
-end WightmanCFT
+end WightmanData
 
 end MobiusCPT

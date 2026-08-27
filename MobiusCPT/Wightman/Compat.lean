@@ -42,7 +42,7 @@ theorem isCompatibleVac_of_isCompatible (W : WightmanStruct TF 𝓓 𝓕)
 
 /-- [T26], Definition 2.4 and §3: the vacuum-slot form implies compatibility
 for a Wightman CFT satisfying the spanning clause of (W4). -/
-theorem isCompatible_of_isCompatibleVac (W : WightmanCFT G TF 𝓓 𝓕)
+theorem isCompatible_of_isCompatibleVac (W : WightmanData G TF 𝓓 𝓕)
     (h4 : W.W4) (lam : 𝓓 →ₗ[ℂ] ℂ)
     (h : IsCompatibleVac W.toWightmanStruct lam) :
     IsCompatible W.toWightmanStruct lam := by
@@ -171,7 +171,7 @@ theorem isCompatible_of_isCompatibleVac (W : WightmanCFT G TF 𝓓 𝓕)
 
 /-- [T26], Definition 2.4 and §3: under (W4), the two presentations of
 the compatible-functional space `D*_𝓕` are equivalent. -/
-theorem isCompatible_iff_isCompatibleVac (W : WightmanCFT G TF 𝓓 𝓕)
+theorem isCompatible_iff_isCompatibleVac (W : WightmanData G TF 𝓓 𝓕)
     (h4 : W.W4) (lam : 𝓓 →ₗ[ℂ] ℂ) :
     IsCompatible W.toWightmanStruct lam ↔
       IsCompatibleVac W.toWightmanStruct lam := by

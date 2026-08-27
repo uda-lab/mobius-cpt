@@ -10,8 +10,8 @@ variable {TF 𝓓 𝓕 : Type*}
 variable [AddCommGroup TF] [Module ℂ TF] [TopologicalSpace TF] [TestFunctions TF]
 variable [AddCommGroup 𝓓] [Module ℂ 𝓓]
 
-/-- [T26], Definition 2.5: the data of a Möbius-covariant Wightman CFT, minus the
-Möbius representation and axioms (W1)–(W4), which are added in a later module. -/
+/-- [T26], Definition 2.5: the strictly smaller algebraic part of the Wightman data,
+without the Möbius representation or any of the axioms (W1)–(W4). -/
 structure WightmanStruct (TF : Type*) [AddCommGroup TF] [Module ℂ TF]
     [TopologicalSpace TF] [TestFunctions TF] (𝓓 : Type*) [AddCommGroup 𝓓]
     [Module ℂ 𝓓] (𝓕 : Type*) where

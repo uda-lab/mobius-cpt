@@ -33,37 +33,36 @@ variable [AddCommGroup TF] [Module ℂ TF] [TopologicalSpace TF]
 variable [TestFunctions TF] [MobiusAction G TF]
 variable [AddCommGroup 𝓓] [Module ℂ 𝓓]
 
-namespace WightmanCFT
+namespace WightmanData
 
 /-- [T26], Definition 2.5(3): the `𝓕`-strong topology of the underlying
 `WightmanStruct`, exposed so downstream continuity statements can name it. -/
-abbrev strongTop (W : WightmanCFT G TF 𝓓 𝓕) : TopologicalSpace 𝓓 :=
+abbrev strongTop (W : WightmanData G TF 𝓓 𝓕) : TopologicalSpace 𝓓 :=
   W.toWightmanStruct.fStrongTopology
 
 /-- [T26], Definition 2.5(3) and (W1): Möbius covariance.  The first
 conjunct says that `U` takes values in the `𝓕`-strong continuous endomorphisms;
 the second is (W1) proper. -/
-def W1 (W : WightmanCFT G TF 𝓓 𝓕) : Prop :=
+def W1 (W : WightmanData G TF 𝓓 𝓕) : Prop :=
   (∀ γ : G, Continuous[strongTop W, strongTop W] (W.U γ)) ∧
     (∀ φ : 𝓕, W.IsCovariant φ (W.dim φ))
 
 /-- [T26], Definition 2.5(3): the representation `U` is strong-continuous
 when `W1` holds. -/
-theorem W1.continuous (W : WightmanCFT G TF 𝓓 𝓕) (h : W.W1) (γ : G) :
+theorem W1.continuous (W : WightmanData G TF 𝓓 𝓕) (h : W.W1) (γ : G) :
     Continuous[strongTop W, strongTop W] (W.U γ) := by
   exact h.1 γ
 
 /-- [T26], Definition 2.5 (W1): every field is Möbius-covariant at its supplied
 conformal dimension when `W1` holds. -/
-theorem W1.covariant (W : WightmanCFT G TF 𝓓 𝓕) (h : W.W1) :
+theorem W1.covariant (W : WightmanData G TF 𝓓 𝓕) (h : W.W1) :
     ∀ φ : 𝓕, W.IsCovariant φ (W.dim φ) := by
   exact h.2
 
-/-- [T26], Definition 2.5(3) and (W1): under `W1`, each `U γ` is a strong
-homeomorphism-like equivalence.  Its inverse is strongly continuous, and the
-two inverse identities express the fact that `U(γ) ∈ GL_𝓕(𝓓)`, with
-invertibility automatic for a group representation. -/
-theorem w1_homeomorph_like (W : WightmanCFT G TF 𝓓 𝓕) (h : W.W1) (γ : G) :
+/-- [T26], Definition 2.5(3) and (W1): `U γ` and `U γ⁻¹` are both
+`𝓕`-strong continuous and cancel in both orders. This is [T26]'s
+`U(γ) ∈ GL_𝓕(𝓓)`, with invertibility automatic for a group representation. -/
+theorem w1_U_bicontinuous (W : WightmanData G TF 𝓓 𝓕) (h : W.W1) (γ : G) :
     Continuous[strongTop W, strongTop W] (W.U γ) ∧
       Continuous[strongTop W, strongTop W] (W.U (γ⁻¹)) ∧
       (∀ Φ : 𝓓, W.U γ (W.U (γ⁻¹) Φ) = Φ) ∧
@@ -76,12 +75,12 @@ theorem w1_homeomorph_like (W : WightmanCFT G TF 𝓓 𝓕) (h : W.W1) (γ : G) 
 
 /-- [T26], Definition 3.1 and Definition 2.5(3): every boost is strongly
 continuous when `W1` holds. -/
-theorem w1_continuous_boost (W : WightmanCFT G TF 𝓓 𝓕) (h : W.W1) (t : ℝ) :
+theorem w1_continuous_boost (W : WightmanData G TF 𝓓 𝓕) (h : W.W1) (t : ℝ) :
     Continuous[strongTop W, strongTop W] (W.boost t) := by
   change Continuous[strongTop W, strongTop W]
     (W.U (MobiusAction.boostElt (G := G) (TF := TF) t))
   exact W1.continuous W h _
 
-end WightmanCFT
+end WightmanData
 
 end MobiusCPT
