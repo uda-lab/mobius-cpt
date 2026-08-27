@@ -4,7 +4,7 @@
 #
 # A `sorry` is permitted only when its OWN line carries a marker citing the Issue
 # that explicitly authorises the work to land incomplete:
-#     theorem foo : P := by sorry  -- ALLOW_SORRY: #12 stage-1 skeleton
+#     theorem foo : P := by sorry  -- ALLOW_SORRY: #<n> <reason>
 #
 # Per-line markers with an Issue number are deliberate: every incomplete proof is
 # justified in place and traceable, so `sorry` cannot accumulate silently. Note that
@@ -29,8 +29,9 @@ cd "$ROOT"
 # status is checked BEFORE the list is consumed. (A bare process substitution
 # `< <(find …)` would swallow traversal errors — bash does not propagate them —
 # letting a partial scan report OK.) `.git`/`.lake` are pruned by basename at
-# any depth (a built worktree vendors its own `.lake`, issue #84), and agent
-# worktrees under .claude/worktrees/ are out of scope (scanned by their own CI).
+# any depth, because linked worktrees and nested package directories carry their
+# own `.lake`; agent worktrees under .claude/worktrees/ are out of scope (they
+# are scanned by their own CI).
 list="$(mktemp)"
 trap 'rm -f "$list"' EXIT
 find . \( -name '.git' -o -name '.lake' -o -path './.claude/worktrees' \) -prune \
@@ -47,7 +48,7 @@ fi
 # ALLOW_SORRY marker. Any awk failure propagates (no `|| true`, no `2>/dev/null`;
 # a failing awk in any xargs batch makes the substitution non-zero under
 # `pipefail`), so the guard fails closed. Files are fed via NUL-safe xargs
-# batching so the scan stays under ARG_MAX regardless of tree size (issue #84).
+# batching so the scan stays under ARG_MAX regardless of tree size.
 violations="$(xargs -0 awk '
   FNR == 1 { depth = 0 }
   {

@@ -5,7 +5,7 @@
 # These widen the trusted base or hide content behind an irreducible term. They
 # are permitted only when the declaration line carries a marker citing the Issue
 # in which the owner authorised them:
-#     axiom foo : ...  -- ALLOW_AXIOM: #34 external theorem, see Issue
+#     axiom foo : ...  -- ALLOW_AXIOM: #<n> <reason>
 # Even then, scripts/check-axioms.sh rejects any pinned theorem whose closure
 # contains a project axiom; the marker only silences this textual guard.
 #
@@ -20,8 +20,8 @@ cd "$ROOT"
 # Enumerate Lean sources fail-closed: `find` writes to a temp file and its exit
 # status is checked BEFORE the list is consumed (a bare process substitution
 # would swallow traversal errors and let a partial scan report OK). `.git`/`.lake`
-# are pruned by basename at any depth (worktrees vendor their own `.lake`,
-# issue #84); agent worktrees are scanned by their own CI.
+# are pruned by basename at any depth, because linked worktrees and nested package
+# directories carry their own `.lake`; agent worktrees are scanned by their own CI.
 list="$(mktemp)"
 trap 'rm -f "$list"' EXIT
 find . \( -name '.git' -o -name '.lake' -o -path './.claude/worktrees' \) -prune \
