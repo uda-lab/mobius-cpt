@@ -43,14 +43,16 @@ depends on them.
 - `S¹ = { z ∈ ℂ : |z| = 1 }`. `C^∞(S¹)` is the complex vector space of smooth complex-valued
   functions on `S¹`, a Fréchet space for the `C^N` norms
   `‖f‖_{C^N} = Σ_{j=0}^{N} ‖ d^j f / dθ^j ‖_∞`, the derivatives being taken in the angle `θ`
-  along `z = e^{iθ}` and the sup taken over `S¹`. The angle derivative is load-bearing, not a
-  presentation choice: [T26] Lemma 3.9 uses `‖f ∘ z^{-1}‖_{C^N} = ‖f‖_{C^N}`, which holds because
-  `(f ∘ z^{-1})(e^{iθ}) = f(e^{−iθ})` contributes only a factor `(−1)^j` to the `j`-th angle
-  derivative. [T26] displays this norm as `Σ_{j=1}^{N}`, which would make it vanish on constants;
-  its own proof of Lemma 3.8 treats `‖·‖_∞` as "the case `N = 0`", so the sum starts at `j = 0`
-  and the printed lower limit is a typo. ([T26] §2.2 and proof of Lemma 3.8; [T26] footnote 4
-  records that [RTT22] and [CRTT25] use the Sobolev norms `‖·‖_{H^N}`, which induce the same
-  topology.)
+  along `z = e^{iθ}` and the sup taken over `S¹` ([T26] §2.2, verbatim). Two features are
+  load-bearing rather than presentational. The sum starts at `j = 0`, so `‖·‖_{C^N}` dominates
+  `‖·‖_∞` and is a **norm**, not merely a seminorm — [T26]'s proof of Lemma 3.8 uses this when it
+  treats `‖·‖_∞` as "the case `N = 0`", and the finite-`C^N` bound of that lemma needs it to
+  discharge the degenerate case. And the derivative is taken in the angle: [T26] Lemma 3.9 uses
+  `‖f ∘ z^{-1}‖_{C^N} = ‖f‖_{C^N}`, which holds because `(f ∘ z^{-1})(e^{iθ}) = f(e^{−iθ})`
+  contributes only a factor `(−1)^j` to the `j`-th angle derivative, and which fails for other
+  derivative conventions. ([T26] footnote 4 records that [RTT22] and [CRTT25] use the Sobolev norms
+  `‖·‖_{H^N}`, which induce the same topology. [T26] arXiv v1 displays the sum from `j = 1`; v2 and
+  the published article display `j = 0`, and `references.md` pins the version accordingly.)
 - Fourier expansion: every `f ∈ C^∞(S¹)` has a unique expansion `f(z) = Σ_{n∈ℤ} f̂_n z^n` with
   `f̂_n = (1/2π) ∫_0^{2π} f(e^{iθ}) e^{−inθ} dθ`, converging in `C^∞(S¹)`, and `(f̂_n)` is rapidly
   decreasing (`sup_n |n|^m |f̂_n| < ∞` for every `m ≥ 0`) — standard Fourier theory on the circle.
