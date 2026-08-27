@@ -115,10 +115,14 @@ subject to
 No Hilbert space, inner product or unitarity is part of the data ([T26]; the unitary case and the
 PCT operator `θ` are in [RTT22]).
 
-Consequence used in §3 ([T26], proof of Lemma 3.7): for `φ ∈ 𝓕` of dimension `d`, the vector
-`φ_1(z^{n_1})⋯φ_k(z^{n_k})Ω` has conformal dimension `−(n_1 + ⋯ + n_k)`; hence if `f` has only
-strictly positive Fourier modes, `φ(f)Ω` has strictly negative conformal dimension and (W3) gives
-`φ(f)Ω = 0`.
+Consequence used in §3 ([T26], proof of Lemma 3.7). For `φ ∈ 𝓕` of dimension `d` and `n ∈ ℤ`,
+the vector `φ(z^n)Ω` has conformal dimension `−n` (rotation covariance plus `U(r_θ)Ω = Ω`; more
+generally `φ_1(z^{n_1})⋯φ_k(z^{n_k})Ω` has dimension `−(n_1+⋯+n_k)`). Hence for `n > 0`, (W3)
+gives `φ(z^n)Ω = 0` mode by mode. If `f ∈ C^∞(S¹)` has only strictly positive Fourier modes,
+`φ(f)Ω` is in general not an `L_0`-eigenvector, so (W3) is not applied to it directly: for every
+`λ ∈ D*_𝓕`, compatibility (continuity of `f ↦ λ(φ(f)Ω)` on `C^∞(S¹)`) and the convergence of
+the Fourier expansion in `C^∞(S¹)` give `λ(φ(f)Ω) = Σ_{n>0} f̂_n λ(φ(z^n)Ω) = 0`, and regularity
+of `𝓕` then yields `φ(f)Ω = 0`.
 
 ## 3. Analytic continuation of the boost flow
 
@@ -187,12 +191,15 @@ The value at `τ = iπ` ([T26] Lemma 3.7):
   (the sign is `(cosh iπ + Re(z) sinh iπ)^{d−1} = (−1)^{d−1}`).
 - For `F ∈ 𝓧`, `F ∘ z⁻¹` is holomorphic in the open unit disc and vanishes at `0`, so its Taylor
   expansion has only strictly positive powers of `z`; by the consequence of (W3) recorded in §2,
-  `φ(F∘z⁻¹|_{S¹})Ω = 0`. With `g_j = F_j∘z⁻¹|_{I_+}` and `h_j = F_j∘z⁻¹|_{I_−}` this gives
-  `φ(g)Ω = −φ(h)Ω`, and repeatedly using locality (W2) to move `φ_k(h_k)` to the front:
-  `φ_1(g_1)⋯φ_k(g_k)Ω = (−1)^k φ_k(h_k)⋯φ_1(h_1)Ω`.
-- **Lemma 3.7 ([T26]).** For `F_j ∈ 𝓧` and covariant `φ_j` of dimension `d_j`,
-  `Ṽ_{iπ} φ_1(F_1|_{I_+})⋯φ_k(F_k|_{I_+})Ω = (−1)^{d_1+⋯+d_k} φ_k(F_k|_{I_−}∘z⁻¹)⋯φ_1(F_1|_{I_−}∘z⁻¹)Ω`,
-  the sign being `(−1)^k · ∏_j (−1)^{d_j−1} = (−1)^{Σ d_j}`.
+  `φ(F∘z⁻¹|_{S¹})Ω = 0`. Write `g_j := (F_j∘z⁻¹)|_{I_+} = (F_j|_{I_−})∘z⁻¹` (supported in `I_+`)
+  and `h_j := (F_j∘z⁻¹)|_{I_−} = (F_j|_{I_+})∘z⁻¹` (supported in `I_−`); since
+  `F_j∘z⁻¹|_{S¹} = g_j + h_j`, this gives `φ_j(g_j)Ω = −φ_j(h_j)Ω`, and repeatedly using locality
+  (W2) to move `φ_k(h_k)` to the front: `φ_1(g_1)⋯φ_k(g_k)Ω = (−1)^k φ_k(h_k)⋯φ_1(h_1)Ω`.
+- **Lemma 3.7 ([T26]).** For `F_j ∈ 𝓧` and covariant `φ_j` of dimension `d_j`, with
+  `f_j := F_j|_{I_+}` (so `f_j ∘ z⁻¹ = h_j`, supported in `I_−`),
+  `Ṽ_{iπ} φ_1(f_1)⋯φ_k(f_k)Ω = (−1)^{d_1+⋯+d_k} φ_k(f_k∘z⁻¹)⋯φ_1(f_1∘z⁻¹)Ω`,
+  the sign being `(−1)^k · ∏_j (−1)^{d_j−1} = (−1)^{Σ d_j}`; this is Theorem 3.10 (i) on the
+  analytic core.
 
 Extension from the analytic core to general test functions ([T26] Lemmas 3.8–3.9): the passage
 from `F|_{I_+}` (`F ∈ 𝓧`) to arbitrary `f ∈ C^∞(S¹)` with `supp f ⊆ I_+` is **not** a bare
