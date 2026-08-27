@@ -21,6 +21,7 @@ noncomputable instance : TestFunctions TestFn where
   starInv := MobiusCPT.inv
   SuppUpper := MobiusCPT.SuppUpper
   SuppLower := MobiusCPT.SuppLower
+  DisjointSupp := MobiusCPT.DisjointSupport
   tendsto_iff_cnorm := MobiusCPT.tendsto_iff_cnorm
   starInv_add := MobiusCPT.inv_add
   starInv_involutive := MobiusCPT.inv_involutive

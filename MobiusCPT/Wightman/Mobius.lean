@@ -7,13 +7,10 @@ namespace MobiusCPT
 # Möbius action and Wightman CFT interface
 
 This module records the Möbius-action and representation interfaces consumed by
-the later PCT formalisation.  It deliberately does not define `W1`, `W2`, or
-`IsWightmanCFT`.  In [T26], Definition 2.5, `W1` also requires the
-`𝓕`-strong continuity of the representation, whose topology is not yet
-available.  The full `W2` locality axiom requires disjoint supports, whereas
-the current test-function interface exposes only the two semicircle predicates.
-Consequently, defining either axiom here would weaken its statement, and
-`IsWightmanCFT`, which combines them, must wait as well.
+the later PCT formalisation. This module carries the Möbius interface together
+with (W3) and (W4). Locality (W2) is defined in `MobiusCPT.Wightman.Basic`, while
+(W1) and the bundled `IsWightmanCFT` predicate are defined in
+`MobiusCPT.Wightman.Axioms`.
 -/
 
 /-!
@@ -54,9 +51,9 @@ class MobiusAction (G : Type*) [Group G] (TF : Type*) [AddCommGroup TF]
 export MobiusAction (rot boostElt beta)
 
 /-- The data of [T26], Definition 2.5: the quadruple `(𝓓, 𝓕, U, Ω)`, with the
-representation laws and `Ω ≠ 0`. This carries NO Wightman axiom: the available axioms
-are the separate predicates `W1`, `W3`, and `W4`, while the bundled `IsWightmanCFT`
-is not yet available. -/
+representation laws and `Ω ≠ 0`. This structure carries the Möbius interface; (W3) and
+(W4) are defined in this module, (W2) in `MobiusCPT.Wightman.Basic`, and (W1) together
+with the bundled `IsWightmanCFT` predicate in `MobiusCPT.Wightman.Axioms`. -/
 structure WightmanData (G : Type*) [Group G] (TF : Type*) [AddCommGroup TF]
     [Module ℂ TF] [TopologicalSpace TF] [TestFunctions TF]
     [MobiusAction G TF] (𝓓 : Type*) [AddCommGroup 𝓓] [Module ℂ 𝓓] (𝓕 : Type*)

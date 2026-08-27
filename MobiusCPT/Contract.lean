@@ -25,7 +25,7 @@ with no `axiom` or `sorry`.
 This file pins the capstone target of [T26] Thm. 3.10 together with the semantic
 decisions Issue #2 settled; it is deliberately not the full interface — the general
 `β_d` action on `C^∞(S¹)`, the Def. 3.5 cocycle, the `C^N` covariance estimate,
-Lemma 3.9, and the full locality axiom (W2) are owned by the corresponding child Issues.
+and Lemma 3.9 are owned by the corresponding child Issues.
 
 As each child Issue lands, its placeholders are deleted here and the remaining
 statements are re-expressed against the real definitions.  Issue #3 has landed:
@@ -41,11 +41,11 @@ and `Dom`, `Field`, `dim`, `smear`, `vac`, `Compat`, `compatApply`, `boost`,
 too, projecting the `𝓕`-strong topology; it is a `def_wanted` rather than an
 `instance_wanted` because `instance_wanted` is always an opaque hole, and it is
 deliberately not a global instance.  The instance holes `domAddCommGroup` and
-`domModule` are gone: the bundle carries them.  The #4-adjacent holes that remain
-are `W2` and `IsWightmanCFT`, owned by Issue #25, and `w3_vacuum_annihilation`,
-owned by Issue #26; both `W2` and `IsWightmanCFT` are still unconstrained `Prop`
-holes, so the capstone obligations that take `❰IsWightmanCFT❱` as a hypothesis
-remain stronger than [T26] Theorem 3.10 until #25 pins them.
+`domModule` are gone: the bundle carries them. `W2` and `IsWightmanCFT` are
+transparent projections of `W`, so besides the bundle hole `W` itself the only
+remaining #4-adjacent hole is `w3_vacuum_annihilation`, owned by Issue #26. The
+capstone obligations taking `❰IsWightmanCFT❱` as a hypothesis are genuinely
+conditional on [T26], Definition 2.5.
 -/
 
 namespace MobiusCPT
@@ -129,8 +129,9 @@ def_wanted ActsRegularly : Prop := (❰W❱).data.toWightmanStruct.ActsRegularly
 landed by Issue #4. -/
 def_wanted W1 : Prop := (❰W❱).data.W1
 
-/-- [T26], Definition 2.5 (W2); locality, still owed by Issue #25. -/
-def_wanted W2 : Prop
+/-- [T26], Definition 2.5 (W2); locality, now projected from the real interface landed by
+Issue #25. -/
+def_wanted W2 : Prop := (❰W❱).data.toWightmanStruct.W2
 
 /-- [T26], Definition 2.5 (W3); the spectrum condition, now projected from the real interface
 landed by Issue #4. -/
@@ -140,15 +141,9 @@ def_wanted W3 : Prop := (❰W❱).data.W3
 landed by Issue #4. -/
 def_wanted W4 : Prop := (❰W❱).data.W4
 
-/-- [T26], Definition 2.5; the Möbius-covariant Wightman CFT conjunction, still owed by
-Issue #25. -/
-def_wanted IsWightmanCFT : Prop
-
-/-- [T26], Definition 2.5; unpacking the named Wightman CFT conjunction, still owed by
-Issue #25. -/
-theorem_wanted isWightmanCFT_iff :
-    ❰IsWightmanCFT❱ ↔
-      (❰ActsRegularly❱ ∧ ❰W1❱ ∧ ❰W2❱ ∧ ❰W3❱ ∧ ❰W4❱)
+/-- [T26], Definition 2.5; the Möbius-covariant Wightman CFT conjunction, now projected from
+the real interface landed by Issue #25. -/
+def_wanted IsWightmanCFT : Prop := (❰W❱).data.IsWightmanCFT
 
 /-- [T26], Definition 3.1; the domain `D(Ṽ_τ)` of the partially defined boost,
 owned by Issue #6. -/

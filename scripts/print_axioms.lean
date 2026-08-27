@@ -192,3 +192,15 @@ import MobiusCPT
 #print axioms MobiusCPT.exists_suppLower_not_tsupport_subset
 #print axioms MobiusCPT.not_forall_exists_suppUpper_add_suppLower
 #print axioms MobiusCPT.norm_angleDerivB_eq
+
+-- Issue #25: locality and the Wightman CFT bundle — Basic.lean and Axioms.lean.
+#print axioms MobiusCPT.WightmanStruct.W2
+#print axioms MobiusCPT.WightmanStruct.w2_comp
+#print axioms MobiusCPT.WightmanStruct.w2_symm
+#print axioms MobiusCPT.WightmanData.IsWightmanCFT
+#print axioms MobiusCPT.WightmanData.isWightmanCFT_iff
+#print axioms MobiusCPT.WightmanData.IsWightmanCFT.actsRegularly
+#print axioms MobiusCPT.WightmanData.IsWightmanCFT.w1
+#print axioms MobiusCPT.WightmanData.IsWightmanCFT.w2
+#print axioms MobiusCPT.WightmanData.IsWightmanCFT.w3
+#print axioms MobiusCPT.WightmanData.IsWightmanCFT.w4

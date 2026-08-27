@@ -198,6 +198,29 @@ theorem actsRegularly_iff (W : WightmanStruct TF 𝓓 𝓕) :
     by_contra hlam
     exact hnone ⟨lam, hlam⟩
 
+/-- [T26], Definition 2.5 (W2), locality: fields smeared with disjointly supported test
+functions commute, `supp f ∩ supp g = ∅ → [φ₁(f), φ₂(g)] = 0`, for all `φ₁, φ₂ ∈ 𝓕`. The
+relation is the general disjointness of supports supplied by the test-function interface,
+never the semicircle pair `SuppUpper` / `SuppLower`. -/
+def W2 (W : WightmanStruct TF 𝓓 𝓕) : Prop :=
+  ∀ (φ₁ φ₂ : 𝓕) (f g : TF), TestFunctions.DisjointSupp f g →
+    ∀ Φ : 𝓓, W.smear φ₁ f (W.smear φ₂ g Φ) = W.smear φ₂ g (W.smear φ₁ f Φ)
+
+/-- [T26], Definition 2.5 (W2): locality as an equality of composed operators. -/
+theorem w2_comp (W : WightmanStruct TF 𝓓 𝓕) (h : W.W2) (φ₁ φ₂ : 𝓕) (f g : TF)
+    (hfg : TestFunctions.DisjointSupp f g) :
+    (W.smear φ₁ f).comp (W.smear φ₂ g) = (W.smear φ₂ g).comp (W.smear φ₁ f) := by
+  apply LinearMap.ext
+  intro Φ
+  exact h φ₁ φ₂ f g hfg Φ
+
+/-- [T26], Definition 2.5 (W2): locality is unchanged by exchanging the two smeared fields,
+so no separate symmetry hypothesis on the disjointness relation is needed. -/
+theorem w2_symm (W : WightmanStruct TF 𝓓 𝓕) (h : W.W2) (φ₁ φ₂ : 𝓕) (f g : TF)
+    (hfg : TestFunctions.DisjointSupp f g) (Φ : 𝓓) :
+    W.smear φ₂ g (W.smear φ₁ f Φ) = W.smear φ₁ f (W.smear φ₂ g Φ) := by
+  exact (h φ₁ φ₂ f g hfg Φ).symm
+
 /-- [T26], Definition 2.4 and Theorem 3.10: the localized subspace `P(I_+)Ω`. -/
 def PUpperOmega (W : WightmanStruct TF 𝓓 𝓕) : Submodule ℂ 𝓓 :=
   Submodule.span ℂ { Φ | ∃ l : List (𝓕 × TF),

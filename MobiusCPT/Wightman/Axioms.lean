@@ -9,22 +9,9 @@ open scoped Topology
 # The Wightman covariance axiom
 
 [T26], Definition 2.5: this module defines the two parts of Möbius covariance
-in (W1), together with the immediate continuity consequences.
-
-Do not define `W2` here.  [T26], Definition 2.5, requires locality for
-disjoint supports, namely `supp f ∩ supp g = ∅` implies that the corresponding
-smeared fields commute.  The frozen test-function interface in
-`MobiusCPT/Wightman/TestFn.lean` exposes only `SuppUpper` and `SuppLower`, not
-a general support notion.  Restricting locality to that semicircle pair would
-specialise the axiom and would break the cutoff argument in Tener's Lemma 3.7,
-which needs a cutoff supported strictly inside the open `I_-`.  A general
-support notion has been requested from Issue #3.
-
-Do not define `IsWightmanCFT` here either.  [T26], Definition 2.5, makes it the
-conjunction of regularity with (W1)--(W4), so it must wait for `W2`.
-Because `IsWightmanCFT` is absent, no bundled predicate yet collects regularity,
-(W1)--(W4), and the non-zero vacuum.  Downstream Issues must therefore carry
-these pieces explicitly until it lands.
+in (W1), their immediate continuity consequences, and the bundled predicate
+`IsWightmanCFT` for regularity together with (W1)--(W4). Locality (W2) lives on
+`WightmanStruct` in `MobiusCPT.Wightman.Basic` because it needs only `smear`.
 -/
 
 variable {G TF 𝓓 𝓕 : Type*}
@@ -80,6 +67,44 @@ theorem w1_continuous_boost (W : WightmanData G TF 𝓓 𝓕) (h : W.W1) (t : �
   change Continuous[strongTop W, strongTop W]
     (W.U (MobiusAction.boostElt (G := G) (TF := TF) t))
   exact W1.continuous W h _
+
+/-- [T26], Definition 2.5: a Möbius-covariant Wightman CFT — the regular action of `𝓕`
+together with (W1)–(W4). Definition 2.5(3)'s `𝓕`-strong continuity of `U` is the first
+conjunct of `W1`, and Definition 2.5(4)'s `Ω ≠ 0` is already the `vac_ne_zero` field of
+`WightmanData`, so neither is repeated here. -/
+def IsWightmanCFT (W : WightmanData G TF 𝓓 𝓕) : Prop :=
+  W.toWightmanStruct.ActsRegularly ∧ W.W1 ∧ W.toWightmanStruct.W2 ∧ W.W3 ∧ W.W4
+
+/-- [T26], Definition 2.5: unpacking the bundled Wightman CFT conjunction. -/
+theorem isWightmanCFT_iff (W : WightmanData G TF 𝓓 𝓕) :
+    W.IsWightmanCFT ↔
+      (W.toWightmanStruct.ActsRegularly ∧ W.W1 ∧ W.toWightmanStruct.W2 ∧ W.W3 ∧ W.W4) :=
+  Iff.rfl
+
+/-- [T26], Definition 2.5: a Wightman CFT acts regularly. -/
+theorem IsWightmanCFT.actsRegularly (W : WightmanData G TF 𝓓 𝓕)
+    (h : W.IsWightmanCFT) : W.toWightmanStruct.ActsRegularly :=
+  h.1
+
+/-- [T26], Definition 2.5: a Wightman CFT satisfies (W1). -/
+theorem IsWightmanCFT.w1 (W : WightmanData G TF 𝓓 𝓕)
+    (h : W.IsWightmanCFT) : W.W1 :=
+  h.2.1
+
+/-- [T26], Definition 2.5: a Wightman CFT satisfies (W2). -/
+theorem IsWightmanCFT.w2 (W : WightmanData G TF 𝓓 𝓕)
+    (h : W.IsWightmanCFT) : W.toWightmanStruct.W2 :=
+  h.2.2.1
+
+/-- [T26], Definition 2.5: a Wightman CFT satisfies (W3). -/
+theorem IsWightmanCFT.w3 (W : WightmanData G TF 𝓓 𝓕)
+    (h : W.IsWightmanCFT) : W.W3 :=
+  h.2.2.2.1
+
+/-- [T26], Definition 2.5: a Wightman CFT satisfies (W4). -/
+theorem IsWightmanCFT.w4 (W : WightmanData G TF 𝓓 𝓕)
+    (h : W.IsWightmanCFT) : W.W4 :=
+  h.2.2.2.2
 
 end WightmanData
 

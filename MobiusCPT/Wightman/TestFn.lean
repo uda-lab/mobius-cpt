@@ -18,6 +18,10 @@ class TestFunctions (TF : Type*) [AddCommGroup TF] [Module ℂ TF]
   SuppUpper : TF → Prop
   /-- [T26], §3: lower semicircle support. -/
   SuppLower : TF → Prop
+  /-- [T26], Definition 2.5 (W2): the disjoint-supports relation `supp f ∩ supp g = ∅`.
+  The concrete `C^∞(S¹)` instance pins this to `MobiusCPT.DisjointSupport`, disjointness of
+  the closed supports in `Circle`. -/
+  DisjointSupp : TF → TF → Prop
   /-- [T26], §2.2: the topology is characterized by the `C^N` seminorms. -/
   tendsto_iff_cnorm : ∀ (u : ℕ → TF) (f : TF),
       Filter.Tendsto u Filter.atTop (nhds f) ↔
