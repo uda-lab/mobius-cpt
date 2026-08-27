@@ -37,9 +37,15 @@ Issue #3 owned (`tendsto_iff_cnorm`, `inv_add`, `inv_involutive`, `inv_supp`,
 Issue #4 has also landed.  `W` is now the single bundle hole for the Wightman data,
 and `Dom`, `Field`, `dim`, `smear`, `vac`, `Compat`, `compatApply`, `boost`,
 `ActsRegularly`, `W1`, `W3`, `W4`, `smearedProduct`, `MemPUpperOmega`, and
-`MemPLowerOmega` are transparent projections of it.  The #4-adjacent holes that
-remain are `W2` and `IsWightmanCFT`, owned by Issue #25, and
-`w3_vacuum_annihilation`, owned by Issue #26.
+`MemPLowerOmega` are transparent projections of it.  `domTopologicalSpace` is one
+too, projecting the `𝓕`-strong topology; it is a `def_wanted` rather than an
+`instance_wanted` because `instance_wanted` is always an opaque hole, and it is
+deliberately not a global instance.  The instance holes `domAddCommGroup` and
+`domModule` are gone: the bundle carries them.  The #4-adjacent holes that remain
+are `W2` and `IsWightmanCFT`, owned by Issue #25, and `w3_vacuum_annihilation`,
+owned by Issue #26; both `W2` and `IsWightmanCFT` are still unconstrained `Prop`
+holes, so the capstone obligations that take `❰IsWightmanCFT❱` as a hypothesis
+remain stronger than [T26] Theorem 3.10 until #25 pins them.
 -/
 
 namespace MobiusCPT
