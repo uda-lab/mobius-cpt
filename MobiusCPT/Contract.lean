@@ -4,6 +4,7 @@ import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Data.List.MinMax
+import Mathlib.Data.NNReal.Basic
 import Mathlib.Topology.Basic
 
 /-!
@@ -12,7 +13,6 @@ import Mathlib.Topology.Basic
 This file is the Issue #2 statement contract for [T26], Theorem 3.10.  Its
 placeholders are sound because they inhabit `ProofWanted T` or `DefWanted T`,
 never `T`, so no statement here is usable as a proof and no axiom is introduced.
-Each declaration is deleted by the Issue that lands its real definition or proof.
 -/
 
 namespace MobiusCPT
@@ -30,7 +30,7 @@ instance_wanted testFnModule : Module ℂ ❰TestFn❱
 instance_wanted testFnTopologicalSpace : TopologicalSpace ❰TestFn❱
 
 /-- [T26], §3 and Lemma 3.9; the angle-derivative `C^N` norm owned by Issue #3. -/
-def_wanted cnorm : ℕ → ❰TestFn❱ → ℝ
+def_wanted cnorm : ℕ → ❰TestFn❱ → NNReal
 
 /-- [T26], §3; `f ↦ f ∘ z⁻¹`, owned by Issue #3. -/
 def_wanted inv : ❰TestFn❱ → ❰TestFn❱
@@ -174,6 +174,11 @@ def_wanted VtildeMap : ℂ → ❰Dom❱ → ❰Dom❱
 /-- [T26], Definition 3.1; the closed strip bounded by `ℝ` and `ℝ + τ`, owned by Issue #6. -/
 def_wanted strip : ℂ → Set ℂ
 
+/-- [T26] Def. 3.1, owned by Issue #6; the geometric closed strip bounded by `ℝ` and `ℝ + τ`.
+For real `τ` this degenerates to `ℝ`, which is what makes `vtilde_real` consistent. -/
+theorem_wanted strip_eq :
+    ∀ τ : ℂ, ❰strip❱ τ = { z : ℂ | min 0 τ.im ≤ z.im ∧ z.im ≤ max 0 τ.im }
+
 /-- [T26], Definition 3.1; the compatible-functional characterization of the partially defined
 `Ṽ_τ`, including continuity on the closed strip, holomorphy in its interior, and both boundary
 values, owned by Issue #6. -/
@@ -189,11 +194,13 @@ theorem_wanted vtilde_spec :
               (∀ t : ℝ,
                 G lam (τ + (t : ℂ)) = ❰compatApply❱ lam (❰boost❱ t Ψ))
 
-/-- [T26], Definition 3.1; real parameters give the ordinary boost on all of `𝓓`, owned by
-Issue #6. -/
+/-- [T26], Definition 3.1; real parameters give the ordinary boost on all of `𝓓`; the leading
+Wightman hypothesis supplies the regularity/continuity axiom for `t ↦ λ(V_t Φ)` needed here,
+owned by Issue #6. -/
 theorem_wanted vtilde_real :
-    ∀ (t : ℝ) (Φ : ❰Dom❱),
-      ❰VtildeDom❱ (t : ℂ) Φ ∧ ❰VtildeMap❱ (t : ℂ) Φ = ❰boost❱ t Φ
+    ❰IsWightmanCFT❱ →
+      ∀ (t : ℝ) (Φ : ❰Dom❱),
+        ❰VtildeDom❱ (t : ℂ) Φ ∧ ❰VtildeMap❱ (t : ℂ) Φ = ❰boost❱ t Φ
 
 /-- [T26], Definition 3.1 and footnote 7; real translation of the partially defined boost,
 including equality of the domains of both compositions and equality of values on their common
@@ -205,12 +212,15 @@ theorem_wanted vtilde_translation :
           (❰VtildeDom❱ (τ + (t : ℂ)) Φ →
             ❰VtildeDom❱ τ Φ →
               ❰VtildeMap❱ (τ + (t : ℂ)) Φ =
-                ❰boost❱ t (❰VtildeMap❱ τ Φ))
+                ❰boost❱ t (❰VtildeMap❱ τ Φ)) ∧
+          (❰VtildeDom❱ τ (❰boost❱ t Φ) →
+            ❰VtildeMap❱ (τ + (t : ℂ)) Φ = ❰VtildeMap❱ τ (❰boost❱ t Φ))
 
 /-- [T26], Definition 3.1; the vacuum is in every continued-boost domain and is fixed there,
-owned by Issue #6. -/
+leading Wightman hypothesis is needed for the (W4) vacuum axiom, owned by Issue #6. -/
 theorem_wanted vtilde_vacuum :
-    ∀ τ : ℂ, ❰VtildeDom❱ τ ❰vac❱ ∧ ❰VtildeMap❱ τ ❰vac❱ = ❰vac❱
+    ❰IsWightmanCFT❱ →
+      ∀ τ : ℂ, ❰VtildeDom❱ τ ❰vac❱ ∧ ❰VtildeMap❱ τ ❰vac❱ = ❰vac❱
 
 /-- [T26], §2; the left-to-right product `φ₁(f₁)⋯φ_k(f_k)Ω`, owned by Issue #4. -/
 def_wanted smearedProduct : List (❰Field❱ × ❰TestFn❱) → ❰Dom❱
@@ -286,12 +296,6 @@ under inversion, owned by Issue #3. -/
 theorem_wanted cnorm_inv :
     ∀ (N : ℕ) (f : ❰TestFn❱), ❰cnorm❱ N (❰inv❱ f) = ❰cnorm❱ N f
 
-/-- [T26], Lemma 3.8; nonnegativity of the `C^N` norm. It is needed because the estimate's
-`List.foldr max 0` agrees with the source's `max_{1≤j≤k}` only when all entries are nonnegative;
-without this obligation the estimate is silently weaker, owned by Issue #3. -/
-theorem_wanted cnorm_nonneg :
-    ∀ (N : ℕ) (f : ❰TestFn❱), 0 ≤ ❰cnorm❱ N f
-
 /-- [T26], Lemma 3.4; upper-supported test functions lie in the closure of
 analytic restrictions, owned by Issue #7. -/
 theorem_wanted lemma_3_4_density :
@@ -306,19 +310,23 @@ theorem_wanted w3_vacuum_annihilation :
 
 /-- [T26], Definition 3.5, equation (3.4); at `τ = iπ` the source scalar
 `(-1)^(d-1)` is represented as `(-1)^(d+1)` for `d : ℕ`, since these exponents
-have the same parity in `ℂ`; owned by Issue #5. -/
+have the same parity in `ℂ`; owned by Issue #5.
+The restriction is the lower one because inversion exchanges the semicircles. -/
 theorem_wanted beta_boost_at_ipi :
     ∀ (d : ℕ) (F : ❰AnalyticTestFn❱),
       ❰betaBoost❱ d (Complex.I * Real.pi) F =
-        (-1 : ℂ) ^ (d + 1) • ❰inv❱ (❰xRestrictUpper❱ F)
+        (-1 : ℂ) ^ (d + 1) • ❰inv❱ (❰xRestrictLower❱ F)
 
 /-- [T26], Lemma 3.8; for fixed fields and compatible functional, the exponential
-continuity estimate has constants independent of test-function lists and `t`, owned by Issue #10. -/
+continuity estimate has constants independent of test-function lists and `t`. The `foldr max 0`
+is the source's maximum because its entries are nonnegative by construction; for `k = 0` it gives
+`0 ≤ 0`, where the source's maximum over an empty index set is undefined. A positive integer `N`
+is required, owned by Issue #10. -/
 theorem_wanted lemma_3_8 :
     ❰IsWightmanCFT❱ →
       ∀ (φs : List ❰Field❱) (lam : ❰Compat❱),
         ∃ (N : ℕ) (C : ℝ → ℝ) (k₁ k₂ : ℝ),
-          0 < k₁ ∧ 0 < k₂ ∧
+          0 < N ∧ 0 < k₁ ∧ 0 < k₂ ∧
             (∀ t : ℝ, 0 < C t) ∧
             (∀ t : ℝ, C t ≤ k₁ * Real.exp (k₂ * |t|)) ∧
             ∀ (t : ℝ) (fs gs : List ❰TestFn❱),
@@ -327,10 +335,10 @@ theorem_wanted lemma_3_8 :
                     (❰boost❱ t (❰smearedProduct❱ (φs.zip fs)) -
                       ❰boost❱ t (❰smearedProduct❱ (φs.zip gs)))‖ ≤
                   C t *
-                      ((fs.zip gs).map
-                        (fun p => 1 + ❰cnorm❱ N p.1 + ❰cnorm❱ N p.2)).prod *
-                    List.foldr max 0
-                      ((fs.zip gs).map (fun p => ❰cnorm❱ N (p.1 - p.2)))
+                      ((((fs.zip gs).map
+                        (fun p => 1 + ❰cnorm❱ N p.1 + ❰cnorm❱ N p.2)).prod : NNReal) : ℝ) *
+                    ((List.foldr max 0
+                      ((fs.zip gs).map (fun p => ❰cnorm❱ N (p.1 - p.2))) : NNReal) : ℝ)
 
 /-- [T26], Theorem 3.10(i); upper and lower localized vectors lie in the corresponding domains
 of the partially defined imaginary boosts, owned by Issue #12. -/
