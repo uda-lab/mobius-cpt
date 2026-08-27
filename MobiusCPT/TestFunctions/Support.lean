@@ -1,4 +1,7 @@
-import Mathlib
+import Mathlib.Analysis.SpecialFunctions.SmoothTransition
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import Mathlib.Geometry.Manifold.Instances.Sphere
+import Mathlib.Topology.Algebra.Support
 import MobiusCPT.Analysis.FlatGluing
 import MobiusCPT.TestFunctions.Basic
 

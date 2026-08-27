@@ -1,4 +1,8 @@
-import Mathlib
+import Mathlib.Algebra.Order.Floor.Defs
+import Mathlib.Algebra.Order.Round
+import Mathlib.Analysis.Calculus.Deriv.Slope
+import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
+import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 
 /-!
 # Flat gluing
