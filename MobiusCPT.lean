@@ -18,4 +18,5 @@ import MobiusCPT.TestFunctions.Complete
 import MobiusCPT.TestFunctions.Inv
 import MobiusCPT.TestFunctions.Support
 import MobiusCPT.TestFunctions.Monomial
+import MobiusCPT.TestFunctions.Fourier
 import MobiusCPT.TestFunctions.WightmanInstance
