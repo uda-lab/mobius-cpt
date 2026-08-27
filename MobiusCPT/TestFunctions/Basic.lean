@@ -27,7 +27,7 @@ instance : FunLike TestFn Circle ℂ where
   coe_injective := Subtype.coe_injective
 
 /-- [T26], §3; the additive group structure on `C^∞(S¹)`. -/
-instance instAddCommGroup : AddCommGroup TestFn :=
+instance testFnAddCommGroup : AddCommGroup TestFn :=
   inferInstanceAs (AddCommGroup (ContMDiffMap (𝓡 1) 𝓘(ℝ, ℂ) Circle ℂ ∞))
 
 /-- [T26], §3; complex scalar multiplication on `C^∞(S¹)`. -/
@@ -76,7 +76,7 @@ namespace TestFn
 end TestFn
 
 /-- [T26], §3; the complex module structure on `C^∞(S¹)`. -/
-instance instModule : Module ℂ TestFn :=
+instance testFnModule : Module ℂ TestFn :=
   Function.Injective.module ℂ
     (ContMDiffMap.coeFnAddMonoidHom : TestFn →+ Circle → ℂ)
     (fun _ _ h => TestFn.ext (fun z => congrFun h z)) TestFn.coe_smul

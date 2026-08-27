@@ -137,7 +137,7 @@ noncomputable def angleDerivsₗ :
     exact (angleDerivBₗ j).map_smul c f
 
 /-- [T26], §2.2; the `C^∞` topology of uniform convergence of every angle derivative. -/
-instance instTopologicalSpace : TopologicalSpace TestFn :=
+instance testFnTopologicalSpace : TopologicalSpace TestFn :=
   TopologicalSpace.induced angleDerivsₗ inferInstance
 
 /-- The real module structure on `TestFn`, by restriction of the complex scalars. -/
