@@ -1,0 +1,33 @@
+# Lake build output and fetched dependencies
+/.lake/
+/build/
+
+# Lean compiled artefacts
+*.olean
+*.ilean
+*.trace
+
+# Logs and proof-experiment output are never tracked (scripts/check-transient-artifacts.sh)
+*.log
+
+# Local-only source note (Japanese digest by 元良直輝); the tracked SoT is docs/math/
+/PCT定理.tex
+
+# LaTeX by-products
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.toc
+*.out
+*.dvi
+
+# Editor / OS / harness noise
+.DS_Store
+*.swp
+/.claude/settings.local.json
+/.claude/worktrees/
+
+# lake-manifest.json and lean-toolchain are intentionally tracked for reproducibility.
