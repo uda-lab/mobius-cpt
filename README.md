@@ -16,9 +16,8 @@ the mirror statement holds for `I_−` and `−iπ`. Definitions, conventions an
 in `docs/math/pct-theorem.md`, the working mathematical source of truth; the primary papers win on
 any conflict.
 
-The programme is staged — (0) Möbius geometry on `S¹`, (1) the Wightman structure and the uniqueness
-lemma behind `Ṽ_τ`, (2) the theorem — and its scope and authority model are fixed by the owner's
-charter Issue in this repository.
+The programme's scope, milestones, non-goals and authority model are fixed by the owner's charter,
+the pinned Issue of this repository.
 
 ## Layout
 

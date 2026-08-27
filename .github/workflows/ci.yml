@@ -12,13 +12,41 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Job name `check` is the required status-check context in the `main` ruleset.
+  # Job name `check` is the required status-check context in the `main` ruleset. It always
+  # reports; the expensive toolchain/build/audit steps run only when build-relevant files
+  # changed (same conditional pattern as scripts/hooks/pre-push).
   check:
     name: check
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect build-relevant changes
+        id: changes
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          files=""; decided=false
+          if [ "$EVENT" = pull_request ]; then
+            files="$(git diff --name-only "origin/${BASE_REF}...HEAD")"; decided=true
+          elif [ "$EVENT" = push ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] \
+               && git cat-file -e "$BEFORE" 2>/dev/null; then
+            files="$(git diff --name-only "$BEFORE" HEAD)"; decided=true
+          fi
+          build=true
+          if [ "$decided" = true ] && ! printf '%s\n' "$files" \
+               | grep -qE '\.lean$|^lakefile|^lean-toolchain$|^lake-manifest\.json$|^scripts/|^\.github/workflows/'; then
+            build=false
+          fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "build-relevant changes: $build"; printf '%s\n' "$files" | sed 's/^/  /'
 
       # Textual guards first: they fail in seconds, before any toolchain download.
       - name: Transient-artefact guard
@@ -30,6 +58,7 @@ jobs:
 
       # Installs elan from lean-toolchain, fetches mathlib oleans, runs `lake build`.
       - name: Build with mathlib cache
+        if: steps.changes.outputs.build == 'true'
         uses: leanprover/lean-action@v1
         with:
           auto-config: false
@@ -41,4 +70,9 @@ jobs:
 
       # Same gate as local: guards, no-op rebuild, live #print axioms audit.
       - name: Full gate (scripts/check.sh)
+        if: steps.changes.outputs.build == 'true'
         run: bash scripts/check.sh
+
+      - name: Build skipped (no build-relevant changes)
+        if: steps.changes.outputs.build != 'true'
+        run: echo "No Lean sources, build config, scripts or workflows changed; textual guards passed."
