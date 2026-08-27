@@ -191,7 +191,7 @@ The value at `τ = iπ` ([T26] Lemma 3.7):
   (the sign is `(cosh iπ + Re(z) sinh iπ)^{d−1} = (−1)^{d−1}`).
 - For `F ∈ 𝓧`, `F ∘ z⁻¹` is holomorphic in the open unit disc and vanishes at `0`, so its Taylor
   expansion has only strictly positive powers of `z`; by the consequence of (W3) recorded in §2,
-  `φ(F∘z⁻¹|_{S¹})Ω = 0`. Write `g_j := (F_j∘z⁻¹)|_{I_+} = (F_j|_{I_−})∘z⁻¹` (supported in `I_+`)
+  `φ(F∘z⁻¹|_{S¹})Ω = 0`. Write `g_j := (F_j∘z⁻¹)|_{I_+} = (F_j|_{I_−})∘z⁻¹`
   and `h_j := (F_j∘z⁻¹)|_{I_−} = (F_j|_{I_+})∘z⁻¹`, both zero-extended elements of `C^∞(S¹)`
   lying in `C_0^∞(I_+)` resp. `C_0^∞(I_−)`; since `F_j∘z⁻¹|_{S¹} = g_j + h_j`, this gives
   `φ_j(g_j)Ω = −φ_j(h_j)Ω`. Moving `φ_k(h_k)` to the front uses locality, but not directly: `g_i`
