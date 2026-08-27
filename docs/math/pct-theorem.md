@@ -192,9 +192,20 @@ The value at `τ = iπ` ([T26] Lemma 3.7):
 - For `F ∈ 𝓧`, `F ∘ z⁻¹` is holomorphic in the open unit disc and vanishes at `0`, so its Taylor
   expansion has only strictly positive powers of `z`; by the consequence of (W3) recorded in §2,
   `φ(F∘z⁻¹|_{S¹})Ω = 0`. Write `g_j := (F_j∘z⁻¹)|_{I_+} = (F_j|_{I_−})∘z⁻¹` (supported in `I_+`)
-  and `h_j := (F_j∘z⁻¹)|_{I_−} = (F_j|_{I_+})∘z⁻¹` (supported in `I_−`); since
-  `F_j∘z⁻¹|_{S¹} = g_j + h_j`, this gives `φ_j(g_j)Ω = −φ_j(h_j)Ω`, and repeatedly using locality
-  (W2) to move `φ_k(h_k)` to the front: `φ_1(g_1)⋯φ_k(g_k)Ω = (−1)^k φ_k(h_k)⋯φ_1(h_1)Ω`.
+  and `h_j := (F_j∘z⁻¹)|_{I_−} = (F_j|_{I_+})∘z⁻¹`, both zero-extended elements of `C^∞(S¹)`
+  lying in `C_0^∞(I_+)` resp. `C_0^∞(I_−)`; since `F_j∘z⁻¹|_{S¹} = g_j + h_j`, this gives
+  `φ_j(g_j)Ω = −φ_j(h_j)Ω`. Moving `φ_k(h_k)` to the front uses locality, but not directly: `g_i`
+  and `h_k` vanish to all orders at `±1` while their closed supports may both contain `±1`, so (W2)
+  does not apply to the pair as it stands. *Cutoff-and-continuity argument:* choose smooth cutoffs
+  `χ_ε ∈ C^∞(S¹)` equal to `1` outside the `ε`-neighbourhoods of `±1` and to `0` inside the
+  `ε/2`-neighbourhoods, with `supp(χ_ε h_k)` contained in the open `I_−`. Because `h_k` vanishes to
+  all orders at `±1`, `χ_ε h_k → h_k` in `C^∞(S¹)` as `ε → 0`. For each `ε`,
+  `supp(g_i) ∩ supp(χ_ε h_k) = ∅`, so (W2) gives `[φ_i(g_i), φ_k(χ_ε h_k)] = 0` and hence
+  `φ_1(g_1)⋯φ_{k−1}(g_{k−1})φ_k(χ_ε h_k)Ω = φ_k(χ_ε h_k)φ_1(g_1)⋯φ_{k−1}(g_{k−1})Ω`; applying any
+  `λ ∈ D*_𝓕` and letting `ε → 0` (compatibility: continuity in the `h`-slot), the two sides converge
+  to the corresponding expressions with `h_k`, and regularity of `𝓕` turns the equality of all
+  `λ`-values into equality of vectors. Iterating the same step for `h_{k−1}, …, h_1`:
+  `φ_1(g_1)⋯φ_k(g_k)Ω = (−1)^k φ_k(h_k)⋯φ_1(h_1)Ω`. ([T26], proof of Lemma 3.7.)
 - **Lemma 3.7 ([T26]).** For `F_j ∈ 𝓧` and covariant `φ_j` of dimension `d_j`, with
   `f_j := F_j|_{I_+}` (so `f_j ∘ z⁻¹ = h_j`, supported in `I_−`),
   `Ṽ_{iπ} φ_1(f_1)⋯φ_k(f_k)Ω = (−1)^{d_1+⋯+d_k} φ_k(f_k∘z⁻¹)⋯φ_1(f_1∘z⁻¹)Ω`,
