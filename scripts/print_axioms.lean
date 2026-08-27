@@ -110,3 +110,6 @@ import MobiusCPT
 #print axioms MobiusCPT.angleDeriv_inv
 #print axioms MobiusCPT.norm_angleDerivB_inv
 #print axioms MobiusCPT.cnorm_inv
+
+-- Issue #3 x #4 join: the concrete C^inf(S^1) is a model of the abstract interface.
+#print axioms MobiusCPT.instTestFunctionsTestFn
