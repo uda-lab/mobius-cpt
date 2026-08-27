@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]      # post-merge run; the main ruleset does not require PR branches to be up to date
+  workflow_dispatch:
+
+# Cancel superseded runs on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Job name `check` is the required status-check context in the `main` ruleset.
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      # Textual guards first: they fail in seconds, before any toolchain download.
+      - name: Transient-artefact guard
+        run: bash scripts/check-transient-artifacts.sh
+      - name: No unmarked sorry/admit
+        run: bash scripts/check-no-sorry.sh
+      - name: No custom axiom/opaque/unsafe
+        run: bash scripts/check-no-custom-axiom.sh
+
+      # Installs elan from lean-toolchain, fetches mathlib oleans, runs `lake build`.
+      - name: Build with mathlib cache
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: true
+          test: false
+          lint: false
+          use-mathlib-cache: true
+          use-github-cache: false   # .lake of a mathlib project is multi-GB; the mathlib cache is the fast path
+
+      # Same gate as local: guards, no-op rebuild, live #print axioms audit.
+      - name: Full gate (scripts/check.sh)
+        run: bash scripts/check.sh
