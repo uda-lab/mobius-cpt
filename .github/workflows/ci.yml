@@ -12,13 +12,44 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Job name `check` is the required status-check context in the `main` ruleset.
+  # Job name `check` is the required status-check context in the `main` ruleset. It always
+  # reports; the expensive toolchain/build/audit steps run only when build-relevant files
+  # changed (same conditional pattern as scripts/hooks/pre-push).
   check:
     name: check
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect build-relevant changes
+        id: changes
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          # -z: NUL-delimited raw paths (no C-style quoting of non-ASCII names); --no-renames: a
+          # *.lean file renamed away must show as a deletion. The list is written to a file so the
+          # regex test reads a file, not a pipe (grep -q on a pipe under pipefail can fail spuriously).
+          list="$(mktemp)"; decided=false
+          if [ "$EVENT" = pull_request ]; then
+            git diff --no-renames --name-only -z "origin/${BASE_REF}...HEAD" | tr '\0' '\n' > "$list"; decided=true
+          elif [ "$EVENT" = push ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] \
+               && git cat-file -e "$BEFORE" 2>/dev/null; then
+            git diff --no-renames --name-only -z "$BEFORE" HEAD | tr '\0' '\n' > "$list"; decided=true
+          fi
+          build=true
+          if [ "$decided" = true ] \
+             && ! grep -qE '\.lean$|^lakefile|^lean-toolchain$|^lake-manifest\.json$|^scripts/|^\.github/workflows/' "$list"; then
+            build=false
+          fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "build-relevant changes: $build"; sed 's/^/  /' "$list"
 
       # Textual guards first: they fail in seconds, before any toolchain download.
       - name: Transient-artefact guard
@@ -30,6 +61,7 @@ jobs:
 
       # Installs elan from lean-toolchain, fetches mathlib oleans, runs `lake build`.
       - name: Build with mathlib cache
+        if: steps.changes.outputs.build == 'true'
         uses: leanprover/lean-action@v1
         with:
           auto-config: false
@@ -41,4 +73,9 @@ jobs:
 
       # Same gate as local: guards, no-op rebuild, live #print axioms audit.
       - name: Full gate (scripts/check.sh)
+        if: steps.changes.outputs.build == 'true'
         run: bash scripts/check.sh
+
+      - name: Build skipped (no build-relevant changes)
+        if: steps.changes.outputs.build != 'true'
+        run: echo "No Lean sources, build config, scripts or workflows changed; textual guards passed."
