@@ -38,7 +38,8 @@ scripts/check.sh       # guards → lake build → live #print axioms audit
 ```
 
 The toolchain is `lean-toolchain`; mathlib is pinned by tag in `lakefile.toml` and by commit in
-`lake-manifest.json`. CI runs the same `scripts/check.sh` gate on every pull request.
+`lake-manifest.json`. CI runs the textual guards on every pull request and the same `scripts/check.sh`
+gate (build and live audit) whenever Lean sources, build configuration, scripts or workflows change.
 
 ## Trust footprint
 
