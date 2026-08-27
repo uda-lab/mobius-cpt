@@ -168,9 +168,18 @@ Test functions adapted to `I_+` ([T26] Defs. 3.2–3.3, Lemma 3.4):
 - For `F ∈ 𝓧` and `τ ∈ ℝ`,
   `(β_d(v_τ) F|_{I_+})(z) = X_{v_τ}(v_{−τ}·z)^{d−1} F(v_{−τ}·z) = (cosh τ + Re(z) sinh τ)^{d−1} F(v_{−τ}·z)`
   ([T26] eqs. (3.4)–(3.5); the closed form is in the full argument `τ` although the matrix of `v_τ`
-  uses half-arguments). The right-hand side makes sense for `τ ∈ 𝕊_{iπ}` because
-  `v_{−τ}(I_+) ⊆ 𝕆` for `0 ≤ Im τ ≤ π` ([T26] Def. 3.5 and discussion); it lies in `C_0^∞(I_+)`,
-  and `β_d(v_t) β_d(v_τ) F|_{I_+} = β_d(v_{τ+t}) F|_{I_+}` for `t ∈ ℝ`.
+  uses half-arguments — for `|z| = 1` one has
+  `cosh τ + Re(z) sinh τ = (sinh(τ/2) z + cosh(τ/2)) (sinh(τ/2) z̄ + cosh(τ/2))`, the first factor
+  being the denominator of `v_{−τ}·z = (cosh(τ/2) z + sinh(τ/2)) / (sinh(τ/2) z + cosh(τ/2))`).
+  For `τ ∈ 𝕊_{iπ}` the right-hand side is used to *define* `β_d(v_τ)F|_{I_+}` on `I_+`: this is
+  meaningful because `v_{−τ}(I_+) ⊆ 𝕆` for `0 ≤ Im τ ≤ π` ([T26] Def. 3.5 and discussion), so
+  `F(v_{−τ}·z)` is defined. For `d ≥ 1` the expression is pointwise defined. For `d = 0` the factor
+  `(cosh τ + Re(z) sinh τ)^{−1}` has a simple pole exactly where `v_{−τ}·z = ∞` (e.g. `τ = iπ/2`,
+  `z = i`); since `F` is smooth at `∞` with `F(∞) = 0`, `w ↦ w·F(w)` is bounded near `∞` and the
+  pole is cancelled, so for `d = 0` the expression is understood as its unique continuous
+  (removable-singularity) extension. A Lean definition of `β_d(v_τ)` for complex `τ` must build in
+  this extension rather than the raw quotient. The resulting function lies in `C_0^∞(I_+)`, and
+  `β_d(v_t) β_d(v_τ) F|_{I_+} = β_d(v_{τ+t}) F|_{I_+}` for `t ∈ ℝ`.
 - **Lemma 3.6 ([T26]).** For `F_1,…,F_k ∈ 𝓧`, `φ_1,…,φ_k ∈ 𝓕` of dimensions `d_1,…,d_k`, the map
   `τ ↦ β_d(v_τ)F|_{I_+}` is continuous on `𝕊_{iπ}` and holomorphic in its interior, and so are the
   functions `G_λ(τ) = λ( φ_1(β_{d_1}(v_τ)F_1|_{I_+}) ⋯ φ_k(β_{d_k}(v_τ)F_k|_{I_+}) Ω )`
