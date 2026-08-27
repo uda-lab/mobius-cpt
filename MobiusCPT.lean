@@ -8,6 +8,7 @@ import MobiusCPT.Wightman.Mobius
 import MobiusCPT.Wightman.Compat
 import MobiusCPT.Wightman.StrongTopology
 import MobiusCPT.Wightman.Axioms
+import MobiusCPT.Wightman.Bundle
 import MobiusCPT.Analysis.FlatGluing
 import MobiusCPT.TestFunctions.Basic
 import MobiusCPT.TestFunctions.CNorm
