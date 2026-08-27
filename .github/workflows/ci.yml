@@ -33,21 +33,23 @@ jobs:
           BEFORE: ${{ github.event.before }}
         run: |
           set -euo pipefail
-          # --no-renames: a *.lean file renamed away must show as a deletion, not only as its destination.
-          files=""; decided=false
+          # -z: NUL-delimited raw paths (no C-style quoting of non-ASCII names); --no-renames: a
+          # *.lean file renamed away must show as a deletion. The list is written to a file so the
+          # regex test reads a file, not a pipe (grep -q on a pipe under pipefail can fail spuriously).
+          list="$(mktemp)"; decided=false
           if [ "$EVENT" = pull_request ]; then
-            files="$(git diff --no-renames --name-only "origin/${BASE_REF}...HEAD")"; decided=true
+            git diff --no-renames --name-only -z "origin/${BASE_REF}...HEAD" | tr '\0' '\n' > "$list"; decided=true
           elif [ "$EVENT" = push ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] \
                && git cat-file -e "$BEFORE" 2>/dev/null; then
-            files="$(git diff --no-renames --name-only "$BEFORE" HEAD)"; decided=true
+            git diff --no-renames --name-only -z "$BEFORE" HEAD | tr '\0' '\n' > "$list"; decided=true
           fi
           build=true
-          if [ "$decided" = true ] && ! printf '%s\n' "$files" \
-               | grep -qE '\.lean$|^lakefile|^lean-toolchain$|^lake-manifest\.json$|^scripts/|^\.github/workflows/'; then
+          if [ "$decided" = true ] \
+             && ! grep -qE '\.lean$|^lakefile|^lean-toolchain$|^lake-manifest\.json$|^scripts/|^\.github/workflows/' "$list"; then
             build=false
           fi
           echo "build=$build" >> "$GITHUB_OUTPUT"
-          echo "build-relevant changes: $build"; printf '%s\n' "$files" | sed 's/^/  /'
+          echo "build-relevant changes: $build"; sed 's/^/  /' "$list"
 
       # Textual guards first: they fail in seconds, before any toolchain download.
       - name: Transient-artefact guard
