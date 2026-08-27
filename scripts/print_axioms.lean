@@ -183,3 +183,12 @@ import MobiusCPT
 #print axioms MobiusCPT.hasSum_fourierSeries
 #print axioms MobiusCPT.tendsto_fourierPartialSum
 #print axioms MobiusCPT.tendsto_cnorm_fourierPartialSum
+#print axioms MobiusCPT.exists_suppUpper_toAngle_eq_periodize
+#print axioms MobiusCPT.exists_suppLower_toAngle_eq_periodize
+#print axioms MobiusCPT.exists_suppUpper_add_suppLower_of_flat
+#print axioms MobiusCPT.closure_lowerArc
+#print axioms MobiusCPT.suppLower_iff_tsupport
+#print axioms MobiusCPT.suppLower_of_tsupport_subset
+#print axioms MobiusCPT.exists_suppLower_not_tsupport_subset
+#print axioms MobiusCPT.not_forall_exists_suppUpper_add_suppLower
+#print axioms MobiusCPT.norm_angleDerivB_eq

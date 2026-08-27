@@ -60,6 +60,22 @@ theorem angleDerivCircle_zero (f : TestFn) :
   intro θ
   simp [angleDeriv, iteratedDeriv_zero]
 
+/-- [T26], §3; the real-angle and additive-circle uniform norms agree. -/
+theorem norm_angleDerivB_eq (j : ℕ) (f : TestFn) :
+    ‖angleDerivB j f‖ = ‖angleDerivCircle j f‖ := by
+  apply le_antisymm
+  · apply (BoundedContinuousFunction.norm_le (norm_nonneg _)).2
+    intro θ
+    rw [angleDerivB_apply, ← angleDerivCircle_coe]
+    exact ContinuousMap.norm_coe_le_norm (angleDerivCircle j f)
+      (θ : AddCircle (2 * Real.pi))
+  · apply (ContinuousMap.norm_le _ (norm_nonneg _)).2
+    intro x
+    refine Quotient.inductionOn' x ?_
+    intro θ
+    rw [angleDerivCircle_coe]
+    exact norm_angleDeriv_le j f θ
+
 /-- [T26], §3; the `n`-th Fourier coefficient of a smooth test function, defined through
 mathlib's normalized-Haar `fourierCoeff` on `AddCircle (2 * Real.pi)`. -/
 def fourierCoef (f : TestFn) (n : ℤ) : ℂ :=
@@ -353,7 +369,7 @@ theorem hasSum_fourierSeries (f : TestFn) :
     intro i
     exact map_sum (angleDerivBₗ j) _ i
   simp only [Function.comp_apply, angleDerivsₗ, LinearMap.coe_mk, AddHom.coe_mk,
-    Finset.sum_apply, hswap]
+    hswap]
   exact hasSum_angleDerivB j f
 
 /-- [T26], §3; symmetric Fourier partial sums converge in the `C^∞(S¹)` topology. -/

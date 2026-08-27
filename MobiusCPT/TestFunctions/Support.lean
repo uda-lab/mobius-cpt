@@ -15,7 +15,7 @@ used for the vanishing condition, while topological support is compared with the
 namespace MobiusCPT
 
 open Filter Set
-open scoped ContDiff Topology
+open scoped ContDiff Manifold Topology
 
 noncomputable section
 
@@ -615,6 +615,119 @@ theorem suppLower_iff_zeroExtension (f : TestFn) :
         intro hθ'
         exact (not_lt_of_ge (le_of_lt hθ.2)) hθ'.1)
 
+/-- [T26], §3; an upper-flat angle function periodizes to an upper-supported test function. -/
+theorem exists_suppUpper_toAngle_eq_periodize {g : ℝ → ℂ} (hg : IsUpperFlat g) :
+    ∃ f : TestFn, toAngle f = periodize (2 * Real.pi) g ∧ SuppUpper f := by
+  have hzero : ∀ θ : ℝ, θ ∉ Set.Ioo 0 (2 * Real.pi) → g θ = 0 := by
+    intro θ hθ
+    apply hg.zero_outside θ
+    intro hθ'
+    exact hθ ⟨hθ'.1, hθ'.2.trans (by linarith [Real.pi_pos])⟩
+  have hcont : ContDiff ℝ ∞ (periodize (2 * Real.pi) g) :=
+    contDiff_periodize Real.two_pi_pos hg.contDiff hzero
+  have hper : Function.Periodic (periodize (2 * Real.pi) g) (2 * Real.pi) :=
+    periodic_periodize (2 * Real.pi) Real.two_pi_pos g
+  obtain ⟨f, hf⟩ := exists_toAngle_eq hcont hper
+  refine ⟨f, hf, (suppUpper_iff_zeroExtension f).2 ?_⟩
+  exact ⟨g, hg, hf⟩
+
+/-- [T26], §3; a lower-flat angle function periodizes to a lower-supported test function. -/
+theorem exists_suppLower_toAngle_eq_periodize {g : ℝ → ℂ} (hg : IsLowerFlat g) :
+    ∃ f : TestFn, toAngle f = periodize (2 * Real.pi) g ∧ SuppLower f := by
+  have hzero : ∀ θ : ℝ, θ ∉ Set.Ioo 0 (2 * Real.pi) → g θ = 0 := by
+    intro θ hθ
+    apply hg.zero_outside θ
+    intro hθ'
+    exact hθ ⟨Real.pi_pos.trans hθ'.1, hθ'.2⟩
+  have hcont : ContDiff ℝ ∞ (periodize (2 * Real.pi) g) :=
+    contDiff_periodize Real.two_pi_pos hg.contDiff hzero
+  have hper : Function.Periodic (periodize (2 * Real.pi) g) (2 * Real.pi) :=
+    periodic_periodize (2 * Real.pi) Real.two_pi_pos g
+  obtain ⟨f, hf⟩ := exists_toAngle_eq hcont hper
+  refine ⟨f, hf, (suppLower_iff_zeroExtension f).2 ?_⟩
+  exact ⟨g, hg, hf⟩
+
+/-- [T26], §3; endpoint flatness permits decomposition into upper- and lower-supported parts. -/
+theorem exists_suppUpper_add_suppLower_of_flat {f : TestFn}
+    (h0 : ∀ j : ℕ, iteratedDeriv j (toAngle f) 0 = 0)
+    (hpi : ∀ j : ℕ, iteratedDeriv j (toAngle f) Real.pi = 0) :
+    ∃ fUpper fLower : TestFn, SuppUpper fUpper ∧ SuppLower fLower ∧ f = fUpper + fLower := by
+  let T : ℝ := 2 * Real.pi
+  let gUpper : ℝ → ℂ := cutIcc 0 Real.pi (toAngle f)
+  let gLower : ℝ → ℂ := cutIcc Real.pi T (toAngle f)
+  have hT : 0 < T := by
+    exact Real.two_pi_pos
+  have hflatT : ∀ j : ℕ, iteratedDeriv j (toAngle f) T = 0 := by
+    intro j
+    calc
+      iteratedDeriv j (toAngle f) T = iteratedDeriv j (toAngle f) 0 := by
+        simpa [T] using periodic_iteratedDeriv (periodic_toAngle f) j 0
+      _ = 0 := h0 j
+  have hgUpper : IsUpperFlat gUpper := by
+    refine ⟨contDiff_cutIcc Real.pi_pos.le (contDiff_toAngle f) h0 hpi, ?_⟩
+    intro θ hθ
+    by_cases hθIcc : θ ∈ Set.Icc 0 Real.pi
+    · by_cases hθ0 : θ = 0
+      · subst θ
+        rw [show gUpper 0 = toAngle f 0 by
+          exact cutIcc_eq_of_mem (toAngle f) ⟨le_rfl, Real.pi_pos.le⟩]
+        simpa only [iteratedDeriv_zero] using h0 0
+      · by_cases hθpi : θ = Real.pi
+        · subst θ
+          rw [show gUpper Real.pi = toAngle f Real.pi by
+            exact cutIcc_eq_of_mem (toAngle f) ⟨Real.pi_pos.le, le_rfl⟩]
+          simpa only [iteratedDeriv_zero] using hpi 0
+        · exact False.elim (hθ ⟨lt_of_le_of_ne hθIcc.1 (Ne.symm hθ0),
+            lt_of_le_of_ne hθIcc.2 hθpi⟩)
+    · exact cutIcc_eq_zero_of_notMem (toAngle f) hθIcc
+  have hgLower : IsLowerFlat gLower := by
+    refine ⟨contDiff_cutIcc (by linarith [Real.pi_pos]) (contDiff_toAngle f) hpi hflatT,
+      ?_⟩
+    intro θ hθ
+    by_cases hθIcc : θ ∈ Set.Icc Real.pi T
+    · by_cases hθpi : θ = Real.pi
+      · subst θ
+        rw [show gLower Real.pi = toAngle f Real.pi by
+          exact cutIcc_eq_of_mem (toAngle f) ⟨le_rfl, by linarith [Real.pi_pos]⟩]
+        simpa only [iteratedDeriv_zero] using hpi 0
+      · by_cases hθT : θ = T
+        · subst θ
+          rw [show gLower T = toAngle f T by
+            exact cutIcc_eq_of_mem (toAngle f) ⟨by linarith [Real.pi_pos], le_rfl⟩]
+          simpa only [iteratedDeriv_zero] using hflatT 0
+        · exact False.elim (hθ ⟨lt_of_le_of_ne hθIcc.1 (Ne.symm hθpi),
+            lt_of_le_of_ne hθIcc.2 hθT⟩)
+    · exact cutIcc_eq_zero_of_notMem (toAngle f) hθIcc
+  obtain ⟨fUpper, hfUpperAngle, hfUpper⟩ := exists_suppUpper_toAngle_eq_periodize hgUpper
+  obtain ⟨fLower, hfLowerAngle, hfLower⟩ := exists_suppLower_toAngle_eq_periodize hgLower
+  refine ⟨fUpper, fLower, hfUpper, hfLower, toAngle_injective ?_⟩
+  rw [toAngle_add, hfUpperAngle, hfLowerAngle]
+  apply periodic_eq_of_eq_on_Ico hT (periodic_toAngle f)
+    ((periodic_periodize T hT gUpper).add (periodic_periodize T hT gLower))
+  intro θ hθ
+  rw [Pi.add_apply, periodize_eq_self hT hθ, periodize_eq_self hT hθ]
+  by_cases hθpi : θ = Real.pi
+  · subst θ
+    rw [show gUpper Real.pi = toAngle f Real.pi by
+      exact cutIcc_eq_of_mem (toAngle f) ⟨Real.pi_pos.le, le_rfl⟩]
+    rw [show gLower Real.pi = toAngle f Real.pi by
+      exact cutIcc_eq_of_mem (toAngle f) ⟨le_rfl, by linarith [Real.pi_pos]⟩]
+    have hzero : toAngle f Real.pi = 0 := by
+      simpa only [iteratedDeriv_zero] using hpi 0
+    simp only [hzero, add_zero]
+  · by_cases hθlt : θ < Real.pi
+    · rw [show gUpper θ = toAngle f θ by
+        exact cutIcc_eq_of_mem (toAngle f) ⟨hθ.1, hθlt.le⟩]
+      rw [show gLower θ = 0 by
+        exact cutIcc_eq_zero_of_notMem (toAngle f) (fun hmem => not_le_of_gt hθlt hmem.1)]
+      exact (add_zero _).symm
+    · have hθgt : Real.pi < θ := lt_of_le_of_ne (le_of_not_gt hθlt) (Ne.symm hθpi)
+      rw [show gUpper θ = 0 by
+        exact cutIcc_eq_zero_of_notMem (toAngle f) (fun hmem => not_le_of_gt hθgt hmem.2)]
+      rw [show gLower θ = toAngle f θ by
+        exact cutIcc_eq_of_mem (toAngle f) ⟨hθgt.le, hθ.2.le⟩]
+      exact (zero_add _).symm
+
 /-- [T26], §3; the closure of the open upper semicircle is the closed upper semicircle. -/
 theorem closure_upperArc :
     closure upperArc = {z : Circle | 0 ≤ (z : ℂ).im} := by
@@ -880,8 +993,8 @@ theorem DisjointSupport.eq_zero_or_eq_zero {f g : TestFn} (h : DisjointSupport f
 theorem disjointSupport_zero_left (g : TestFn) : DisjointSupport 0 g := by
   simpa only [DisjointSupport, support_zero] using Set.empty_disjoint (support g)
 
-/-- The closure of the open lower semicircle is the closed lower semicircle. -/
-private theorem closure_lowerArc :
+/-- [T26], §3; the closure of the open lower semicircle is the closed lower semicircle. -/
+theorem closure_lowerArc :
     closure lowerArc = {z : Circle | (z : ℂ).im ≤ 0} := by
   have hpreimage : (Homeomorph.inv Circle) ⁻¹' upperArc = lowerArc := by
     ext z
@@ -929,6 +1042,83 @@ theorem suppLower_iff_support (f : TestFn) :
     change (z : ℂ).im ≤ 0 at hzclosure
     change 0 < (z : ℂ).im at hz
     exact (not_lt_of_ge hzclosure) hz
+
+/-- [T26], §3; lower support is equivalent to closed topological support in the closed lower
+semicircle. -/
+theorem suppLower_iff_tsupport (f : TestFn) :
+    SuppLower f ↔ tsupport (f : Circle → ℂ) ⊆ closure lowerArc :=
+  suppLower_iff_support f
+
+/-- [T26], §3; support compactly contained in the open lower semicircle implies lower support. -/
+theorem suppLower_of_tsupport_subset {f : TestFn}
+    (h : tsupport (f : Circle → ℂ) ⊆ lowerArc) : SuppLower f := by
+  apply (suppLower_iff_tsupport f).2
+  exact h.trans subset_closure
+
+/-- [T26], §3; compact containment in the open lower semicircle is strictly stronger than the
+closure support convention. -/
+theorem exists_suppLower_not_tsupport_subset :
+    ∃ f : TestFn, SuppLower f ∧ ¬ tsupport (f : Circle → ℂ) ⊆ lowerArc := by
+  obtain ⟨f, hf, hnot⟩ := exists_suppUpper_not_tsupport_subset
+  let f' : TestFn :=
+    ⟨fun z => f z⁻¹, by
+      change ContMDiff (𝓡 1) 𝓘(ℝ, ℂ) ∞
+        ((f : Circle → ℂ) ∘ (fun z : Circle => z⁻¹))
+      exact (ContMDiffMap.contMDiff f).comp (contMDiff_inv (𝓡 1) ∞)⟩
+  have hf' : SuppLower f' := by
+    intro z hz
+    change 0 < (z : ℂ).im at hz
+    apply hf z⁻¹
+    change ((z⁻¹ : Circle) : ℂ).im < 0
+    rw [Circle.coe_inv_eq_conj, Complex.conj_im]
+    exact neg_lt_zero.mpr hz
+  obtain ⟨z, hzts, hzupper⟩ := Set.not_subset.mp hnot
+  refine ⟨f', hf', ?_⟩
+  intro hsubset
+  have htsupport :
+      tsupport (fun w : Circle => f w⁻¹) =
+        (Homeomorph.inv Circle) ⁻¹' tsupport (f : Circle → ℂ) := by
+    simpa only [Function.comp_def, Homeomorph.coe_inv] using
+      tsupport_comp_eq_preimage (f : Circle → ℂ) (Homeomorph.inv Circle)
+  have hzinv : z⁻¹ ∈ tsupport (f' : Circle → ℂ) := by
+    change z⁻¹ ∈ tsupport (fun w : Circle => f w⁻¹)
+    rw [htsupport]
+    simpa using hzts
+  have hzlower := hsubset hzinv
+  apply hzupper
+  change 0 < (z : ℂ).im
+  change ((z⁻¹ : Circle) : ℂ).im < 0 at hzlower
+  rw [Circle.coe_inv_eq_conj, Complex.conj_im] at hzlower
+  exact neg_lt_zero.mp hzlower
+
+/-- [T26], §3; not every test function splits into upper- and lower-supported summands. -/
+theorem not_forall_exists_suppUpper_add_suppLower :
+    ¬ ∀ f : TestFn, ∃ fUpper fLower : TestFn,
+      SuppUpper fUpper ∧ SuppLower fLower ∧ f = fUpper + fLower := by
+  intro h
+  let one : TestFn := ⟨fun _ : Circle => (1 : ℂ), contMDiff_const⟩
+  obtain ⟨fUpper, fLower, hfUpper, hfLower, hsum⟩ := h one
+  have hfUpperOne : Set.EqOn (fun z : Circle => fUpper z) (fun _ => (1 : ℂ)) upperArc := by
+    intro z hz
+    have hpoint := congrArg (fun q : TestFn => q z) hsum
+    change (1 : ℂ) = fUpper z + fLower z at hpoint
+    rw [hfLower z hz, add_zero] at hpoint
+    exact hpoint.symm
+  have hfUpperZero : Set.EqOn (fun z : Circle => fUpper z) (fun _ => (0 : ℂ)) lowerArc :=
+    hfUpper
+  have hfUpperOneClosure := hfUpperOne.closure
+    (ContMDiffMap.contMDiff fUpper).continuous continuous_const
+  have hfUpperZeroClosure := hfUpperZero.closure
+    (ContMDiffMap.contMDiff fUpper).continuous continuous_const
+  have hone_upper : (1 : Circle) ∈ closure upperArc := by
+    rw [closure_upperArc]
+    simp
+  have hone_lower : (1 : Circle) ∈ closure lowerArc := by
+    rw [closure_lowerArc]
+    simp
+  have hone : fUpper (1 : Circle) = 1 := hfUpperOneClosure hone_upper
+  have hzero : fUpper (1 : Circle) = 0 := hfUpperZeroClosure hone_lower
+  exact one_ne_zero (hone.symm.trans hzero)
 
 end
 
