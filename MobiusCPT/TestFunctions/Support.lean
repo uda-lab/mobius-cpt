@@ -807,6 +807,129 @@ theorem exists_suppUpper_not_tsupport_subset :
   have hone_upper : (1 : Circle) ∈ upperArc := hsubset hone_ts
   simp [upperArc] at hone_upper
 
+/-! ### General closed support -/
+
+/-- [T26], §2.2 and Definition 2.5; the closed support of a test function, namely the closure in
+`Circle` of the set where the function is nonzero. This is the general notion used in Wightman
+locality (W2); `SuppUpper` and `SuppLower` are the two specific semicircle cases. -/
+def support (f : TestFn) : Set Circle :=
+  tsupport (f : Circle → ℂ)
+
+/-- The closed support is the closure of the set on which the test function is nonzero. -/
+theorem support_def (f : TestFn) : support f = closure {z : Circle | f z ≠ 0} :=
+  rfl
+
+/-- The support of a test function is closed. -/
+theorem isClosed_support (f : TestFn) : IsClosed (support f) :=
+  isClosed_tsupport (f : Circle → ℂ)
+
+/-- A test function vanishes at every point outside its closed support. -/
+theorem notMem_support (f : TestFn) {z : Circle} (h : z ∉ support f) : f z = 0 :=
+  image_eq_zero_of_notMem_tsupport h
+
+/-- The zero test function has empty support. -/
+theorem support_zero : support (0 : TestFn) = ∅ := by
+  change tsupport ((0 : TestFn) : Circle → ℂ) = ∅
+  rw [TestFn.coe_zero]
+  exact tsupport_zero
+
+/-- Negation does not change the support of a test function. -/
+theorem support_neg (f : TestFn) : support (-f) = support f := by
+  change tsupport ((-f : TestFn) : Circle → ℂ) = tsupport (f : Circle → ℂ)
+  rw [TestFn.coe_neg]
+  exact tsupport_neg (f : Circle → ℂ)
+
+/-- Scalar multiplication cannot enlarge the support of a test function. -/
+theorem support_smul_subset (c : ℂ) (f : TestFn) : support (c • f) ⊆ support f := by
+  change tsupport (fun z : Circle => c * f z) ⊆ tsupport (f : Circle → ℂ)
+  simpa only [smul_eq_mul] using
+    (tsupport_smul_subset_right (fun _ : Circle => c) (f : Circle → ℂ))
+
+/-- The support of a sum is contained in the union of the two supports. -/
+theorem support_add_subset (f g : TestFn) : support (f + g) ⊆ support f ∪ support g := by
+  change tsupport ((f + g : TestFn) : Circle → ℂ) ⊆
+    tsupport (f : Circle → ℂ) ∪ tsupport (g : Circle → ℂ)
+  rw [TestFn.coe_add]
+  exact tsupport_add (f : Circle → ℂ) (g : Circle → ℂ)
+
+/-- [T26], Definition 2.5; the disjoint-supports relation used in locality (W2).
+
+Upper and lower support do not imply this relation: their closed supports may both contain the
+endpoints `{1, -1}`. -/
+def DisjointSupport (f g : TestFn) : Prop :=
+  Disjoint (support f) (support g)
+
+/-- Disjoint support is symmetric. -/
+theorem disjointSupport_comm (f g : TestFn) :
+    DisjointSupport f g ↔ DisjointSupport g f := by
+  unfold DisjointSupport
+  exact disjoint_comm
+
+/-- At every point, one of two test functions with disjoint supports vanishes. -/
+theorem DisjointSupport.eq_zero_of_ne {f g : TestFn} (h : DisjointSupport f g)
+    (z : Circle) : f z = 0 ∨ g z = 0 := by
+  by_cases hf : f z = 0
+  · exact Or.inl hf
+  · right
+    apply notMem_support g
+    intro hzg
+    have hzf : z ∈ support f := subset_tsupport (f : Circle → ℂ) hf
+    exact (Set.disjoint_left.mp h) hzf hzg
+
+/-- The zero test function has support disjoint from every test function. -/
+theorem disjointSupport_zero_left (g : TestFn) : DisjointSupport 0 g := by
+  simpa only [DisjointSupport, support_zero] using Set.empty_disjoint (support g)
+
+/-- The closure of the open lower semicircle is the closed lower semicircle. -/
+private theorem closure_lowerArc :
+    closure lowerArc = {z : Circle | (z : ℂ).im ≤ 0} := by
+  have hpreimage : (Homeomorph.inv Circle) ⁻¹' upperArc = lowerArc := by
+    ext z
+    change 0 < ((z⁻¹ : Circle) : ℂ).im ↔ (z : ℂ).im < 0
+    rw [Circle.coe_inv_eq_conj, Complex.conj_im]
+    exact neg_pos
+  calc
+    closure lowerArc = closure ((Homeomorph.inv Circle) ⁻¹' upperArc) := by
+      rw [hpreimage]
+    _ = (Homeomorph.inv Circle) ⁻¹' closure upperArc :=
+      ((Homeomorph.inv Circle).preimage_closure upperArc).symm
+    _ = {z : Circle | (z : ℂ).im ≤ 0} := by
+      rw [closure_upperArc]
+      ext z
+      change 0 ≤ ((z⁻¹ : Circle) : ℂ).im ↔ (z : ℂ).im ≤ 0
+      rw [Circle.coe_inv_eq_conj, Complex.conj_im]
+      exact neg_nonneg
+
+/-- [T26], §3; `SuppUpper` is the general closed-support condition for the closed upper
+semicircle. -/
+theorem suppUpper_iff_support (f : TestFn) :
+    SuppUpper f ↔ support f ⊆ closure upperArc :=
+  suppUpper_iff_tsupport f
+
+/-- [T26], §3; `SuppLower` is the general closed-support condition for the closed lower
+semicircle. -/
+theorem suppLower_iff_support (f : TestFn) :
+    SuppLower f ↔ support f ⊆ closure lowerArc := by
+  constructor
+  · intro h
+    rw [support, tsupport]
+    apply closure_minimal _ isClosed_closure
+    intro z hz
+    by_contra hzclosure
+    have hzupper : z ∈ upperArc := by
+      rw [closure_lowerArc] at hzclosure
+      change ¬(z : ℂ).im ≤ 0 at hzclosure
+      exact lt_of_not_ge hzclosure
+    exact hz (h z hzupper)
+  · intro h z hz
+    by_contra hne
+    have hzsupport : z ∈ Function.support (f : Circle → ℂ) := hne
+    have hzclosure := h (subset_tsupport (f : Circle → ℂ) hzsupport)
+    rw [closure_lowerArc] at hzclosure
+    change (z : ℂ).im ≤ 0 at hzclosure
+    change 0 < (z : ℂ).im at hz
+    exact (not_lt_of_ge hzclosure) hz
+
 end
 
 end MobiusCPT

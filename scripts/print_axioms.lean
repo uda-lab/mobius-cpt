@@ -113,3 +113,24 @@ import MobiusCPT
 
 -- Issue #3 × #4 join: the concrete C^∞(S¹) is a model of the abstract interface.
 #print axioms MobiusCPT.instTestFunctionsTestFn
+-- General closed support and the disjointness relation Wightman locality (W2) is stated with.
+#print axioms MobiusCPT.support_def
+#print axioms MobiusCPT.isClosed_support
+#print axioms MobiusCPT.notMem_support
+#print axioms MobiusCPT.support_zero
+#print axioms MobiusCPT.support_neg
+#print axioms MobiusCPT.support_smul_subset
+#print axioms MobiusCPT.support_add_subset
+#print axioms MobiusCPT.disjointSupport_comm
+#print axioms MobiusCPT.DisjointSupport.eq_zero_of_ne
+#print axioms MobiusCPT.disjointSupport_zero_left
+#print axioms MobiusCPT.suppUpper_iff_support
+#print axioms MobiusCPT.suppLower_iff_support
+-- Monomials z^n as test functions ([T26] §2.2), the basis the Fourier expansion is taken in.
+#print axioms MobiusCPT.monomial_apply
+#print axioms MobiusCPT.monomial_apply'
+#print axioms MobiusCPT.monomial_zero
+#print axioms MobiusCPT.toAngle_monomial
+#print axioms MobiusCPT.monomial_ne_zero
+#print axioms MobiusCPT.support_monomial
+#print axioms MobiusCPT.inv_monomial
