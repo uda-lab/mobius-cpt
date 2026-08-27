@@ -122,7 +122,7 @@ import MobiusCPT
 #print axioms MobiusCPT.support_smul_subset
 #print axioms MobiusCPT.support_add_subset
 #print axioms MobiusCPT.disjointSupport_comm
-#print axioms MobiusCPT.DisjointSupport.eq_zero_of_ne
+#print axioms MobiusCPT.DisjointSupport.eq_zero_or_eq_zero
 #print axioms MobiusCPT.disjointSupport_zero_left
 #print axioms MobiusCPT.suppUpper_iff_support
 #print axioms MobiusCPT.suppLower_iff_support

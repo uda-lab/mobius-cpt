@@ -866,7 +866,7 @@ theorem disjointSupport_comm (f g : TestFn) :
   exact disjoint_comm
 
 /-- At every point, one of two test functions with disjoint supports vanishes. -/
-theorem DisjointSupport.eq_zero_of_ne {f g : TestFn} (h : DisjointSupport f g)
+theorem DisjointSupport.eq_zero_or_eq_zero {f g : TestFn} (h : DisjointSupport f g)
     (z : Circle) : f z = 0 ∨ g z = 0 := by
   by_cases hf : f z = 0
   · exact Or.inl hf
