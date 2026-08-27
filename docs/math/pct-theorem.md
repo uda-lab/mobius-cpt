@@ -207,7 +207,8 @@ The value at `τ = iπ` ([T26] Lemma 3.7):
   `λ`-values into equality of vectors. Iterating the same step for `h_{k−1}, …, h_1`:
   `φ_1(g_1)⋯φ_k(g_k)Ω = (−1)^k φ_k(h_k)⋯φ_1(h_1)Ω`. ([T26], proof of Lemma 3.7.)
 - **Lemma 3.7 ([T26]).** For `F_j ∈ 𝓧` and covariant `φ_j` of dimension `d_j`, with
-  `f_j := F_j|_{I_+}` (so `f_j ∘ z⁻¹ = h_j`, supported in `I_−`),
+  `f_j := F_j|_{I_+} ∈ C_0^∞(I_+)` (so `f_j ∘ z⁻¹ = h_j ∈ C_0^∞(I_−)`; endpoint contact is handled by
+  the cutoff argument above, not by an open-support hypothesis),
   `Ṽ_{iπ} φ_1(f_1)⋯φ_k(f_k)Ω = (−1)^{d_1+⋯+d_k} φ_k(f_k∘z⁻¹)⋯φ_1(f_1∘z⁻¹)Ω`,
   the sign being `(−1)^k · ∏_j (−1)^{d_j−1} = (−1)^{Σ d_j}`; this is Theorem 3.10 (i) on the
   analytic core.
