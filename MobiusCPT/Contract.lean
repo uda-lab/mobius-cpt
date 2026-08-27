@@ -7,6 +7,9 @@ import Mathlib.Data.List.MinMax
 import Mathlib.Data.NNReal.Basic
 import Mathlib.Order.Filter.AtTopBot.Defs
 import Mathlib.Topology.Basic
+import MobiusCPT.TestFunctions.CNorm
+import MobiusCPT.TestFunctions.Inv
+import MobiusCPT.TestFunctions.Support
 
 /-!
 # MobiusCPT.Contract
@@ -18,72 +21,40 @@ This file pins the capstone target of [T26] Thm. 3.10 together with the semantic
 decisions Issue #2 settled; it is deliberately not the full interface — the general
 `β_d` action on `C^∞(S¹)`, the Def. 3.5 cocycle, the `C^N` covariance estimate,
 Lemma 3.9, and the content of (W1)–(W3) are owned by the corresponding child Issues.
+
+As each child Issue lands, its placeholders are deleted here and the remaining
+statements are re-expressed against the real definitions.  Issue #3 has landed:
+`TestFn`, `cnorm`, `inv`, `SuppUpper` and `SuppLower` below are the genuine
+definitions from `MobiusCPT.TestFunctions.*`, not holes, and the statements that
+Issue #3 owned (`tendsto_iff_cnorm`, `inv_add`, `inv_involutive`, `inv_supp`,
+`cnorm_inv`) are proved theorems in those modules.
 -/
 
 namespace MobiusCPT
-
-/-- [T26], §3; the `C^∞(S¹)` test-function space owned by Issue #3. -/
-def_wanted TestFn : Type
-
-/-- [T26], §3; the additive structure on `C^∞(S¹)` owned by Issue #3. -/
-instance_wanted testFnAddCommGroup : AddCommGroup ❰TestFn❱
-
-/-- [T26], §3; the complex module structure on `C^∞(S¹)` owned by Issue #3. -/
-instance_wanted testFnModule : Module ℂ ❰TestFn❱
-
-/-- [T26], §3; the topology on `C^∞(S¹)` owned by Issue #3. -/
-instance_wanted testFnTopologicalSpace : TopologicalSpace ❰TestFn❱
-
-/-- [T26], §3 and Lemma 3.9; the angle-derivative `C^N` norm owned by Issue #3. -/
-def_wanted cnorm : ℕ → ❰TestFn❱ → NNReal
-
-/-- [T26] §2.2, the `C^N` Fréchet topology on `C^∞(S¹)`; owner #3. Mathlib
-has no `WithSeminorms` structure for smooth functions on a manifold, so Issue #3
-must build this. -/
-theorem_wanted tendsto_iff_cnorm :
-    ∀ (u : ℕ → ❰TestFn❱) (f : ❰TestFn❱),
-      Filter.Tendsto u Filter.atTop (nhds f) ↔
-        ∀ N : ℕ, Filter.Tendsto (fun n => ((❰cnorm❱ N (u n - f) : NNReal) : ℝ))
-          Filter.atTop (nhds 0)
-
-/-- [T26], §3; `f ↦ f ∘ z⁻¹`, owned by Issue #3. -/
-def_wanted inv : ❰TestFn❱ → ❰TestFn❱
-
-/-- [T26] §3; `f ↦ f ∘ z⁻¹` is linear, owned by Issue #3. -/
-theorem_wanted inv_add :
-    ∀ f g : ❰TestFn❱, ❰inv❱ (f + g) = ❰inv❱ f + ❰inv❱ g
-
-/-- [T26], §3; vanishing on the opposite open semicircle (the zero-extension
-of an element of `C_0^∞(I_+)`), owned by Issue #3. -/
-def_wanted SuppUpper : ❰TestFn❱ → Prop
-
-/-- [T26], §3; vanishing on the opposite open semicircle (the zero-extension
-of an element of `C_0^∞(I_-)`), owned by Issue #3. -/
-def_wanted SuppLower : ❰TestFn❱ → Prop
 
 /-- [T26], Definition 3.2; the analytic test-function class `𝓧`, owned by Issue #7. -/
 def_wanted AnalyticTestFn : Type
 
 /-- [T26], Definition 3.2; restriction `F ↦ F|_{S¹}`, owned by Issue #7. -/
-def_wanted xRestrictS1 : ❰AnalyticTestFn❱ → ❰TestFn❱
+def_wanted xRestrictS1 : ❰AnalyticTestFn❱ → TestFn
 
 /-- [T26], Definition 3.2; restriction to `I_+` with zero extension, owned by Issue #7. -/
-def_wanted xRestrictUpper : ❰AnalyticTestFn❱ → ❰TestFn❱
+def_wanted xRestrictUpper : ❰AnalyticTestFn❱ → TestFn
 
 /-- [T26], Definition 3.2; restriction to `I_-` with zero extension, owned by Issue #7. -/
-def_wanted xRestrictLower : ❰AnalyticTestFn❱ → ❰TestFn❱
+def_wanted xRestrictLower : ❰AnalyticTestFn❱ → TestFn
 
 /-- [T26], Definition 3.5, equation (3.4); the closed-strip removable-singularity
 extension `β_d(v_τ)F|_{I_+}`, owned by Issues #5 and #8. -/
-def_wanted betaBoost : ℕ → ℂ → ❰AnalyticTestFn❱ → ❰TestFn❱
+def_wanted betaBoost : ℕ → ℂ → ❰AnalyticTestFn❱ → TestFn
 
 /-- [T26], Definition 3.2; restriction to `I_+` has upper support, owned by Issue #7. -/
 theorem_wanted xRestrictUpper_supp :
-    ∀ F : ❰AnalyticTestFn❱, ❰SuppUpper❱ (❰xRestrictUpper❱ F)
+    ∀ F : ❰AnalyticTestFn❱, SuppUpper (❰xRestrictUpper❱ F)
 
 /-- [T26], Definition 3.2; restriction to `I_-` has lower support, owned by Issue #7. -/
 theorem_wanted xRestrictLower_supp :
-    ∀ F : ❰AnalyticTestFn❱, ❰SuppLower❱ (❰xRestrictLower❱ F)
+    ∀ F : ❰AnalyticTestFn❱, SuppLower (❰xRestrictLower❱ F)
 
 /-- [T26], Definition 3.2; the circle restriction splits into the two zero-extended semicircle
 restrictions, owned by Issue #7. -/
@@ -111,18 +82,18 @@ represented in Lean by naturals, owned by Issue #4. -/
 def_wanted dim : ❰Field❱ → ℕ
 
 /-- [T26], §2; the smeared field operator `φ(f)`, owned by Issue #4. -/
-def_wanted smear : ❰Field❱ → ❰TestFn❱ → ❰Dom❱ → ❰Dom❱
+def_wanted smear : ❰Field❱ → TestFn → ❰Dom❱ → ❰Dom❱
 
 /-- [T26], §2; linearity of the smeared field in the domain vector, owned by Issue #4. -/
 theorem_wanted smear_linear :
-    ∀ (φ : ❰Field❱) (f : ❰TestFn❱) (Φ Ψ : ❰Dom❱),
+    ∀ (φ : ❰Field❱) (f : TestFn) (Φ Ψ : ❰Dom❱),
       (❰smear❱ φ f (Φ + Ψ) = ❰smear❱ φ f Φ + ❰smear❱ φ f Ψ) ∧
         (∀ c : ℂ, ❰smear❱ φ f (c • Φ) = c • ❰smear❱ φ f Φ)
 
 /-- [T26], §2; linearity of the operator-valued distribution in the test function, owned by
 Issue #4. -/
 theorem_wanted smear_addLinear :
-    ∀ (φ : ❰Field❱) (f g : ❰TestFn❱) (Φ : ❰Dom❱),
+    ∀ (φ : ❰Field❱) (f g : TestFn) (Φ : ❰Dom❱),
       (❰smear❱ φ (f + g) Φ = ❰smear❱ φ f Φ + ❰smear❱ φ g Φ) ∧
         (∀ c : ℂ, ❰smear❱ φ (c • f) Φ = c • ❰smear❱ φ f Φ)
 
@@ -256,7 +227,7 @@ theorem_wanted vtilde_vacuum :
       ∀ τ : ℂ, ❰VtildeDom❱ τ ❰vac❱ ∧ ❰VtildeMap❱ τ ❰vac❱ = ❰vac❱
 
 /-- [T26], §2; the left-to-right product `φ₁(f₁)⋯φ_k(f_k)Ω`, owned by Issue #4. -/
-def_wanted smearedProduct : List (❰Field❱ × ❰TestFn❱) → ❰Dom❱
+def_wanted smearedProduct : List (❰Field❱ × TestFn) → ❰Dom❱
 
 /-- [T26], §2; membership in the localized subspace `P(I_+)Ω`, owned by Issue #4. -/
 def_wanted MemPUpperOmega : ❰Dom❱ → Prop
@@ -271,7 +242,7 @@ theorem_wanted smearedProduct_nil : ❰smearedProduct❱ [] = ❰vac❱
 /-- [T26], §2; cons acts on the product to its right, fixing the left-to-right
 convention; owned by Issue #4. -/
 theorem_wanted smearedProduct_cons :
-    ∀ (p : ❰Field❱ × ❰TestFn❱) (l : List (❰Field❱ × ❰TestFn❱)),
+    ∀ (p : ❰Field❱ × TestFn) (l : List (❰Field❱ × TestFn)),
       ❰smearedProduct❱ (p :: l) = ❰smear❱ p.1 p.2 (❰smearedProduct❱ l)
 
 /-- [T26], §2; upper localized vectors are exactly finite complex-linear combinations of
@@ -280,8 +251,8 @@ theorem_wanted memPUpperOmega_iff :
     ∀ (Φ : ❰Dom❱),
       ❰MemPUpperOmega❱ Φ ↔
         ∃ (n : ℕ) (c : Fin n → ℂ)
-          (ls : Fin n → List (❰Field❱ × ❰TestFn❱)),
-          (∀ i, ∀ p ∈ ls i, ❰SuppUpper❱ p.2) ∧
+          (ls : Fin n → List (❰Field❱ × TestFn)),
+          (∀ i, ∀ p ∈ ls i, SuppUpper p.2) ∧
             Φ = ∑ i, c i • ❰smearedProduct❱ (ls i)
 
 /-- [T26], §2; lower localized vectors are exactly finite complex-linear combinations of
@@ -290,8 +261,8 @@ theorem_wanted memPLowerOmega_iff :
     ∀ (Φ : ❰Dom❱),
       ❰MemPLowerOmega❱ Φ ↔
         ∃ (n : ℕ) (c : Fin n → ℂ)
-          (ls : Fin n → List (❰Field❱ × ❰TestFn❱)),
-          (∀ i, ∀ p ∈ ls i, ❰SuppLower❱ p.2) ∧
+          (ls : Fin n → List (❰Field❱ × TestFn)),
+          (∀ i, ∀ p ∈ ls i, SuppLower p.2) ∧
             Φ = ∑ i, c i • ❰smearedProduct❱ (ls i)
 
 /-- [T26], §2; the upper localized subspace is closed under addition, owned by Issue #4. -/
@@ -316,30 +287,17 @@ theorem_wanted memPLowerOmega_smul :
     ∀ (c : ℂ) (Φ : ❰Dom❱),
       ❰MemPLowerOmega❱ Φ → ❰MemPLowerOmega❱ (c • Φ)
 
-/-- [T26], §3; inversion is involutive, owned by Issue #3. -/
-theorem_wanted inv_involutive :
-    ∀ f : ❰TestFn❱, ❰inv❱ (❰inv❱ f) = f
-
-/-- [T26], §3; inversion exchanges upper and lower support, owned by Issue #3. -/
-theorem_wanted inv_supp :
-    ∀ f : ❰TestFn❱, ❰SuppUpper❱ f ↔ ❰SuppLower❱ (❰inv❱ f)
-
-/-- [T26], Lemma 3.9 (“Crucially, …”); the angle-derivative norm is invariant
-under inversion, owned by Issue #3. -/
-theorem_wanted cnorm_inv :
-    ∀ (N : ℕ) (f : ❰TestFn❱), ❰cnorm❱ N (❰inv❱ f) = ❰cnorm❱ N f
-
 /-- [T26], Lemma 3.4; upper-supported test functions lie in the closure of
 analytic restrictions, owned by Issue #7. -/
 theorem_wanted lemma_3_4_density :
-    { f : ❰TestFn❱ | ❰SuppUpper❱ f } ⊆
-      closure { g : ❰TestFn❱ | ∃ F : ❰AnalyticTestFn❱, ❰xRestrictUpper❱ F = g }
+    { f : TestFn | SuppUpper f } ⊆
+      closure { g : TestFn | ∃ F : ❰AnalyticTestFn❱, ❰xRestrictUpper❱ F = g }
 
 /-- [T26], the (W3) bridge used in the proof of Lemma 3.7; owned by Issues #4 and #9. -/
 theorem_wanted w3_vacuum_annihilation :
     ❰IsWightmanCFT❱ →
       ∀ (φ : ❰Field❱) (F : ❰AnalyticTestFn❱),
-        ❰smear❱ φ (❰inv❱ (❰xRestrictS1❱ F)) ❰vac❱ = 0
+        ❰smear❱ φ (inv (❰xRestrictS1❱ F)) ❰vac❱ = 0
 
 /-- [T26], Definition 3.5, equation (3.4); at `τ = iπ` the source scalar
 `(-1)^(d-1)` is represented as `(-1)^(d+1)` for `d : ℕ`, since these exponents
@@ -349,7 +307,7 @@ The restriction is the lower one because inversion exchanges the semicircles: th
 theorem_wanted beta_boost_at_ipi :
     ∀ (d : ℕ) (F : ❰AnalyticTestFn❱),
       ❰betaBoost❱ d (Complex.I * Real.pi) F =
-        (-1 : ℂ) ^ (d + 1) • ❰inv❱ (❰xRestrictLower❱ F)
+        (-1 : ℂ) ^ (d + 1) • inv (❰xRestrictLower❱ F)
 
 /-- [T26], Lemma 3.7(i); the analytic-core continued-boost formula on upper-supported
 analytic restrictions, owned by Issue #9. -/
@@ -372,7 +330,7 @@ theorem_wanted lemma_3_7_at_ipi :
             (❰smearedProduct❱ (l.map (fun p => (p.1, ❰xRestrictUpper❱ p.2)))) =
           (-1 : ℂ) ^ ((l.map (fun p => ❰dim❱ p.1)).sum) •
             ❰smearedProduct❱
-              (l.reverse.map (fun p => (p.1, ❰inv❱ (❰xRestrictUpper❱ p.2))))
+              (l.reverse.map (fun p => (p.1, inv (❰xRestrictUpper❱ p.2))))
 
 /-- [T26], Lemma 3.8; for fixed fields and compatible functional, the exponential
 continuity estimate has constants independent of test-function lists and `t`. The `foldr max 0`
@@ -386,16 +344,16 @@ theorem_wanted lemma_3_8 :
           0 < N ∧ 0 < k₁ ∧ 0 < k₂ ∧
             (∀ t : ℝ, 0 < C t) ∧
             (∀ t : ℝ, C t ≤ k₁ * Real.exp (k₂ * |t|)) ∧
-            ∀ (t : ℝ) (fs gs : List ❰TestFn❱),
+            ∀ (t : ℝ) (fs gs : List TestFn),
               fs.length = φs.length → gs.length = φs.length →
                 ‖❰compatApply❱ lam
                     (❰boost❱ t (❰smearedProduct❱ (φs.zip fs)) -
                       ❰boost❱ t (❰smearedProduct❱ (φs.zip gs)))‖ ≤
                   C t *
                       ((((fs.zip gs).map
-                        (fun p => 1 + ❰cnorm❱ N p.1 + ❰cnorm❱ N p.2)).prod : NNReal) : ℝ) *
+                        (fun p => 1 + cnorm N p.1 + cnorm N p.2)).prod : NNReal) : ℝ) *
                     ((List.foldr max 0
-                      ((fs.zip gs).map (fun p => ❰cnorm❱ N (p.1 - p.2))) : NNReal) : ℝ)
+                      ((fs.zip gs).map (fun p => cnorm N (p.1 - p.2))) : NNReal) : ℝ)
 
 /-- [T26], Theorem 3.10(i); upper and lower localized vectors lie in the corresponding domains
 of the partially defined imaginary boosts, owned by Issue #12. -/
@@ -410,24 +368,24 @@ theorem_wanted thm_3_10_i :
 is defined and reverses the product with the conformal-dimension sign, owned by Issue #12. -/
 theorem_wanted thm_3_10_ii :
     ❰IsWightmanCFT❱ →
-      ∀ (l : List (❰Field❱ × ❰TestFn❱)),
-        (∀ p ∈ l, ❰SuppUpper❱ p.2) →
+      ∀ (l : List (❰Field❱ × TestFn)),
+        (∀ p ∈ l, SuppUpper p.2) →
           ❰VtildeDom❱ (Complex.I * Real.pi) (❰smearedProduct❱ l) ∧
             ❰VtildeMap❱ (Complex.I * Real.pi) (❰smearedProduct❱ l) =
               (-1 : ℂ) ^ ((l.map (fun p => ❰dim❱ p.1)).sum) •
                 ❰smearedProduct❱
-                  (l.reverse.map (fun p => (p.1, ❰inv❱ p.2)))
+                  (l.reverse.map (fun p => (p.1, inv p.2)))
 
 /-- [T26], Theorem 3.10(i)+(iii); for lower-supported products, the negative
 imaginary boost is defined and gives the mirrored reversed-product identity, owned by Issue #12. -/
 theorem_wanted thm_3_10_iii :
     ❰IsWightmanCFT❱ →
-      ∀ (l : List (❰Field❱ × ❰TestFn❱)),
-        (∀ p ∈ l, ❰SuppLower❱ p.2) →
+      ∀ (l : List (❰Field❱ × TestFn)),
+        (∀ p ∈ l, SuppLower p.2) →
           ❰VtildeDom❱ (-(Complex.I * Real.pi)) (❰smearedProduct❱ l) ∧
             ❰VtildeMap❱ (-(Complex.I * Real.pi)) (❰smearedProduct❱ l) =
               (-1 : ℂ) ^ ((l.map (fun p => ❰dim❱ p.1)).sum) •
                 ❰smearedProduct❱
-                  (l.reverse.map (fun p => (p.1, ❰inv❱ p.2)))
+                  (l.reverse.map (fun p => (p.1, inv p.2)))
 
 end MobiusCPT
