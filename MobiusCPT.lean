@@ -9,9 +9,12 @@ import MobiusCPT.Wightman.Compat
 import MobiusCPT.Wightman.StrongTopology
 import MobiusCPT.Wightman.Axioms
 import MobiusCPT.Wightman.Bundle
+import MobiusCPT.Wightman.Continuity
 import MobiusCPT.Analysis.FlatGluing
+import MobiusCPT.Analysis.SeparateJoint
 import MobiusCPT.TestFunctions.Basic
 import MobiusCPT.TestFunctions.CNorm
+import MobiusCPT.TestFunctions.Complete
 import MobiusCPT.TestFunctions.Inv
 import MobiusCPT.TestFunctions.Support
 import MobiusCPT.TestFunctions.Monomial
