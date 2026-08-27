@@ -160,3 +160,26 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanStruct.setOf_isCompatible_eq
 #print axioms MobiusCPT.WightmanStruct.actsRegularly_iff_actsRegularlySep
 #print axioms MobiusCPT.WightmanStruct.actsRegularlySep_iff
+
+-- Issue #30: Fourier series in C^∞(S¹) — rapid decay and C^∞ convergence.
+-- MobiusCPT/TestFunctions/Fourier.lean
+#print axioms MobiusCPT.toAddCircle_coe
+#print axioms MobiusCPT.continuous_toAddCircle
+#print axioms MobiusCPT.angleDerivCircle_coe
+#print axioms MobiusCPT.angleDerivCircle_zero
+#print axioms MobiusCPT.fourierCoefDeriv_zero
+#print axioms MobiusCPT.fourier_eq_toAngle_monomial
+#print axioms MobiusCPT.toAddCircle_monomial
+#print axioms MobiusCPT.fourierCoef_monomial
+#print axioms MobiusCPT.norm_fourierCoefDeriv_le
+#print axioms MobiusCPT.norm_fourierCoef_le
+#print axioms MobiusCPT.fourierCoefDeriv_succ
+#print axioms MobiusCPT.fourierCoefDeriv_eq
+#print axioms MobiusCPT.norm_fourierCoef_mul_pow_le
+#print axioms MobiusCPT.norm_fourierCoef_mul_pow_le_cnorm
+#print axioms MobiusCPT.summable_norm_fourierCoef_mul_pow
+#print axioms MobiusCPT.angleDeriv_monomial
+#print axioms MobiusCPT.hasSum_angleDeriv
+#print axioms MobiusCPT.hasSum_fourierSeries
+#print axioms MobiusCPT.tendsto_fourierPartialSum
+#print axioms MobiusCPT.tendsto_cnorm_fourierPartialSum
