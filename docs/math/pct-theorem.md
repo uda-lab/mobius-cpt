@@ -297,7 +297,8 @@ A faithful Lean proof must formalise these two estimates; their statements are:
   `|λ( Ṽ_τ φ_1(f_1)⋯φ_k(f_k)Ω − Ṽ_τ φ_1(g_1)⋯φ_k(g_k)Ω )| ≤ M e^{(Re τ)^2} [∏_j (1 + ‖f_j‖_{C^N} + ‖g_j‖_{C^N})] · max_j ‖f_j − g_j‖_{C^N}`.
   `N` and `M` depend only on `φ_1,…,φ_k` and `λ`; the intermediate constant `K` bounding the
   interior of the strip may depend on the `F_j, G_j`, and the boundary maximum step is what removes
-  that dependence. The route is: `τ = t + is`, reduce the line at height `s` to Lemma 3.8 via
+  that dependence. [T26]'s own proof of Lemma 3.9 runs as follows — this is a condensed transcription
+  of that proof, not a reconstruction: `τ = t + is`, reduce the line at height `s` to Lemma 3.8 via
   `Ṽ_{t+is} = V_t Ṽ_{is}` and Lemma 3.7(i); note `|e^{−τ²}| ≤ e^{π²} e^{−(Re τ)²}` on `𝕊_{iπ}`, so
   `e^{−τ²}𝔥(τ)` is bounded and vanishes at horizontal infinity; conclude that `|e^{−τ²}𝔥(τ)|` is
   maximised on `∂𝕊_{iπ}`; bound the lower boundary by Lemma 3.8 directly and the upper boundary by

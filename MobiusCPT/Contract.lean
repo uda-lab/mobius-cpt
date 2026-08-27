@@ -5,6 +5,7 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Data.List.MinMax
 import Mathlib.Data.NNReal.Basic
+import Mathlib.Order.Filter.AtTopBot.Defs
 import Mathlib.Topology.Basic
 
 /-!
@@ -13,6 +14,10 @@ import Mathlib.Topology.Basic
 This file is the Issue #2 statement contract for [T26], Theorem 3.10.  Its
 placeholders are sound because they inhabit `ProofWanted T` or `DefWanted T`,
 never `T`, so no statement here is usable as a proof and no axiom is introduced.
+This file pins the capstone target of [T26] Thm. 3.10 together with the semantic
+decisions Issue #2 settled; it is deliberately not the full interface — the general
+`β_d` action on `C^∞(S¹)`, the Def. 3.5 cocycle, the `C^N` covariance estimate,
+Lemma 3.9, and the content of (W1)–(W3) are owned by the corresponding child Issues.
 -/
 
 namespace MobiusCPT
@@ -32,8 +37,21 @@ instance_wanted testFnTopologicalSpace : TopologicalSpace ❰TestFn❱
 /-- [T26], §3 and Lemma 3.9; the angle-derivative `C^N` norm owned by Issue #3. -/
 def_wanted cnorm : ℕ → ❰TestFn❱ → NNReal
 
+/-- [T26] §2.2, the `C^N` Fréchet topology on `C^∞(S¹)`; owner #3. Mathlib
+has no `WithSeminorms` structure for smooth functions on a manifold, so Issue #3
+must build this. -/
+theorem_wanted tendsto_iff_cnorm :
+    ∀ (u : ℕ → ❰TestFn❱) (f : ❰TestFn❱),
+      Filter.Tendsto u Filter.atTop (nhds f) ↔
+        ∀ N : ℕ, Filter.Tendsto (fun n => ((❰cnorm❱ N (u n - f) : NNReal) : ℝ))
+          Filter.atTop (nhds 0)
+
 /-- [T26], §3; `f ↦ f ∘ z⁻¹`, owned by Issue #3. -/
 def_wanted inv : ❰TestFn❱ → ❰TestFn❱
+
+/-- [T26] §3; `f ↦ f ∘ z⁻¹` is linear, owned by Issue #3. -/
+theorem_wanted inv_add :
+    ∀ f g : ❰TestFn❱, ❰inv❱ (f + g) = ❰inv❱ f + ❰inv❱ g
 
 /-- [T26], §3; vanishing on the opposite open semicircle (the zero-extension
 of an element of `C_0^∞(I_+)`), owned by Issue #3. -/
@@ -143,6 +161,11 @@ theorem_wanted boost_add :
 /-- [T26], Definitions 2.4–2.5; `𝓕` acts regularly, owned by Issue #4. -/
 def_wanted ActsRegularly : Prop
 
+/-- [T26] Def. 2.4 — `𝓕` acts regularly iff `𝓓*_𝓕` separates points. Owner #4. -/
+theorem_wanted actsRegularly_iff :
+    ❰ActsRegularly❱ ↔
+      ∀ Φ Ψ : ❰Dom❱, (∀ lam : ❰Compat❱, ❰compatApply❱ lam Φ = ❰compatApply❱ lam Ψ) → Φ = Ψ
+
 /-- [T26], Definition 2.5 (W1); Möbius covariance, owned by Issue #4. -/
 def_wanted W1 : Prop
 
@@ -154,6 +177,12 @@ def_wanted W3 : Prop
 
 /-- [T26], Definition 2.5 (W4); the vacuum axiom, owned by Issue #4. -/
 def_wanted W4 : Prop
+
+/-- [T26] Def. 2.5 (W4), the half of the vacuum axiom that §3 uses. Owner #4.
+(W1)–(W3) and the spanning half of (W4) deliberately stay opaque here and are
+owned by #4. -/
+theorem_wanted w4_vacuum_invariant :
+    ❰W4❱ → ∀ t : ℝ, ❰boost❱ t ❰vac❱ = ❰vac❱
 
 /-- [T26], Definition 2.5; the Möbius-covariant Wightman CFT conjunction, owned by Issue #4. -/
 def_wanted IsWightmanCFT : Prop
@@ -181,9 +210,11 @@ theorem_wanted strip_eq :
 
 /-- [T26], Definition 3.1; the compatible-functional characterization of the partially defined
 `Ṽ_τ`, including continuity on the closed strip, holomorphy in its interior, and both boundary
-values, owned by Issue #6. -/
+values, owned by Issue #6. Regularity is the precise separation-of-points hypothesis needed for
+this equivalence; `IsWightmanCFT` would be stronger than necessary. -/
 theorem_wanted vtilde_spec :
-    ∀ (τ : ℂ) (Φ Ψ : ❰Dom❱),
+    ❰ActsRegularly❱ →
+      ∀ (τ : ℂ) (Φ Ψ : ❰Dom❱),
       (❰VtildeDom❱ τ Φ ∧ ❰VtildeMap❱ τ Φ = Ψ) ↔
         ∃ G : ❰Compat❱ → ℂ → ℂ,
           ∀ lam : ❰Compat❱,
@@ -204,9 +235,11 @@ theorem_wanted vtilde_real :
 
 /-- [T26], Definition 3.1 and footnote 7; real translation of the partially defined boost,
 including equality of the domains of both compositions and equality of values on their common
-domain, owned by Issue #6. -/
+domain, owned by Issue #6. Regularity is the precise separation-of-points hypothesis needed to
+pin the values of `VtildeMap`; `IsWightmanCFT` would be stronger than necessary. -/
 theorem_wanted vtilde_translation :
-    ∀ (τ : ℂ) (t : ℝ) (Φ : ❰Dom❱),
+    ❰ActsRegularly❱ →
+      ∀ (τ : ℂ) (t : ℝ) (Φ : ❰Dom❱),
       (❰VtildeDom❱ (τ + (t : ℂ)) Φ ↔ ❰VtildeDom❱ τ (❰boost❱ t Φ)) ∧
         (❰VtildeDom❱ (τ + (t : ℂ)) Φ ↔ ❰VtildeDom❱ τ Φ) ∧
           (❰VtildeDom❱ (τ + (t : ℂ)) Φ →
@@ -311,11 +344,35 @@ theorem_wanted w3_vacuum_annihilation :
 /-- [T26], Definition 3.5, equation (3.4); at `τ = iπ` the source scalar
 `(-1)^(d-1)` is represented as `(-1)^(d+1)` for `d : ℕ`, since these exponents
 have the same parity in `ℂ`; owned by Issue #5.
-The restriction is the lower one because inversion exchanges the semicircles. -/
+The restriction is the lower one because inversion exchanges the semicircles: the source uses
+`(F ∘ z⁻¹)|_{I_+} = F|_{I_-} ∘ z⁻¹`. -/
 theorem_wanted beta_boost_at_ipi :
     ∀ (d : ℕ) (F : ❰AnalyticTestFn❱),
       ❰betaBoost❱ d (Complex.I * Real.pi) F =
         (-1 : ℂ) ^ (d + 1) • ❰inv❱ (❰xRestrictLower❱ F)
+
+/-- [T26], Lemma 3.7(i); the analytic-core continued-boost formula on upper-supported
+analytic restrictions, owned by Issue #9. -/
+theorem_wanted lemma_3_7 :
+    ❰IsWightmanCFT❱ →
+      ∀ (l : List (❰Field❱ × ❰AnalyticTestFn❱)) (τ : ℂ), τ ∈ ❰strip❱ (Complex.I * Real.pi) →
+        ❰VtildeDom❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, ❰xRestrictUpper❱ p.2)))) ∧
+          ❰VtildeMap❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, ❰xRestrictUpper❱ p.2)))) =
+            ❰smearedProduct❱ (l.map (fun p => (p.1, ❰betaBoost❱ (❰dim❱ p.1) τ p.2)))
+
+/-- [T26], Lemma 3.7(ii); at `τ = Complex.I * Real.pi`, the analytic-core vector maps to the
+reversed product with the conformal-dimension sign, owned by Issue #9. Here
+`inv (xRestrictUpper p.2)` means `F|_{I_+} ∘ z⁻¹`, supported in `I_-`; this is deliberately
+the opposite restriction from `beta_boost_at_ipi`, where the source needs
+`(F ∘ z⁻¹)|_{I_+} = F|_{I_-} ∘ z⁻¹` and therefore uses `xRestrictLower`. -/
+theorem_wanted lemma_3_7_at_ipi :
+    ❰IsWightmanCFT❱ →
+      ∀ (l : List (❰Field❱ × ❰AnalyticTestFn❱)),
+        ❰VtildeMap❱ (Complex.I * Real.pi)
+            (❰smearedProduct❱ (l.map (fun p => (p.1, ❰xRestrictUpper❱ p.2)))) =
+          (-1 : ℂ) ^ ((l.map (fun p => ❰dim❱ p.1)).sum) •
+            ❰smearedProduct❱
+              (l.reverse.map (fun p => (p.1, ❰inv❱ (❰xRestrictUpper❱ p.2))))
 
 /-- [T26], Lemma 3.8; for fixed fields and compatible functional, the exponential
 continuity estimate has constants independent of test-function lists and `t`. The `foldr max 0`
