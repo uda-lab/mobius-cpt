@@ -561,4 +561,80 @@ theorem zeroExtendIcc_eq_zero_of_notMem {a b x : ℝ} (g : ℝ → ℂ)
     (h : x ∉ Set.Icc a b) : zeroExtendIcc a b g x = 0 :=
   zeroExtend_eq_zero_of_notMem g h
 
+/-- Every iterated derivative of the smooth zero extension is the zero extension of the
+corresponding derivative within the interval.  In particular the extension's derivatives vanish
+outside the interval and at its endpoints. -/
+theorem iteratedDeriv_zeroExtendIcc {a b : ℝ} (hab : a < b) {g : ℝ → ℂ}
+    (hg : ContDiffOn ℝ ∞ g (Set.Icc a b))
+    (ha : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) a = 0)
+    (hb : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) b = 0) (n : ℕ) :
+    iteratedDeriv n (zeroExtendIcc a b g) =
+      zeroExtendIcc a b (iteratedDerivWithin n g (Set.Icc a b)) := by
+  have hs : UniqueDiffOn ℝ (Set.Icc a b) := uniqueDiffOn_Icc hab
+  induction n generalizing g with
+  | zero =>
+      simp only [iteratedDeriv_zero, iteratedDerivWithin_zero]
+  | succ n ih =>
+      have hga : g a = 0 := by
+        simpa only [iteratedDerivWithin_zero] using ha 0
+      have hgb : g b = 0 := by
+        simpa only [iteratedDerivWithin_zero] using hb 0
+      have hda : derivWithin g (Set.Icc a b) a = 0 := by
+        simpa only [iteratedDerivWithin_one] using ha 1
+      have hdb : derivWithin g (Set.Icc a b) b = 0 := by
+        simpa only [iteratedDerivWithin_one] using hb 1
+      have hdiffOn : DifferentiableOn ℝ g (Set.Icc a b) :=
+        hg.differentiableOn (by simp)
+      have hderivEq :
+          deriv (zeroExtendIcc a b g) =
+            zeroExtendIcc a b (derivWithin g (Set.Icc a b)) :=
+        deriv_zeroExtendIcc_of_differentiableOn hab hdiffOn hga hgb hda hdb
+      have hh' : ContDiffOn ℝ ∞ (derivWithin g (Set.Icc a b)) (Set.Icc a b) :=
+        (contDiffOn_infty_iff_derivWithin hs).mp hg |>.2
+      have hha' : ∀ j : ℕ,
+          iteratedDerivWithin j (derivWithin g (Set.Icc a b)) (Set.Icc a b) a = 0 := by
+        intro j
+        have hj := ha (j + 1)
+        rw [iteratedDerivWithin_succ'] at hj
+        exact hj
+      have hhb' : ∀ j : ℕ,
+          iteratedDerivWithin j (derivWithin g (Set.Icc a b)) (Set.Icc a b) b = 0 := by
+        intro j
+        have hj := hb (j + 1)
+        rw [iteratedDerivWithin_succ'] at hj
+        exact hj
+      rw [iteratedDeriv_succ', hderivEq]
+      rw [ih (g := derivWithin g (Set.Icc a b)) hh' hha' hhb']
+      rw [iteratedDerivWithin_succ']
+
+/-- The zero extension is flat at the left endpoint. -/
+theorem iteratedDeriv_zeroExtendIcc_left {a b : ℝ} (hab : a < b) {g : ℝ → ℂ}
+    (hg : ContDiffOn ℝ ∞ g (Set.Icc a b))
+    (ha : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) a = 0)
+    (hb : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) b = 0) (n : ℕ) :
+    iteratedDeriv n (zeroExtendIcc a b g) a = 0 := by
+  rw [iteratedDeriv_zeroExtendIcc hab hg ha hb n]
+  rw [zeroExtend_eq_of_mem _ ⟨le_rfl, hab.le⟩]
+  exact ha n
+
+/-- The zero extension is flat at the right endpoint. -/
+theorem iteratedDeriv_zeroExtendIcc_right {a b : ℝ} (hab : a < b) {g : ℝ → ℂ}
+    (hg : ContDiffOn ℝ ∞ g (Set.Icc a b))
+    (ha : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) a = 0)
+    (hb : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) b = 0) (n : ℕ) :
+    iteratedDeriv n (zeroExtendIcc a b g) b = 0 := by
+  rw [iteratedDeriv_zeroExtendIcc hab hg ha hb n]
+  rw [zeroExtend_eq_of_mem _ ⟨hab.le, le_rfl⟩]
+  exact hb n
+
+/-- Outside the interval every derivative of the zero extension vanishes. -/
+theorem iteratedDeriv_zeroExtendIcc_of_notMem {a b x : ℝ} (hab : a < b) {g : ℝ → ℂ}
+    (hg : ContDiffOn ℝ ∞ g (Set.Icc a b))
+    (ha : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) a = 0)
+    (hb : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) b = 0) (n : ℕ) :
+    x ∉ Set.Icc a b → iteratedDeriv n (zeroExtendIcc a b g) x = 0 := by
+  intro hx
+  rw [iteratedDeriv_zeroExtendIcc hab hg ha hb n]
+  rw [zeroExtend_eq_zero_of_notMem _ hx]
+
 end MobiusCPT
