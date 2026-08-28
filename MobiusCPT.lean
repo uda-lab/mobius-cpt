@@ -12,6 +12,11 @@ import MobiusCPT.Wightman.Bundle
 import MobiusCPT.Wightman.Continuity
 import MobiusCPT.Analysis.FlatGluing
 import MobiusCPT.Analysis.SeparateJoint
+import MobiusCPT.Analysis.FlatCalculus
+import MobiusCPT.Analysis.GaussianConv
+import MobiusCPT.Analysis.BoostChart
+import MobiusCPT.Analysis.BoostWeights
+import MobiusCPT.Analysis.BoostDictionary
 import MobiusCPT.TestFunctions.Basic
 import MobiusCPT.TestFunctions.CNorm
 import MobiusCPT.TestFunctions.Complete
@@ -29,3 +34,4 @@ import MobiusCPT.Wightman.Modes
 import MobiusCPT.Wightman.W3Bridge
 import MobiusCPT.TestFunctions.Split
 import MobiusCPT.TestFunctions.Analytic
+import MobiusCPT.TestFunctions.AnalyticApprox

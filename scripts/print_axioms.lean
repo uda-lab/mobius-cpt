@@ -420,3 +420,103 @@ import MobiusCPT
 #print axioms MobiusCPT.AnalyticTestFn.evalSphere_infty
 #print axioms MobiusCPT.AnalyticTestFn.evalSphere_coe
 #print axioms MobiusCPT.AnalyticTestFn.differentiableAt_inv
+
+-- Issue #7 (continued): the analytic machinery behind [T26], Lemma 3.4.
+-- MobiusCPT/Analysis/FlatCalculus.lean — Taylor and flat-extension lemmas (endpoint smoothness).
+#print axioms MobiusCPT.exists_norm_le_pow_of_iteratedDeriv_eq_zero
+#print axioms MobiusCPT.contDiff_of_flat_at_zero
+#print axioms MobiusCPT.flatSeries
+#print axioms MobiusCPT.contDiffWithinAt_of_flat_holomorphic
+#print axioms MobiusCPT.iteratedFDerivWithin_eq_zero_of_flat_holomorphic
+-- MobiusCPT/Analysis/GaussianConv.lean — the Gaussian kernel, the decay class, and the convolution
+-- (differentiation under the integral and dominated convergence are discharged here).
+#print axioms MobiusCPT.gaussKernel
+#print axioms MobiusCPT.gaussKernel_ofReal
+#print axioms MobiusCPT.norm_gaussKernel
+#print axioms MobiusCPT.gaussKernel_ofReal'
+#print axioms MobiusCPT.integrable_gaussKernel
+#print axioms MobiusCPT.integral_gaussKernel
+#print axioms MobiusCPT.hasDerivAt_gaussKernel
+#print axioms MobiusCPT.differentiable_gaussKernel
+#print axioms MobiusCPT.gaussKernel_scale
+#print axioms MobiusCPT.IsRapidlyDecaying.iteratedDeriv
+#print axioms MobiusCPT.IsRapidlyDecaying.exists_bound
+#print axioms MobiusCPT.integrable_exp_neg_abs
+#print axioms MobiusCPT.IsRapidlyDecaying.integrable
+#print axioms MobiusCPT.iteratedDeriv_iteratedDeriv
+#print axioms MobiusCPT.gaussConvReal
+#print axioms MobiusCPT.integrable_gaussConvReal_integrand
+#print axioms MobiusCPT.gaussConvReal_sub
+#print axioms MobiusCPT.iteratedDeriv_gaussConvReal
+#print axioms MobiusCPT.integrable_norm_gaussKernel_mul_abs
+#print axioms MobiusCPT.integral_norm_gaussKernel_mul_abs_scale
+#print axioms MobiusCPT.integrable_gaussKernel_mul_exp
+#print axioms MobiusCPT.tendsto_integral_abs_tail
+#print axioms MobiusCPT.tendsto_gaussKernel_weighted_far
+#print axioms MobiusCPT.exists_norm_isRapidlyDecaying_sub_le
+#print axioms MobiusCPT.exists_norm_isRapidlyDecaying_far_le
+#print axioms MobiusCPT.exists_norm_gaussConvReal_sub_le
+#print axioms MobiusCPT.gaussConv
+#print axioms MobiusCPT.integrable_gaussKernel_sub
+#print axioms MobiusCPT.integrable_gaussConv_integrand
+#print axioms MobiusCPT.gaussConv_ofReal
+#print axioms MobiusCPT.differentiable_gaussConv
+#print axioms MobiusCPT.exists_norm_gaussConv_le
+-- MobiusCPT/Analysis/BoostChart.lean — the Cayley/boost chart and its branch logarithm.
+#print axioms MobiusCPT.cayley
+#print axioms MobiusCPT.cayley_vApply_neg
+#print axioms MobiusCPT.cayley_re_formula
+#print axioms MobiusCPT.cayley_im_formula
+#print axioms MobiusCPT.cutSegment
+#print axioms MobiusCPT.notMem_cutSegment_of_one_le_norm
+#print axioms MobiusCPT.neg_cayley_mem_slitPlane
+#print axioms MobiusCPT.boostCoord
+#print axioms MobiusCPT.analyticAt_boostCoord
+#print axioms MobiusCPT.exp_boostCoord
+#print axioms MobiusCPT.re_boostCoord
+#print axioms MobiusCPT.exp_neg_re_boostCoord
+#print axioms MobiusCPT.exp_re_boostCoord
+#print axioms MobiusCPT.abs_im_boostCoord_le
+#print axioms MobiusCPT.angleToBoost
+#print axioms MobiusCPT.boostToAngle
+#print axioms MobiusCPT.sin_half_angle_pos
+#print axioms MobiusCPT.cos_half_angle_pos
+#print axioms MobiusCPT.neg_cos_half_angle_pos
+#print axioms MobiusCPT.boostToAngle_mem_Ioo
+#print axioms MobiusCPT.boostToAngle_eq_pi_sub
+#print axioms MobiusCPT.contDiff_boostToAngle
+#print axioms MobiusCPT.hasDerivAt_boostToAngle
+#print axioms MobiusCPT.sin_boostToAngle_pos
+#print axioms MobiusCPT.sin_half_boostToAngle_pos
+#print axioms MobiusCPT.angleToBoost_boostToAngle
+#print axioms MobiusCPT.boostToAngle_angleToBoost
+#print axioms MobiusCPT.boostCoord_circleExp
+#print axioms MobiusCPT.boostCoord_circleExp_lower
+-- MobiusCPT/Analysis/BoostWeights.lean — the weighted derivative dictionary of the chart.
+#print axioms MobiusCPT.exists_bound_boostChart
+#print axioms MobiusCPT.exists_norm_iteratedDeriv_boostChart_le
+-- MobiusCPT/Analysis/BoostDictionary.lean — endpoint flatness becomes super-exponential decay.
+#print axioms MobiusCPT.exists_norm_iteratedDeriv_comp_boostToAngle_nonneg
+#print axioms MobiusCPT.exists_norm_iteratedDeriv_comp_boostToAngle_nonpos
+#print axioms MobiusCPT.isRapidlyDecaying_comp_boostToAngle
+-- MobiusCPT/TestFunctions/AnalyticApprox.lean — the approximants of Lemma 3.4 as elements of `𝓧`.
+#print axioms MobiusCPT.isClosed_cutSegment
+#print axioms MobiusCPT.isOpen_compl_cutSegment
+#print axioms MobiusCPT.stripApprox
+#print axioms MobiusCPT.stripApprox_of_notMem_cutSegment
+#print axioms MobiusCPT.analyticAt_stripApprox
+#print axioms MobiusCPT.real_exp_neg_nat_mul
+#print axioms MobiusCPT.real_exp_nat_mul
+#print axioms MobiusCPT.exists_norm_stripApprox_le_one
+#print axioms MobiusCPT.exists_norm_stripApprox_le_neg_one
+#print axioms MobiusCPT.le_dist_cutSegment_one
+#print axioms MobiusCPT.le_dist_cutSegment_neg_one
+#print axioms MobiusCPT.exists_norm_iteratedDeriv_stripApprox_le_one
+#print axioms MobiusCPT.exists_norm_iteratedDeriv_stripApprox_le_neg_one
+#print axioms MobiusCPT.tendsto_stripApprox
+#print axioms MobiusCPT.differentiableOn_stripApprox
+#print axioms MobiusCPT.contDiffOn_stripApprox
+#print axioms MobiusCPT.iteratedFDerivWithin_stripApprox_one
+#print axioms MobiusCPT.iteratedFDerivWithin_stripApprox_neg_one
+#print axioms MobiusCPT.stripApproxX
+#print axioms MobiusCPT.stripApprox_circleExp
