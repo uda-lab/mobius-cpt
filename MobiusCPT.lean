@@ -22,3 +22,6 @@ import MobiusCPT.TestFunctions.Fourier
 import MobiusCPT.TestFunctions.WightmanInstance
 import MobiusCPT.Mobius.Basic
 import MobiusCPT.Mobius.ComplexBoost
+import MobiusCPT.Mobius.Factor
+import MobiusCPT.Mobius.Covariance
+import MobiusCPT.Mobius.Beta
