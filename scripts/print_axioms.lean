@@ -561,3 +561,4 @@ import MobiusCPT
 #print axioms MobiusCPT.AnalyticTestFn.invExt_of_ne
 #print axioms MobiusCPT.AnalyticTestFn.diffContOnCl_invExt
 #print axioms MobiusCPT.eqOn_Oexterior_of_xRestrictS1_eq
+#print axioms MobiusCPT.AnalyticTestFn.evalSphere_congr

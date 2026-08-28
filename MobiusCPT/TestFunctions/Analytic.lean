@@ -247,7 +247,12 @@ theorem xRestrict_split (F : AnalyticTestFn) :
     xRestrictS1 F = xRestrictUpper F + xRestrictLower F := by
   exact (splitUpper_add_splitLower (xRestrictS1 F) F.isEndpointFlat).symm
 
-/-- [T26], Definition 3.2; `𝓧` evaluated on the Riemann sphere, `∞ ↦ 0`. -/
+/-- [T26], Definition 3.2; the representative of `F` read on the Riemann sphere, with `∞ ↦ 0`
+(the value `F(∞)` of the source, see `AnalyticTestFn.differentiableAt_inv`).  This is exported for
+Issue #8, whose argument `vApplyNegSphere τ z` lies in `Oset`; on `Oset` the value depends only on
+the element of `𝓧` and not on the representative, by `evalSphere_congr` together with
+`eqOn_Oexterior_of_xRestrictS1_eq`.  Off `Oset` — that is, inside the open unit disc — it reads the
+representative's arbitrary values and carries no meaning. -/
 def AnalyticTestFn.evalSphere (F : AnalyticTestFn) : OnePoint ℂ → ℂ :=
   fun p => p.elim 0 F.toFun
 
@@ -258,6 +263,17 @@ def AnalyticTestFn.evalSphere (F : AnalyticTestFn) : OnePoint ℂ → ℂ :=
 /-- [T26], Definition 3.2; evaluation of `𝓧` at a finite point of the sphere. -/
 @[simp] theorem AnalyticTestFn.evalSphere_coe (F : AnalyticTestFn) (w : ℂ) :
     F.evalSphere (w : OnePoint ℂ) = F.toFun w := rfl
+
+/-- [T26], Definition 3.2; on `𝕆` the sphere evaluation depends only on the values of the
+representative there, hence — with `eqOn_Oexterior_of_xRestrictS1_eq` — only on `F|_{S¹}`. -/
+theorem AnalyticTestFn.evalSphere_congr {F G : AnalyticTestFn}
+    (h : Set.EqOn F.toFun G.toFun Oexterior) {p : OnePoint ℂ} (hp : p ∈ Oset) :
+    F.evalSphere p = G.evalSphere p := by
+  rcases hp with hp | ⟨w, hw, rfl⟩
+  · rw [hp]
+    rfl
+  · show F.toFun w = G.toFun w
+    exact h hw
 
 /-- [T26], Definition 3.2; `F` is holomorphic at `∞` with value `0`: the inverted function
 extends holomorphically over the origin. -/

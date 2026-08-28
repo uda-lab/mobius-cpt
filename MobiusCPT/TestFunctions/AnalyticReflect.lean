@@ -5,8 +5,15 @@ import MobiusCPT.TestFunctions.AnalyticDensity
 /-!
 # MobiusCPT.TestFunctions.AnalyticReflect
 
-The reflection `z ↦ conj z` exchanges the two semicircle restrictions and transports the upper
-density statement to the lower one.
+The reflection `F ↦ conj ∘ F ∘ conj` preserves the class `𝓧`, and its counterpart
+`starTestFn : f ↦ conj ∘ f ∘ conj` on test functions exchanges the two semicircle restrictions, so
+the upper density statement transports to the lower one.
+
+`starTestFn` is a proof device for that transport only.  It is **not** `TestFn.inv` (precomposition
+with `z ↦ z⁻¹`), which is what `MobiusCPT.Contract` uses in `beta_boost_at_ipi`, `lemma_3_7_at_ipi`
+and `w3_vacuum_annihilation`: on `S¹` the two differ by a pointwise complex conjugation
+(`starTestFn = conj ∘ inv` there), and only `starTestFn` is norm-preserving *and* compatible with
+conjugating an element of `𝓧`.
 -/
 
 namespace MobiusCPT
@@ -259,7 +266,7 @@ private theorem norm_iteratedFDerivWithin_conj_conj (F : AnalyticTestFn) (n : �
       exact Complex.conjLIE.norm_iteratedFDerivWithin_comp_right F.toFun
         uniqueDiffOn_Oexterior hzpre n
 
-/-- [T26], Definition 3.2; the class `𝓧` is stable under the reflection `z ↦ conj z`. -/
+/-- [T26], Definition 3.2; the class `𝓧` is stable under the reflection `F ↦ conj ∘ F ∘ conj`. -/
 noncomputable def AnalyticTestFn.conj (F : AnalyticTestFn) : AnalyticTestFn where
   toFun := fun z : ℂ => (starRingEnd ℂ) (F.toFun ((starRingEnd ℂ) z))
   contDiffOn := by
