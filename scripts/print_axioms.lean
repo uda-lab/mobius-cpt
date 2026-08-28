@@ -745,3 +745,10 @@ import MobiusCPT
 #print axioms MobiusCPT.norm_cden_div_cnum_lt_one
 #print axioms MobiusCPT.differentiableOn_betaBoostVal
 #print axioms MobiusCPT.differentiableOn_betaBoostSlice
+
+-- MobiusCPT/Mobius/ComplexBetaDeriv.lean — [T26] Lemma 3.6: the parameter derivative of every
+-- angle derivative of the complex boost, and its joint continuity (Issue #8).
+#print axioms MobiusCPT.continuousOn_betaBoostSliceDot
+#print axioms MobiusCPT.hasDerivAt_betaBoostSlice
+#print axioms MobiusCPT.deriv_betaBoostSlice
+#print axioms MobiusCPT.betaBoostSliceDot_eq_zero_of_endpoint
