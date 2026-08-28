@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Analytic.OfScalars
+import Mathlib.Analysis.Calculus.ContDiff.Bounds
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
 import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
 import Mathlib.Analysis.Calculus.IteratedDeriv.Analytic
@@ -636,5 +637,105 @@ theorem iteratedDeriv_zeroExtendIcc_of_notMem {a b x : ℝ} (hab : a < b) {g : �
   intro hx
   rw [iteratedDeriv_zeroExtendIcc hab hg ha hb n]
   rw [zeroExtend_eq_zero_of_notMem _ hx]
+
+/-! General bounds and flatness lemmas for iterated derivatives within a set. -/
+
+/-- A crude common bound for the iterated derivatives of a function at one point.  Only its
+existence matters: it feeds the inner-constant slot of the composition estimate, where the outer
+constant is `0` and the inner one is therefore irrelevant. -/
+theorem exists_pow_bound_iteratedFDerivWithin {E F : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (f : E → F) (s : Set E) (x : E) (n : ℕ) :
+    ∃ D : ℝ, 1 ≤ D ∧ ∀ i : ℕ, 1 ≤ i → i ≤ n →
+      ‖iteratedFDerivWithin ℝ i f s x‖ ≤ D ^ i := by
+  classical
+  have hsum : (0 : ℝ) ≤ ∑ i ∈ Finset.range (n + 1),
+      ‖iteratedFDerivWithin ℝ i f s x‖ :=
+    Finset.sum_nonneg fun i _ => norm_nonneg _
+  refine ⟨1 + ∑ i ∈ Finset.range (n + 1),
+      ‖iteratedFDerivWithin ℝ i f s x‖, by linarith, ?_⟩
+  intro i hi hin
+  have hD1 : (1 : ℝ) ≤ 1 + ∑ i ∈ Finset.range (n + 1),
+      ‖iteratedFDerivWithin ℝ i f s x‖ := by linarith
+  have hmem : i ∈ Finset.range (n + 1) := Finset.mem_range.mpr (by omega)
+  have hle : ‖iteratedFDerivWithin ℝ i f s x‖ ≤
+      ∑ j ∈ Finset.range (n + 1), ‖iteratedFDerivWithin ℝ j f s x‖ :=
+    Finset.single_le_sum
+      (f := fun j : ℕ => ‖iteratedFDerivWithin ℝ j f s x‖)
+      (fun j _ => norm_nonneg _) hmem
+  calc ‖iteratedFDerivWithin ℝ i f s x‖
+      ≤ 1 + ∑ j ∈ Finset.range (n + 1), ‖iteratedFDerivWithin ℝ j f s x‖ := by linarith
+    _ ≤ (1 + ∑ j ∈ Finset.range (n + 1),
+          ‖iteratedFDerivWithin ℝ j f s x‖) ^ i :=
+        le_self_pow₀ hD1 (by omega)
+
+/-- A composite is flat wherever the outer function is flat at the image point: the composition
+estimate with outer constant `0` forces every iterated derivative of the composite to vanish
+exactly, not merely to be small. -/
+theorem iteratedFDerivWithin_comp_eq_zero_of_flat {E F G : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {g : F → G} {f : E → F} {s : Set E} {t : Set F} {x : E}
+    (hg : ContDiffOn ℝ ∞ g t) (hf : ContDiffOn ℝ ∞ f s)
+    (ht : UniqueDiffOn ℝ t) (hs : UniqueDiffOn ℝ s) (hst : Set.MapsTo f s t) (hx : x ∈ s)
+    (hflat : ∀ i : ℕ, iteratedFDerivWithin ℝ i g t (f x) = 0) (n : ℕ) :
+    iteratedFDerivWithin ℝ n (g ∘ f) s x = 0 := by
+  obtain ⟨D, hD1, hDbound⟩ := exists_pow_bound_iteratedFDerivWithin f s x n
+  have hC : ∀ i, i ≤ n →
+      ‖iteratedFDerivWithin ℝ i g t (f x)‖ ≤ 0 := by
+    intro i hi
+    rw [hflat i]
+    simp
+  have hD : ∀ i, 1 ≤ i → i ≤ n →
+      ‖iteratedFDerivWithin ℝ i f s x‖ ≤ D ^ i := hDbound
+  have hbound :
+      ‖iteratedFDerivWithin ℝ n (g ∘ f) s x‖ ≤
+        (Nat.factorial n : ℝ) * (0 : ℝ) * D ^ n :=
+    norm_iteratedFDerivWithin_comp_le (𝕜 := ℝ) (g := g) (f := f) (n := n)
+      (s := s) (t := t) (x := x) hg hf (by exact_mod_cast le_top)
+      ht hs hst hx (C := 0) (D := D) hC hD
+  have hnorm : ‖iteratedFDerivWithin ℝ n (g ∘ f) s x‖ ≤ 0 := by
+    simpa using hbound
+  exact norm_eq_zero.mp (le_antisymm hnorm (norm_nonneg _))
+
+/-- Multiplying a function that is flat at a point by any smooth function leaves it flat: every
+term of the Leibniz estimate carries a vanishing factor. -/
+theorem iteratedFDerivWithin_mul_eq_zero_of_flat {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {a h : E → ℂ} {s : Set E} {x : E}
+    (ha : ContDiffOn ℝ ∞ a s) (hh : ContDiffOn ℝ ∞ h s) (hs : UniqueDiffOn ℝ s) (hx : x ∈ s)
+    (hflat : ∀ i : ℕ, iteratedFDerivWithin ℝ i h s x = 0) (n : ℕ) :
+    iteratedFDerivWithin ℝ n (fun y => a y * h y) s x = 0 := by
+  have hbound :
+      ‖iteratedFDerivWithin ℝ n (fun y => a y * h y) s x‖ ≤
+        ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+          ‖iteratedFDerivWithin ℝ i a s x‖ *
+          ‖iteratedFDerivWithin ℝ (n - i) h s x‖ :=
+    norm_iteratedFDerivWithin_mul_le (𝕜 := ℝ) ha hh hs hx
+      (by exact_mod_cast le_top)
+  have hsum :
+      ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+          ‖iteratedFDerivWithin ℝ i a s x‖ *
+          ‖iteratedFDerivWithin ℝ (n - i) h s x‖ = 0 := by
+    apply Finset.sum_eq_zero
+    intro i hi
+    rw [hflat (n - i)]
+    simp
+  have hnorm : ‖iteratedFDerivWithin ℝ n (fun y => a y * h y) s x‖ ≤ 0 := by
+    calc
+      ‖iteratedFDerivWithin ℝ n (fun y => a y * h y) s x‖ ≤
+          ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+            ‖iteratedFDerivWithin ℝ i a s x‖ *
+            ‖iteratedFDerivWithin ℝ (n - i) h s x‖ := hbound
+      _ = 0 := hsum
+  exact norm_eq_zero.mp (le_antisymm hnorm (norm_nonneg _))
+
+/-- In one real variable, flatness of the iterated Fréchet derivatives is flatness of the
+iterated derivatives. -/
+theorem iteratedDerivWithin_eq_zero_of_iteratedFDerivWithin_eq_zero {s : Set ℝ} {f : ℝ → ℂ}
+    {x : ℝ} {n : ℕ} (h : iteratedFDerivWithin ℝ n f s x = 0) :
+    iteratedDerivWithin n f s x = 0 := by
+  rw [iteratedDerivWithin_eq_iteratedFDerivWithin (𝕜 := ℝ), h]
+  simp
 
 end MobiusCPT

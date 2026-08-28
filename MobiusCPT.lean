@@ -45,3 +45,6 @@ import MobiusCPT.Wightman.VtildeReal
 import MobiusCPT.Mobius.ComplexBetaCore
 import MobiusCPT.Analysis.ParamSlice
 import MobiusCPT.Mobius.ComplexBeta
+import MobiusCPT.Mobius.ComplexBetaSmooth
+import MobiusCPT.Mobius.ComplexBetaFlat
+import MobiusCPT.Analysis.TestFnCurve
