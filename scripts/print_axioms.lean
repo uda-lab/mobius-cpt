@@ -752,3 +752,16 @@ import MobiusCPT
 #print axioms MobiusCPT.hasDerivAt_betaBoostSlice
 #print axioms MobiusCPT.deriv_betaBoostSlice
 #print axioms MobiusCPT.betaBoostSliceDot_eq_zero_of_endpoint
+
+-- MobiusCPT/Mobius/ComplexBetaDerivFn.lean — [T26] Lemma 3.6: the angle and parameter derivatives
+-- of the complex boost commute, and the parameter derivative is itself in C_0^∞(I_+) (Issue #8).
+#print axioms MobiusCPT.betaBoostSliceDot_succ
+#print axioms MobiusCPT.sliceDeriv_betaBoostSliceDot
+#print axioms MobiusCPT.contDiffOn_betaBoostSliceDot_angle
+#print axioms MobiusCPT.iteratedDerivWithin_betaBoostSliceDot_angle
+#print axioms MobiusCPT.contDiff_betaBoostDerivCut
+#print axioms MobiusCPT.isUpperFlat_betaBoostDerivCut
+#print axioms MobiusCPT.toAngle_betaBoostDeriv
+#print axioms MobiusCPT.suppUpper_betaBoostDeriv
+#print axioms MobiusCPT.angleDeriv_betaBoostDeriv_of_mem
+#print axioms MobiusCPT.angleDeriv_betaBoostDeriv_of_notMem
