@@ -25,3 +25,5 @@ import MobiusCPT.Mobius.ComplexBoost
 import MobiusCPT.Mobius.Factor
 import MobiusCPT.Mobius.Covariance
 import MobiusCPT.Mobius.Beta
+import MobiusCPT.Wightman.Modes
+import MobiusCPT.Wightman.W3Bridge

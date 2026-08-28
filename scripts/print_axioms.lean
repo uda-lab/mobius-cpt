@@ -351,3 +351,30 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanData.U_smearedProduct
 #print axioms MobiusCPT.WightmanData.boost_smearedProduct
 #print axioms MobiusCPT.WightmanData.rotation_smearedProduct
+
+-- Issue #26: [T26], proof of Lemma 3.7 — the (W3) vacuum-annihilation bridge.
+-- MobiusCPT/Wightman/Modes.lean — conformal dimension of smeared rotation eigenvectors,
+-- and the mode-by-mode application of the (W3) spectrum condition (abstract MobiusAction).
+#print axioms MobiusCPT.IsRotWeight
+#print axioms MobiusCPT.WightmanData.hasConformalDim_smear_vac
+#print axioms MobiusCPT.WightmanData.smear_vac_eq_zero_of_rotWeight_pos
+#print axioms MobiusCPT.WightmanData.weightedProduct
+#print axioms MobiusCPT.WightmanData.weightedProduct_nil
+#print axioms MobiusCPT.WightmanData.weightedProduct_cons
+#print axioms MobiusCPT.WightmanData.hasConformalDim_weightedProduct
+#print axioms MobiusCPT.WightmanData.weightedProduct_eq_zero_of_sum_pos
+
+-- MobiusCPT/Wightman/W3Bridge.lean — the bridge on the concrete instance (Mob, TestFn):
+-- modes, (W3) mode by mode, and the passage to a general test function through D*_F and regularity.
+#print axioms MobiusCPT.isRotWeight_monomial
+#print axioms MobiusCPT.WightmanData.hasConformalDim_smear_monomial_vac
+#print axioms MobiusCPT.WightmanData.smear_monomial_vac_eq_zero
+#print axioms MobiusCPT.WightmanData.hasConformalDim_smearedProduct_monomial
+#print axioms MobiusCPT.WightmanData.smearedProduct_monomial_eq_zero
+#print axioms MobiusCPT.WightmanData.smearVac
+#print axioms MobiusCPT.WightmanData.smearVac_apply
+#print axioms MobiusCPT.WightmanData.continuous_compatApply_smearVac
+#print axioms MobiusCPT.WightmanData.hasSum_compatApply_smearVac
+#print axioms MobiusCPT.WightmanData.compatApply_smear_vac_eq_zero
+#print axioms MobiusCPT.WightmanData.smear_vac_eq_zero_of_fourierCoef_eq_zero
+#print axioms MobiusCPT.WightmanData.smear_vac_eq_zero_of_fourierCoef_eq_zero'
