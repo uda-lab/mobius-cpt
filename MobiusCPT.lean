@@ -55,3 +55,4 @@ import MobiusCPT.Mobius.ComplexBetaLaws
 import MobiusCPT.Mobius.ComplexBetaHoloSlice
 import MobiusCPT.Mobius.ComplexBetaDeriv
 import MobiusCPT.Mobius.ComplexBetaDerivFn
+import MobiusCPT.Mobius.ComplexBetaHolo

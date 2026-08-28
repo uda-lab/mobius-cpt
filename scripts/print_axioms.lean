@@ -765,3 +765,10 @@ import MobiusCPT
 #print axioms MobiusCPT.suppUpper_betaBoostDeriv
 #print axioms MobiusCPT.angleDeriv_betaBoostDeriv_of_mem
 #print axioms MobiusCPT.angleDeriv_betaBoostDeriv_of_notMem
+
+-- MobiusCPT/Mobius/ComplexBetaHolo.lean — [T26] Lemma 3.6: the complex boost is differentiable in
+-- the strip parameter as a curve of test functions, in the locally convex sense (Issue #8).
+#print axioms MobiusCPT.eventually_forall_norm_slice_diff_quotient_sub_lt
+#print axioms MobiusCPT.eventually_forall_norm_angleDeriv_diff_quotient_sub_lt
+#print axioms MobiusCPT.hasTestFnDerivAt_betaBoost
+#print axioms MobiusCPT.differentiableOn_clm_comp_betaBoost
