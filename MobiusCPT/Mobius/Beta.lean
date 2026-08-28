@@ -220,7 +220,7 @@ end Mob
 
 /-- [T26], Definitions 2.4-2.5: the Möbius group `Möb = PSU(1,1)` acts on `C^∞(S¹)` by the
 conformal action `β_d`; this is the instance Issue #4's interface was stated against. -/
-noncomputable instance : MobiusAction Mob TestFn where
+noncomputable instance mobiusActionMobTestFn : MobiusAction Mob TestFn where
   rot := Mob.rot
   boostElt := Mob.boost
   beta := Mob.beta
@@ -238,7 +238,7 @@ noncomputable instance : MobiusAction Mob TestFn where
     obtain ⟨h, rfl⟩ := Mob.mk_surjective δ
     simpa only [← Mob.mk_mul, Mob.beta_mk] using MobiusCPT.beta_mul d g h
 
-private theorem rotMat_inv (theta : ℝ) :
+theorem rotMat_inv (theta : ℝ) :
     (rotMat theta)⁻¹ = rotMat (-theta) := by
   apply inv_eq_of_mul_eq_one_right
   rw [← rotMat_add, add_neg_cancel, rotMat_zero]
