@@ -520,3 +520,23 @@ import MobiusCPT
 #print axioms MobiusCPT.iteratedFDerivWithin_stripApprox_neg_one
 #print axioms MobiusCPT.stripApproxX
 #print axioms MobiusCPT.stripApprox_circleExp
+-- MobiusCPT/TestFunctions/AnalyticDensity.lean — [T26], Lemma 3.4 for `I_+`.
+#print axioms MobiusCPT.upperAnglePicture
+#print axioms MobiusCPT.isUpperFlat_upperAnglePicture
+#print axioms MobiusCPT.toAngle_sub
+#print axioms MobiusCPT.boostPicture
+#print axioms MobiusCPT.isRapidlyDecaying_boostPicture
+#print axioms MobiusCPT.approx
+#print axioms MobiusCPT.errorAngle
+#print axioms MobiusCPT.contDiff_errorAngle
+#print axioms MobiusCPT.errorAngle_boostToAngle
+#print axioms MobiusCPT.norm_iteratedFDeriv_circle_map_eq
+#print axioms MobiusCPT.norm_iteratedFDeriv_circle_map_neg_eq
+#print axioms MobiusCPT.cnorm_le_of_forall
+#print axioms MobiusCPT.angleDeriv_eq_zero_of_suppUpper
+#print axioms MobiusCPT.toAngle_error_eq
+#print axioms MobiusCPT.exists_norm_angleDeriv_le
+#print axioms MobiusCPT.contDiff_gaussConvReal
+#print axioms MobiusCPT.eventually_boost_error_le
+#print axioms MobiusCPT.tendsto_xRestrictUpper_approx
+#print axioms MobiusCPT.lemma_3_4_density_upper

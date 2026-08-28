@@ -35,3 +35,4 @@ import MobiusCPT.Wightman.W3Bridge
 import MobiusCPT.TestFunctions.Split
 import MobiusCPT.TestFunctions.Analytic
 import MobiusCPT.TestFunctions.AnalyticApprox
+import MobiusCPT.TestFunctions.AnalyticDensity

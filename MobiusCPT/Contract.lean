@@ -39,7 +39,9 @@ Issue #7 has landed as well: `AnalyticTestFn` ([T26], Definition 3.2), `xRestric
 `xRestrictUpper` and `xRestrictLower` below are the genuine definitions from
 `MobiusCPT.TestFunctions.Analytic`, not holes, and the statements Issue #7 owned
 (`xRestrictUpper_supp`, `xRestrictLower_supp`, `xRestrict_split`) are proved theorems there.
-`betaBoost` is still a hole, but its type no longer mentions one.
+`betaBoost` is still a hole, but its type no longer mentions one.  Lemma 3.4 is proved as
+`lemma_3_4_density_upper` in `MobiusCPT.TestFunctions.AnalyticDensity`, so its statement is gone
+from here too.
 
 Issue #4 has also landed.  `W` is now the single bundle hole for the Wightman data,
 and `Dom`, `Field`, `dim`, `smear`, `vac`, `Compat`, `compatApply`, `boost`,
@@ -203,12 +205,6 @@ def_wanted MemPUpperOmega : ❰Dom❱ → Prop :=
 real interface landed by Issue #4. -/
 def_wanted MemPLowerOmega : ❰Dom❱ → Prop :=
   fun Φ => (❰W❱).data.toWightmanStruct.MemPLowerOmega Φ
-
-/-- [T26], Lemma 3.4; upper-supported test functions lie in the closure of
-analytic restrictions, owned by Issue #7. -/
-theorem_wanted lemma_3_4_density :
-    { f : TestFn | SuppUpper f } ⊆
-      closure { g : TestFn | ∃ F : AnalyticTestFn, xRestrictUpper F = g }
 
 /-- [T26], the (W3) bridge used in the proof of Lemma 3.7, still owed by Issue #26. -/
 theorem_wanted w3_vacuum_annihilation :
