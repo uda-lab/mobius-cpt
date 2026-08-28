@@ -378,3 +378,45 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanData.compatApply_smear_vac_eq_zero
 #print axioms MobiusCPT.WightmanData.smear_vac_eq_zero_of_fourierCoef_eq_zero
 #print axioms MobiusCPT.WightmanData.smear_vac_eq_zero_of_fourierCoef_eq_zero'
+
+-- Issue #7: [T26], Definitions 3.2-3.3 and Lemma 3.4.
+-- MobiusCPT/TestFunctions/Split.lean — the endpoint-flat semicircle split, as named functions.
+#print axioms MobiusCPT.IsEndpointFlat.of_suppUpper
+#print axioms MobiusCPT.IsEndpointFlat.of_suppLower
+#print axioms MobiusCPT.IsEndpointFlat.two_pi
+#print axioms MobiusCPT.IsEndpointFlat.isUpperFlat_cutIcc
+#print axioms MobiusCPT.IsEndpointFlat.isLowerFlat_cutIcc
+#print axioms MobiusCPT.splitUpper
+#print axioms MobiusCPT.splitLower
+#print axioms MobiusCPT.toAngle_splitUpper
+#print axioms MobiusCPT.toAngle_splitLower
+#print axioms MobiusCPT.suppUpper_splitUpper
+#print axioms MobiusCPT.suppLower_splitLower
+#print axioms MobiusCPT.toAngle_splitUpper_of_mem
+#print axioms MobiusCPT.splitUpper_of_suppUpper
+#print axioms MobiusCPT.splitLower_of_suppLower
+#print axioms MobiusCPT.splitUpper_add_splitLower
+-- MobiusCPT/TestFunctions/Analytic.lean — the class `𝓧` and its restrictions.
+#print axioms MobiusCPT.isOpen_OexteriorInterior
+#print axioms MobiusCPT.isClosed_Oexterior
+#print axioms MobiusCPT.OexteriorInterior_subset_Oexterior
+#print axioms MobiusCPT.circle_subset_Oexterior
+#print axioms MobiusCPT.uniqueDiffOn_Oexterior
+#print axioms MobiusCPT.contDiff_circle_map
+#print axioms MobiusCPT.exists_bound_iteratedFDeriv_circle_map
+#print axioms MobiusCPT.AnalyticTestFn.contDiff_boundary
+#print axioms MobiusCPT.AnalyticTestFn.periodic_boundary
+#print axioms MobiusCPT.xRestrictS1
+#print axioms MobiusCPT.toAngle_xRestrictS1
+#print axioms MobiusCPT.xRestrictS1_apply
+#print axioms MobiusCPT.AnalyticTestFn.iteratedDeriv_boundary_eq_zero
+#print axioms MobiusCPT.AnalyticTestFn.isEndpointFlat
+#print axioms MobiusCPT.xRestrictUpper
+#print axioms MobiusCPT.xRestrictLower
+#print axioms MobiusCPT.xRestrictUpper_supp
+#print axioms MobiusCPT.xRestrictLower_supp
+#print axioms MobiusCPT.xRestrict_split
+#print axioms MobiusCPT.AnalyticTestFn.evalSphere
+#print axioms MobiusCPT.AnalyticTestFn.evalSphere_infty
+#print axioms MobiusCPT.AnalyticTestFn.evalSphere_coe
+#print axioms MobiusCPT.AnalyticTestFn.differentiableAt_inv
