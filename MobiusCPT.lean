@@ -48,3 +48,5 @@ import MobiusCPT.Mobius.ComplexBeta
 import MobiusCPT.Mobius.ComplexBetaSmooth
 import MobiusCPT.Mobius.ComplexBetaFlat
 import MobiusCPT.Analysis.TestFnCurve
+import MobiusCPT.Mobius.ComplexBetaLawsCore
+import MobiusCPT.Mobius.ComplexBetaDef
