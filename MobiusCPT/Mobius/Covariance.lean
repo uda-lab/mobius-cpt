@@ -53,7 +53,7 @@ theorem WightmanData.U_smearedProduct {W : WightmanData G TF 𝓓 𝓕} (hW4 : W
   rw [WightmanData.U_smearedProductOn γ l hcov W.vac, hW4.1 γ]
 
 /-- [T26], §3: the covariance rewrite for the boost, `V_t φ₁(f₁)⋯φ_k(f_k)Ω =
-`φ₁(β_{d₁}(v_t)f₁)⋯φ_k(β_{d_k}(v_t)f_k)Ω`. -/
+φ₁(β_{d₁}(v_t)f₁)⋯φ_k(β_{d_k}(v_t)f_k)Ω`. -/
 theorem WightmanData.boost_smearedProduct {W : WightmanData G TF 𝓓 𝓕} (hW4 : W.W4) (t : ℝ)
     (l : List (𝓕 × TF)) (hcov : ∀ p ∈ l, W.IsCovariant p.1 (W.dim p.1)) :
     W.boost t (W.smearedProduct l) =

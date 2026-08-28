@@ -273,6 +273,7 @@ import MobiusCPT
 #print axioms MobiusCPT.Mob.boost_zero
 #print axioms MobiusCPT.Mob.boost_add
 #print axioms MobiusCPT.Mob.rot_two_pi
+#print axioms MobiusCPT.Mob.rot_pi_ne_one
 
 -- MobiusCPT/Mobius/ComplexBoost.lean — the complex boost v_tau, the closed strip and v_{i*pi} = inversion.
 #print axioms MobiusCPT.cnum

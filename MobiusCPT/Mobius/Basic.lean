@@ -595,6 +595,19 @@ theorem boost_add (s t : ℝ) : boost (s + t) = boost s * boost t := by
 theorem rot_two_pi : rot (2 * Real.pi) = 1 := by
   rw [rot, rotMat_two_pi, mk_neg, mk_one]
 
+/-- [T26], §1: the rotation subgroup is not trivial — `r_π` moves the point `1` to `-1`.
+Together with `rot_two_pi` this pins the period at `2π` rather than at some smaller value,
+and rules out a degenerate model in which `Möb` collapses to the trivial group. -/
+theorem rot_pi_ne_one : rot Real.pi ≠ 1 := by
+  intro h
+  have h1 : rot Real.pi • (1 : Circle) = (1 : Circle) := by
+    rw [h, one_smul]
+  rw [rot_smul, mul_one] at h1
+  have h2 : ((Circle.exp Real.pi : Circle) : ℂ) = ((1 : Circle) : ℂ) :=
+    congrArg (fun w : Circle => (w : ℂ)) h1
+  rw [Circle.coe_exp, Complex.exp_pi_mul_I, Circle.coe_one] at h2
+  exact (by norm_num : (-1 : ℂ) ≠ 1) h2
+
 end Mob
 
 end
