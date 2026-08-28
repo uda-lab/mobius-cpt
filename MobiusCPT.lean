@@ -12,6 +12,7 @@ import MobiusCPT.Wightman.Bundle
 import MobiusCPT.Wightman.Continuity
 import MobiusCPT.Analysis.FlatGluing
 import MobiusCPT.Analysis.SeparateJoint
+import MobiusCPT.Analysis.Strip
 import MobiusCPT.Analysis.FlatCalculus
 import MobiusCPT.Analysis.GaussianConv
 import MobiusCPT.Analysis.BoostChart
@@ -37,3 +38,7 @@ import MobiusCPT.TestFunctions.Analytic
 import MobiusCPT.TestFunctions.AnalyticApprox
 import MobiusCPT.TestFunctions.AnalyticDensity
 import MobiusCPT.TestFunctions.AnalyticReflect
+import MobiusCPT.Wightman.Vtilde
+import MobiusCPT.Wightman.VtildeLinear
+import MobiusCPT.Wightman.VtildeLaws
+import MobiusCPT.Wightman.VtildeReal

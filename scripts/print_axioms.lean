@@ -563,3 +563,62 @@ import MobiusCPT
 #print axioms MobiusCPT.eqOn_Oexterior_of_xRestrictS1_eq
 #print axioms MobiusCPT.AnalyticTestFn.evalSphere_congr
 #print axioms MobiusCPT.periodic_eq_of_eq_on_Ico
+
+-- MobiusCPT/Analysis/Strip.lean — [T26] Def. 3.1: the closed strip and the boundary-uniqueness
+-- lemma behind "necessarily unique" (Issue #6).
+#print axioms MobiusCPT.closedStrip_eq
+#print axioms MobiusCPT.mem_closedStrip
+#print axioms MobiusCPT.closedStrip_eq_reProdIm
+#print axioms MobiusCPT.interior_closedStrip
+#print axioms MobiusCPT.ofReal_mem_closedStrip
+#print axioms MobiusCPT.add_ofReal_mem_closedStrip
+#print axioms MobiusCPT.closedStrip_add_ofReal
+#print axioms MobiusCPT.add_ofReal_mem_closedStrip_iff
+#print axioms MobiusCPT.neg_mem_closedStrip_iff
+#print axioms MobiusCPT.closedStrip_ofReal
+#print axioms MobiusCPT.interior_closedStrip_ofReal
+#print axioms MobiusCPT.eqOn_zero_closedStrip_of_ofReal
+#print axioms MobiusCPT.eqOn_closedStrip_of_eqOn_ofReal
+
+-- MobiusCPT/Wightman/Vtilde.lean — [T26] Def. 3.1: `D(Ṽ_τ)`, uniqueness of the companion vector
+-- via separation of points, and the compatible-functional characterisation (Issue #6).
+#print axioms MobiusCPT.WightmanData.isBoostContinuation_eqOn
+#print axioms MobiusCPT.WightmanData.vtildeVal_unique
+#print axioms MobiusCPT.WightmanData.existsUnique_vtildeVal
+#print axioms MobiusCPT.WightmanData.vtildeVal_vtildeMap
+#print axioms MobiusCPT.WightmanData.vtildeMap_eq
+#print axioms MobiusCPT.WightmanData.vtildeDom_and_vtildeMap_eq
+#print axioms MobiusCPT.WightmanData.vtildeDom_iff
+#print axioms MobiusCPT.WightmanData.vtilde_spec
+
+-- MobiusCPT/Wightman/VtildeLinear.lean — [T26] Def. 3.1: `D(Ṽ_τ)` is a `ℂ`-submodule, `Ṽ_τ` is
+-- linear on it, and the `LinearPMap` packaging (Issue #6).
+#print axioms MobiusCPT.WightmanData.isBoostContinuation_zero
+#print axioms MobiusCPT.WightmanData.IsBoostContinuation.add
+#print axioms MobiusCPT.WightmanData.IsBoostContinuation.smul
+#print axioms MobiusCPT.WightmanData.mem_vtildeDomain
+#print axioms MobiusCPT.WightmanData.vtildeMap_add
+#print axioms MobiusCPT.WightmanData.vtildeMap_smul
+#print axioms MobiusCPT.WightmanData.vtildeMap_zero
+#print axioms MobiusCPT.WightmanData.vtildePMap_domain
+#print axioms MobiusCPT.WightmanData.vtildePMap_apply
+#print axioms MobiusCPT.WightmanData.mem_vtildePMap_domain
+
+-- MobiusCPT/Wightman/VtildeLaws.lean — [T26] Def. 3.1 and footnote 7: vacuum membership and the
+-- real-translation law (Issue #6).
+#print axioms MobiusCPT.WightmanData.IsBoostContinuation.add_ofReal
+#print axioms MobiusCPT.WightmanData.IsBoostContinuation.precomp_boost
+#print axioms MobiusCPT.WightmanData.IsBoostContinuation.postcomp_boost
+#print axioms MobiusCPT.WightmanData.vtildeDom_add_ofReal_iff
+#print axioms MobiusCPT.WightmanData.vtildeDom_add_ofReal_iff_boost
+#print axioms MobiusCPT.WightmanData.vtilde_vacuum
+#print axioms MobiusCPT.WightmanData.vtilde_translation
+
+-- MobiusCPT/Wightman/VtildeReal.lean — [T26] Def. 3.1 real-parameter case, conditional on the
+-- boost-orbit continuity of [CRTT25] Lemma 2.10(i) (Issue #6).
+#print axioms MobiusCPT.WightmanData.vtilde_real_of_boostOrbitContinuous
+#print axioms MobiusCPT.WightmanData.boostOrbitContinuous_of_vtilde_real
+#print axioms MobiusCPT.WightmanData.u_smear
+#print axioms MobiusCPT.WightmanData.u_smearedProductOn
+#print axioms MobiusCPT.WightmanData.u_smearedProduct
+#print axioms MobiusCPT.WightmanData.boostOrbitContinuous_of_beta_continuous
