@@ -12,6 +12,8 @@ import MobiusCPT.TestFunctions.Analytic
 import MobiusCPT.TestFunctions.Inv
 import MobiusCPT.TestFunctions.Support
 import MobiusCPT.Wightman.Bundle
+import MobiusCPT.Wightman.VtildeLinear
+import MobiusCPT.Wightman.VtildeLaws
 
 /-!
 # MobiusCPT.Contract
@@ -55,6 +57,20 @@ transparent projections of `W`, so besides the bundle hole `W` itself the only
 remaining #4-adjacent hole is `w3_vacuum_annihilation`, owned by Issue #26. The
 capstone obligations taking `❰IsWightmanCFT❱` as a hypothesis are genuinely
 conditional on [T26], Definition 2.5.
+
+Issue #6 has landed.  `strip` below is the genuine definition from
+`MobiusCPT.Analysis.Strip`, not a hole, and `VtildeDom` and `VtildeMap` are transparent
+projections of the real `WightmanData.VtildeDom` and `WightmanData.vtildeMap` from
+`MobiusCPT.Wightman.Vtilde`.  The statements Issue #6 owned (`strip_eq`, `vtilde_spec`,
+`vtilde_translation`, `vtilde_vacuum`) are proved theorems in `MobiusCPT.Analysis.Strip`,
+`MobiusCPT.Wightman.Vtilde` and `MobiusCPT.Wightman.VtildeLaws`, so their statements are gone
+from here.  `vtilde_real` is deliberately still a hole: for real `τ` the strip degenerates to
+the real axis, so [T26] Def. 3.1's `ContinuousOn` clause is exactly continuity of
+`t ↦ λ(V_t Φ)`, which is a *consequence* of the source's axioms ([CRTT25], Lemma 2.10(i)) and
+not derivable from this repository's `IsWightmanCFT` — (W1) gives continuity in the vector, not
+in the group parameter.  `MobiusCPT.Wightman.VtildeReal` names that input as
+`WightmanData.BoostOrbitContinuous`, proves the real-parameter statement from it, and reduces it
+to continuity of `t ↦ β_d(v_t) f` on test functions.
 -/
 
 namespace MobiusCPT
@@ -128,38 +144,16 @@ def_wanted W4 : Prop := (❰W❱).data.W4
 the real interface landed by Issue #25. -/
 def_wanted IsWightmanCFT : Prop := (❰W❱).data.IsWightmanCFT
 
-/-- [T26], Definition 3.1; the domain `D(Ṽ_τ)` of the partially defined boost,
-owned by Issue #6. -/
-def_wanted VtildeDom : ℂ → ❰Dom❱ → Prop
+/-- [T26], Definition 3.1; the domain `D(Ṽ_τ)` of the partially defined boost, now projected
+from the real definition landed by Issue #6. -/
+def_wanted VtildeDom : ℂ → ❰Dom❱ → Prop :=
+  fun τ Φ => (❰W❱).data.VtildeDom τ Φ
 
 /-- [T26], Definition 3.1; a total Lean representative of `Ṽ_τ`, agreeing with it on
-`VtildeDom τ`, owned by Issue #6. -/
-def_wanted VtildeMap : ℂ → ❰Dom❱ → ❰Dom❱
-
-/-- [T26], Definition 3.1; the closed strip bounded by `ℝ` and `ℝ + τ`, owned by Issue #6. -/
-def_wanted strip : ℂ → Set ℂ
-
-/-- [T26] Def. 3.1, owned by Issue #6; the geometric closed strip bounded by `ℝ` and `ℝ + τ`.
-For real `τ` this degenerates to `ℝ`, which is what makes `vtilde_real` consistent. -/
-theorem_wanted strip_eq :
-    ∀ τ : ℂ, ❰strip❱ τ = { z : ℂ | min 0 τ.im ≤ z.im ∧ z.im ≤ max 0 τ.im }
-
-/-- [T26], Definition 3.1; the compatible-functional characterization of the partially defined
-`Ṽ_τ`, including continuity on the closed strip, holomorphy in its interior, and both boundary
-values, owned by Issue #6. Regularity is the precise separation-of-points hypothesis needed for
-this equivalence; `IsWightmanCFT` would be stronger than necessary. -/
-theorem_wanted vtilde_spec :
-    ❰ActsRegularly❱ →
-      ∀ (τ : ℂ) (Φ Ψ : ❰Dom❱),
-      (❰VtildeDom❱ τ Φ ∧ ❰VtildeMap❱ τ Φ = Ψ) ↔
-        ∃ G : ❰Compat❱ → ℂ → ℂ,
-          ∀ lam : ❰Compat❱,
-            ContinuousOn (G lam) (❰strip❱ τ) ∧
-              DifferentiableOn ℂ (G lam) (interior (❰strip❱ τ)) ∧
-              (∀ t : ℝ,
-                G lam (t : ℂ) = ❰compatApply❱ lam (❰boost❱ t Φ)) ∧
-              (∀ t : ℝ,
-                G lam (τ + (t : ℂ)) = ❰compatApply❱ lam (❰boost❱ t Ψ))
+`VtildeDom τ`, now projected from the real definition landed by Issue #6.  Its value is read off
+the uniqueness statement, so it is never an unconstrained choice. -/
+def_wanted VtildeMap : ℂ → ❰Dom❱ → ❰Dom❱ :=
+  fun τ Φ => (❰W❱).data.vtildeMap τ Φ
 
 /-- [T26], Definition 3.1; real parameters give the ordinary boost on all of `𝓓`; the leading
 Wightman hypothesis supplies the regularity/continuity axiom for `t ↦ λ(V_t Φ)` needed here,
@@ -168,28 +162,6 @@ theorem_wanted vtilde_real :
     ❰IsWightmanCFT❱ →
       ∀ (t : ℝ) (Φ : ❰Dom❱),
         ❰VtildeDom❱ (t : ℂ) Φ ∧ ❰VtildeMap❱ (t : ℂ) Φ = ❰boost❱ t Φ
-
-/-- [T26], Definition 3.1 and footnote 7; real translation of the partially defined boost,
-including equality of the domains of both compositions and equality of values on their common
-domain, owned by Issue #6. Regularity is the precise separation-of-points hypothesis needed to
-pin the values of `VtildeMap`; `IsWightmanCFT` would be stronger than necessary. -/
-theorem_wanted vtilde_translation :
-    ❰ActsRegularly❱ →
-      ∀ (τ : ℂ) (t : ℝ) (Φ : ❰Dom❱),
-      (❰VtildeDom❱ (τ + (t : ℂ)) Φ ↔ ❰VtildeDom❱ τ (❰boost❱ t Φ)) ∧
-        (❰VtildeDom❱ (τ + (t : ℂ)) Φ ↔ ❰VtildeDom❱ τ Φ) ∧
-          (❰VtildeDom❱ (τ + (t : ℂ)) Φ →
-            ❰VtildeDom❱ τ Φ →
-              ❰VtildeMap❱ (τ + (t : ℂ)) Φ =
-                ❰boost❱ t (❰VtildeMap❱ τ Φ)) ∧
-          (❰VtildeDom❱ τ (❰boost❱ t Φ) →
-            ❰VtildeMap❱ (τ + (t : ℂ)) Φ = ❰VtildeMap❱ τ (❰boost❱ t Φ))
-
-/-- [T26], Definition 3.1; the vacuum is in every continued-boost domain and is fixed there,
-leading Wightman hypothesis is needed for the (W4) vacuum axiom, owned by Issue #6. -/
-theorem_wanted vtilde_vacuum :
-    ❰IsWightmanCFT❱ →
-      ∀ τ : ℂ, ❰VtildeDom❱ τ ❰vac❱ ∧ ❰VtildeMap❱ τ ❰vac❱ = ❰vac❱
 
 /-- [T26], §2; the left-to-right product `φ₁(f₁)⋯φ_k(f_k)Ω`, now projected from
 the real interface landed by Issue #4. -/
@@ -226,7 +198,7 @@ theorem_wanted beta_boost_at_ipi :
 analytic restrictions, owned by Issue #9. -/
 theorem_wanted lemma_3_7 :
     ❰IsWightmanCFT❱ →
-      ∀ (l : List (❰Field❱ × AnalyticTestFn)) (τ : ℂ), τ ∈ ❰strip❱ (Complex.I * Real.pi) →
+      ∀ (l : List (❰Field❱ × AnalyticTestFn)) (τ : ℂ), τ ∈ strip (Complex.I * Real.pi) →
         ❰VtildeDom❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) ∧
           ❰VtildeMap❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) =
             ❰smearedProduct❱ (l.map (fun p => (p.1, ❰betaBoost❱ (❰dim❱ p.1) τ p.2)))
