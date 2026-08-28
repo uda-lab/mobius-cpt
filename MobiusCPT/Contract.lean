@@ -8,6 +8,7 @@ import Mathlib.Data.NNReal.Basic
 import Mathlib.Order.Filter.AtTopBot.Defs
 import Mathlib.Topology.Basic
 import MobiusCPT.TestFunctions.CNorm
+import MobiusCPT.TestFunctions.Analytic
 import MobiusCPT.TestFunctions.Inv
 import MobiusCPT.TestFunctions.Support
 import MobiusCPT.Wightman.Bundle
@@ -34,6 +35,14 @@ definitions from `MobiusCPT.TestFunctions.*`, not holes, and the statements that
 Issue #3 owned (`tendsto_iff_cnorm`, `inv_add`, `inv_involutive`, `inv_supp`,
 `cnorm_inv`) are proved theorems in those modules.
 
+Issue #7 has landed as well: `AnalyticTestFn` ([T26], Definition 3.2), `xRestrictS1`,
+`xRestrictUpper` and `xRestrictLower` below are the genuine definitions from
+`MobiusCPT.TestFunctions.Analytic`, not holes, and the statements Issue #7 owned
+(`xRestrictUpper_supp`, `xRestrictLower_supp`, `xRestrict_split`) are proved theorems there.
+`betaBoost` is still a hole, but its type no longer mentions one.  Lemma 3.4 is proved as
+`lemma_3_4_density_upper` in `MobiusCPT.TestFunctions.AnalyticDensity`, so its statement is gone
+from here too.
+
 Issue #4 has also landed.  `W` is now the single bundle hole for the Wightman data,
 and `Dom`, `Field`, `dim`, `smear`, `vac`, `Compat`, `compatApply`, `boost`,
 `ActsRegularly`, `W1`, `W3`, `W4`, `smearedProduct`, `MemPUpperOmega`, and
@@ -50,35 +59,9 @@ conditional on [T26], Definition 2.5.
 
 namespace MobiusCPT
 
-/-- [T26], Definition 3.2; the analytic test-function class `𝓧`, owned by Issue #7. -/
-def_wanted AnalyticTestFn : Type
-
-/-- [T26], Definition 3.2; restriction `F ↦ F|_{S¹}`, owned by Issue #7. -/
-def_wanted xRestrictS1 : ❰AnalyticTestFn❱ → TestFn
-
-/-- [T26], Definition 3.2; restriction to `I_+` with zero extension, owned by Issue #7. -/
-def_wanted xRestrictUpper : ❰AnalyticTestFn❱ → TestFn
-
-/-- [T26], Definition 3.2; restriction to `I_-` with zero extension, owned by Issue #7. -/
-def_wanted xRestrictLower : ❰AnalyticTestFn❱ → TestFn
-
 /-- [T26], Definition 3.5, equation (3.4); the closed-strip removable-singularity
 extension `β_d(v_τ)F|_{I_+}`, owned by Issues #5 and #8. -/
-def_wanted betaBoost : ℕ → ℂ → ❰AnalyticTestFn❱ → TestFn
-
-/-- [T26], Definition 3.2; restriction to `I_+` has upper support, owned by Issue #7. -/
-theorem_wanted xRestrictUpper_supp :
-    ∀ F : ❰AnalyticTestFn❱, SuppUpper (❰xRestrictUpper❱ F)
-
-/-- [T26], Definition 3.2; restriction to `I_-` has lower support, owned by Issue #7. -/
-theorem_wanted xRestrictLower_supp :
-    ∀ F : ❰AnalyticTestFn❱, SuppLower (❰xRestrictLower❱ F)
-
-/-- [T26], Definition 3.2; the circle restriction splits into the two zero-extended semicircle
-restrictions, owned by Issue #7. -/
-theorem_wanted xRestrict_split :
-    ∀ F : ❰AnalyticTestFn❱,
-      ❰xRestrictS1❱ F = ❰xRestrictUpper❱ F + ❰xRestrictLower❱ F
+def_wanted betaBoost : ℕ → ℂ → AnalyticTestFn → TestFn
 
 /-- [T26], Definitions 2.4–2.5; the Wightman CFT this contract is about. Its
 carriers are bundled so this is the only Wightman-data hole. -/
@@ -223,17 +206,11 @@ real interface landed by Issue #4. -/
 def_wanted MemPLowerOmega : ❰Dom❱ → Prop :=
   fun Φ => (❰W❱).data.toWightmanStruct.MemPLowerOmega Φ
 
-/-- [T26], Lemma 3.4; upper-supported test functions lie in the closure of
-analytic restrictions, owned by Issue #7. -/
-theorem_wanted lemma_3_4_density :
-    { f : TestFn | SuppUpper f } ⊆
-      closure { g : TestFn | ∃ F : ❰AnalyticTestFn❱, ❰xRestrictUpper❱ F = g }
-
 /-- [T26], the (W3) bridge used in the proof of Lemma 3.7, still owed by Issue #26. -/
 theorem_wanted w3_vacuum_annihilation :
     ❰IsWightmanCFT❱ →
-      ∀ (φ : ❰Field❱) (F : ❰AnalyticTestFn❱),
-        ❰smear❱ φ (inv (❰xRestrictS1❱ F)) ❰vac❱ = 0
+      ∀ (φ : ❰Field❱) (F : AnalyticTestFn),
+        ❰smear❱ φ (inv (xRestrictS1 F)) ❰vac❱ = 0
 
 /-- [T26], Definition 3.5, equation (3.4); at `τ = iπ` the source scalar
 `(-1)^(d-1)` is represented as `(-1)^(d+1)` for `d : ℕ`, since these exponents
@@ -241,17 +218,17 @@ have the same parity in `ℂ`; owned by Issue #5.
 The restriction is the lower one because inversion exchanges the semicircles: the source uses
 `(F ∘ z⁻¹)|_{I_+} = F|_{I_-} ∘ z⁻¹`. -/
 theorem_wanted beta_boost_at_ipi :
-    ∀ (d : ℕ) (F : ❰AnalyticTestFn❱),
+    ∀ (d : ℕ) (F : AnalyticTestFn),
       ❰betaBoost❱ d (Complex.I * Real.pi) F =
-        (-1 : ℂ) ^ (d + 1) • inv (❰xRestrictLower❱ F)
+        (-1 : ℂ) ^ (d + 1) • inv (xRestrictLower F)
 
 /-- [T26], Lemma 3.7(i); the analytic-core continued-boost formula on upper-supported
 analytic restrictions, owned by Issue #9. -/
 theorem_wanted lemma_3_7 :
     ❰IsWightmanCFT❱ →
-      ∀ (l : List (❰Field❱ × ❰AnalyticTestFn❱)) (τ : ℂ), τ ∈ ❰strip❱ (Complex.I * Real.pi) →
-        ❰VtildeDom❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, ❰xRestrictUpper❱ p.2)))) ∧
-          ❰VtildeMap❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, ❰xRestrictUpper❱ p.2)))) =
+      ∀ (l : List (❰Field❱ × AnalyticTestFn)) (τ : ℂ), τ ∈ ❰strip❱ (Complex.I * Real.pi) →
+        ❰VtildeDom❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) ∧
+          ❰VtildeMap❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) =
             ❰smearedProduct❱ (l.map (fun p => (p.1, ❰betaBoost❱ (❰dim❱ p.1) τ p.2)))
 
 /-- [T26], Lemma 3.7(ii); at `τ = Complex.I * Real.pi`, the analytic-core vector maps to the
@@ -261,12 +238,12 @@ the opposite restriction from `beta_boost_at_ipi`, where the source needs
 `(F ∘ z⁻¹)|_{I_+} = F|_{I_-} ∘ z⁻¹` and therefore uses `xRestrictLower`. -/
 theorem_wanted lemma_3_7_at_ipi :
     ❰IsWightmanCFT❱ →
-      ∀ (l : List (❰Field❱ × ❰AnalyticTestFn❱)),
+      ∀ (l : List (❰Field❱ × AnalyticTestFn)),
         ❰VtildeMap❱ (Complex.I * Real.pi)
-            (❰smearedProduct❱ (l.map (fun p => (p.1, ❰xRestrictUpper❱ p.2)))) =
+            (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) =
           (-1 : ℂ) ^ ((l.map (fun p => ❰dim❱ p.1)).sum) •
             ❰smearedProduct❱
-              (l.reverse.map (fun p => (p.1, inv (❰xRestrictUpper❱ p.2))))
+              (l.reverse.map (fun p => (p.1, inv (xRestrictUpper p.2))))
 
 /-- [T26], Lemma 3.8; for fixed fields and compatible functional, the exponential
 continuity estimate has constants independent of test-function lists and `t`. The `foldr max 0`
