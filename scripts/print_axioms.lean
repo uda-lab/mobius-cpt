@@ -556,3 +556,8 @@ import MobiusCPT
 #print axioms MobiusCPT.AnalyticTestFn.conj
 #print axioms MobiusCPT.xRestrictLower_conj
 #print axioms MobiusCPT.lemma_3_4_density_lower
+-- Issue #7, answering the adversarial review: the source's injectivity of `F ↦ F|_{S¹}` on `𝕆`.
+#print axioms MobiusCPT.AnalyticTestFn.invExt
+#print axioms MobiusCPT.AnalyticTestFn.invExt_of_ne
+#print axioms MobiusCPT.AnalyticTestFn.diffContOnCl_invExt
+#print axioms MobiusCPT.eqOn_Oexterior_of_xRestrictS1_eq

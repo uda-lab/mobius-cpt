@@ -1,5 +1,6 @@
 import Mathlib.Analysis.Calculus.ContDiff.Bounds
 import Mathlib.Analysis.Calculus.TangentCone.Real
+import Mathlib.Analysis.Complex.AbsMax
 import Mathlib.Analysis.Complex.RealDeriv
 import Mathlib.Analysis.Complex.RemovableSingularity
 import Mathlib.Analysis.Normed.Field.Lemmas
@@ -303,6 +304,120 @@ theorem AnalyticTestFn.differentiableAt_inv (F : AnalyticTestFn) :
     (Complex.analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt
       hd hq_cont).differentiableAt
   simpa [q] using hq_diff
+
+/-- [T26], Definition 3.2; the inversion `w ↦ F(w⁻¹)` of an element of `𝓧`, filled in at the
+origin by `F(∞) = 0`.  It is holomorphic on the open unit disc and continuous up to its boundary,
+which is what makes the restriction `F ↦ F|_{S¹}` injective on `𝕆`. -/
+noncomputable def AnalyticTestFn.invExt (F : AnalyticTestFn) : ℂ → ℂ :=
+  fun w => if w = 0 then 0 else F.toFun w⁻¹
+
+theorem AnalyticTestFn.invExt_of_ne {F : AnalyticTestFn} {w : ℂ} (hw : w ≠ 0) :
+    F.invExt w = F.toFun w⁻¹ := by
+  rw [AnalyticTestFn.invExt, if_neg hw]
+
+/-- The inverted function is holomorphic inside the unit disc and continuous up to its closure. -/
+theorem AnalyticTestFn.diffContOnCl_invExt (F : AnalyticTestFn) :
+    DiffContOnCl ℂ F.invExt (Metric.ball (0 : ℂ) 1) := by
+  constructor
+  · intro w hw
+    by_cases hw0 : w = 0
+    · subst w
+      exact (F.differentiableAt_inv).differentiableWithinAt
+    · have hnorm : ‖w‖ < 1 := by simpa [Metric.mem_ball, dist_eq_norm] using hw
+      have hinv : (1 : ℝ) < ‖w⁻¹‖ := by
+        rw [norm_inv]
+        exact (one_lt_inv₀ (norm_pos_iff.mpr hw0)).2 hnorm
+      have hF : DifferentiableAt ℂ F.toFun w⁻¹ :=
+        (F.differentiableOn w⁻¹ hinv).differentiableAt
+          (isOpen_OexteriorInterior.mem_nhds hinv)
+      have hcomp : DifferentiableAt ℂ (fun u : ℂ => F.toFun u⁻¹) w :=
+        hF.comp w (differentiableAt_inv_iff.mpr hw0)
+      refine (hcomp.congr_of_eventuallyEq ?_).differentiableWithinAt
+      filter_upwards [isOpen_ne.mem_nhds hw0] with u hu
+      rw [AnalyticTestFn.invExt_of_ne hu]
+  · rw [closure_ball (0 : ℂ) one_ne_zero]
+    intro w hw
+    have hnorm : ‖w‖ ≤ 1 := by simpa [Metric.mem_closedBall, dist_eq_norm] using hw
+    by_cases hw0 : w = 0
+    · subst w
+      exact (F.differentiableAt_inv).continuousAt.continuousWithinAt
+    · have hnormpos : 0 < ‖w‖ := norm_pos_iff.mpr hw0
+      have hinv : (1 : ℝ) ≤ ‖w⁻¹‖ := by
+        rw [norm_inv]
+        exact (one_le_inv₀ hnormpos).2 hnorm
+      set t : Set ℂ := Metric.closedBall (0 : ℂ) 1 ∩ {u : ℂ | u ≠ 0} with ht
+      have hmaps : Set.MapsTo (fun u : ℂ => u⁻¹) t Oexterior := by
+        intro u hu
+        have hu0 : u ≠ 0 := hu.2
+        have hupos : 0 < ‖u‖ := norm_pos_iff.mpr hu0
+        have hule : ‖u‖ ≤ 1 := by
+          simpa [Metric.mem_closedBall, dist_eq_norm] using hu.1
+        show (1 : ℝ) ≤ ‖u⁻¹‖
+        rw [norm_inv]
+        exact (one_le_inv₀ hupos).2 hule
+      have hF : ContinuousWithinAt F.toFun Oexterior w⁻¹ :=
+        (F.contDiffOn.continuousOn) w⁻¹ hinv
+      have hinvcont : ContinuousWithinAt (fun u : ℂ => u⁻¹) t w :=
+        (continuousAt_inv₀ hw0).continuousWithinAt
+      have hcomp : ContinuousWithinAt (fun u : ℂ => F.toFun u⁻¹) t w :=
+        hF.comp hinvcont hmaps
+      have hcongr : ContinuousWithinAt F.invExt t w := by
+        refine hcomp.congr (fun u hu => ?_) ?_
+        · rw [AnalyticTestFn.invExt_of_ne hu.2]
+        · rw [AnalyticTestFn.invExt_of_ne hw0]
+      have hmem : t ∈ nhdsWithin w (Metric.closedBall (0 : ℂ) 1) := by
+        rw [ht]
+        exact inter_mem_nhdsWithin _ (isOpen_ne.mem_nhds hw0)
+      exact hcongr.mono_of_mem_nhdsWithin hmem
+
+/-- [T26], Definition 3.2; the restriction `F ↦ F|_{S¹}` is injective on `𝕆`: two elements of the
+class whose circle restrictions agree agree at every point of `𝕆`.  The source states this (via
+Schwarz reflection and the identity theorem) in order to regard `𝓧` as a subset of `C^∞(S¹)`; here
+it is proved from the maximum modulus principle applied to the inverted functions, and it is what
+makes the values of the representative `toFun` inside the open unit disc irrelevant. -/
+theorem eqOn_Oexterior_of_xRestrictS1_eq {F G : AnalyticTestFn}
+    (h : xRestrictS1 F = xRestrictS1 G) : Set.EqOn F.toFun G.toFun Oexterior := by
+  have hfront : Set.EqOn F.invExt G.invExt (frontier (Metric.ball (0 : ℂ) 1)) := by
+    rw [frontier_ball (0 : ℂ) one_ne_zero]
+    intro w hw
+    have hnorm : ‖w‖ = 1 := by simpa [Metric.mem_sphere, dist_eq_norm] using hw
+    have hw0 : w ≠ 0 := by
+      intro h0
+      rw [h0] at hnorm
+      norm_num at hnorm
+    have hcirc : ‖w⁻¹‖ = 1 := by rw [norm_inv, hnorm, inv_one]
+    have hmem : w⁻¹ ∈ Metric.sphere (0 : ℂ) 1 := by
+      simpa [Metric.mem_sphere, dist_eq_norm] using hcirc
+    have hval : F.toFun w⁻¹ = G.toFun w⁻¹ := by
+      have hF := xRestrictS1_apply F ⟨w⁻¹, hmem⟩
+      have hG := xRestrictS1_apply G ⟨w⁻¹, hmem⟩
+      rw [← hF, ← hG, h]
+    rw [AnalyticTestFn.invExt_of_ne hw0, AnalyticTestFn.invExt_of_ne hw0, hval]
+  have hball : Set.EqOn F.invExt G.invExt (Metric.ball (0 : ℂ) 1) :=
+    Complex.eqOn_of_eqOn_frontier (Metric.isBounded_ball) F.diffContOnCl_invExt
+      G.diffContOnCl_invExt hfront
+  intro z hz
+  have hz1 : (1 : ℝ) ≤ ‖z‖ := hz
+  rcases eq_or_lt_of_le hz1 with hz_eq | hz_lt
+  · have hmem : z ∈ Metric.sphere (0 : ℂ) 1 := by
+      simpa [Metric.mem_sphere, dist_eq_norm] using hz_eq.symm
+    have hF := xRestrictS1_apply F ⟨z, hmem⟩
+    have hG := xRestrictS1_apply G ⟨z, hmem⟩
+    rw [← hF, ← hG, h]
+  · have hz0 : z ≠ 0 := by
+      intro h0
+      rw [h0] at hz1
+      norm_num at hz1
+    have hzinv : z⁻¹ ∈ Metric.ball (0 : ℂ) 1 := by
+      have : ‖z⁻¹‖ < 1 := by
+        rw [norm_inv]
+        exact inv_lt_one_of_one_lt₀ hz_lt
+      simpa [Metric.mem_ball, dist_eq_norm] using this
+    have hval := hball hzinv
+    have hzz : (z⁻¹)⁻¹ = z := inv_inv z
+    have hz0' : z⁻¹ ≠ 0 := inv_ne_zero hz0
+    rw [AnalyticTestFn.invExt_of_ne hz0', AnalyticTestFn.invExt_of_ne hz0', hzz] at hval
+    exact hval
 
 end
 
