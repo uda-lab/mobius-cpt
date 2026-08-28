@@ -540,3 +540,19 @@ import MobiusCPT
 #print axioms MobiusCPT.eventually_boost_error_le
 #print axioms MobiusCPT.tendsto_xRestrictUpper_approx
 #print axioms MobiusCPT.lemma_3_4_density_upper
+-- MobiusCPT/TestFunctions/AnalyticReflect.lean — the reflection `z ↦ conj z` and [T26], Lemma 3.4
+-- for `I_-`.
+#print axioms MobiusCPT.starTestFn
+#print axioms MobiusCPT.toAngle_starTestFn
+#print axioms MobiusCPT.starTestFn_starTestFn
+#print axioms MobiusCPT.starTestFn_sub
+#print axioms MobiusCPT.angleDeriv_starTestFn
+#print axioms MobiusCPT.norm_angleDeriv_starTestFn
+#print axioms MobiusCPT.cnorm_starTestFn
+#print axioms MobiusCPT.suppUpper_starTestFn
+#print axioms MobiusCPT.suppLower_starTestFn
+#print axioms MobiusCPT.tendsto_starTestFn
+#print axioms MobiusCPT.hasDerivAt_conj_conj
+#print axioms MobiusCPT.AnalyticTestFn.conj
+#print axioms MobiusCPT.xRestrictLower_conj
+#print axioms MobiusCPT.lemma_3_4_density_lower

@@ -36,3 +36,4 @@ import MobiusCPT.TestFunctions.Split
 import MobiusCPT.TestFunctions.Analytic
 import MobiusCPT.TestFunctions.AnalyticApprox
 import MobiusCPT.TestFunctions.AnalyticDensity
+import MobiusCPT.TestFunctions.AnalyticReflect
