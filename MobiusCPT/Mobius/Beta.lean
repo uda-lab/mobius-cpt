@@ -22,18 +22,20 @@ noncomputable section
 /-- [T26], §1: the Möbius action on `S¹` is smooth. -/
 theorem contMDiff_smul (g : SU11) :
     ContMDiff (𝓡 1) (𝓡 1) ∞ (fun z : Circle => g • z) := by
-  apply ContMDiff.codRestrict_sphere
-  · intro z
-    have hnum :
-        ContDiff ℝ ∞ (fun w : ℂ => g.α * w + g.β) := by
-      simpa only [smul_eq_mul] using
-        ((contDiff_const_smul (𝕜 := ℝ) (F := ℂ) g.α).add
-          (contDiff_const : ContDiff ℝ ∞ (fun _ : ℂ => g.β)))
-    have hden :
-        ContDiff ℝ ∞ (fun w : ℂ => conj g.β * w + conj g.α) := by
-      simpa only [smul_eq_mul] using
-        ((contDiff_const_smul (𝕜 := ℝ) (F := ℂ) (conj g.β)).add
-          (contDiff_const : ContDiff ℝ ∞ (fun _ : ℂ => conj g.α)))
+  have hnum :
+      ContDiff ℝ ∞ (fun w : ℂ => g.α * w + g.β) := by
+    simpa only [smul_eq_mul] using
+      ((contDiff_const_smul (𝕜 := ℝ) (F := ℂ) g.α).add
+        (contDiff_const : ContDiff ℝ ∞ (fun _ : ℂ => g.β)))
+  have hden :
+      ContDiff ℝ ∞ (fun w : ℂ => conj g.β * w + conj g.α) := by
+    simpa only [smul_eq_mul] using
+      ((contDiff_const_smul (𝕜 := ℝ) (F := ℂ) (conj g.β)).add
+        (contDiff_const : ContDiff ℝ ∞ (fun _ : ℂ => conj g.α)))
+  have hmap :
+      ContMDiff (𝓡 1) 𝓘(ℝ, ℂ) ∞
+        (fun z : Circle => (g.α * (z : ℂ) + g.β) / j g z) := by
+    intro z
     have hj : conj g.β * (z : ℂ) + conj g.α ≠ 0 := by
       simpa only [j] using j_ne_zero g z
     have hquot :
@@ -42,12 +44,15 @@ theorem contMDiff_smul (g : SU11) :
           (z : ℂ) := by
       simp only [div_eq_mul_inv]
       exact hnum.contDiffAt.mul (hden.contDiffAt.inv hj)
-    change ContMDiffAt (𝓡 1) 𝓘(ℝ, ℂ) ∞
-      ((fun w : ℂ => (g.α * w + g.β) / (conj g.β * w + conj g.α)) ∘
-        ((↑) : Circle → ℂ)) z
-    exact hquot.comp_contMDiffAt
+    have hcoe :
+        ContMDiffAt (𝓡 1) 𝓘(ℝ, ℂ) ∞ (fun w : Circle => (w : ℂ)) z :=
       (contMDiff_coe_sphere :
-        ContMDiff (𝓡 1) 𝓘(ℝ, ℂ) ∞ (fun z : Circle => (z : ℂ))).contMDiffAt
+        ContMDiff (𝓡 1) 𝓘(ℝ, ℂ) ∞ (fun w : Circle => (w : ℂ))).contMDiffAt
+    exact hquot.comp_contMDiffAt hcoe
+  have hmem :
+      ∀ z : Circle, (g.α * (z : ℂ) + g.β) / j g z ∈ Metric.sphere (0 : ℂ) 1 :=
+    fun z => (g • z).2
+  exact hmap.codRestrict_sphere hmem
 
 /-- [T26], Definition 2.4, eq. (2.2):
 `(β_d(γ)f)(z) = X_γ(γ⁻¹ z)^{d-1} f(γ⁻¹ z)`. -/
@@ -99,12 +104,11 @@ theorem contMDiff_betaFun (d : ℕ) (g : SU11) (f : TestFn) :
   have hzpow_circle :
       ContMDiffAt (𝓡 1) 𝓘(ℝ, ℝ) ∞
         (fun w : Circle => Complex.normSq (j g⁻¹ w) ^ ((d : ℤ) - 1)) z := by
-    change ContMDiffAt (𝓡 1) 𝓘(ℝ, ℝ) ∞
-      ((fun w : ℂ => Complex.normSq (q w) ^ ((d : ℤ) - 1)) ∘
-        ((↑) : Circle → ℂ)) z
-    exact hzpow.comp_contMDiffAt
+    have hcoe :
+        ContMDiffAt (𝓡 1) 𝓘(ℝ, ℂ) ∞ (fun w : Circle => (w : ℂ)) z :=
       (contMDiff_coe_sphere :
-        ContMDiff (𝓡 1) 𝓘(ℝ, ℂ) ∞ (fun z : Circle => (z : ℂ))).contMDiffAt
+        ContMDiff (𝓡 1) 𝓘(ℝ, ℂ) ∞ (fun w : Circle => (w : ℂ))).contMDiffAt
+    exact hzpow.comp_contMDiffAt hcoe
   have hscalar :
       ContMDiffAt (𝓡 1) 𝓘(ℝ, ℂ) ∞
         (fun w : Circle =>
