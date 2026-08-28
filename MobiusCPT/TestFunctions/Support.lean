@@ -300,8 +300,10 @@ private theorem periodic_iteratedDeriv {g : ℝ → ℂ} {T : ℝ}
   | zero => simpa only [iteratedDeriv_zero] using hper
   | succ j ih => simpa only [iteratedDeriv_succ] using deriv_periodic ih
 
-/-- A pair of periodic functions agreeing on one half-open period interval agree everywhere. -/
-private theorem periodic_eq_of_eq_on_Ico {q r : ℝ → ℂ} {T : ℝ} (hT : 0 < T)
+/-- A pair of periodic functions agreeing on one half-open period interval agree everywhere.
+Made available outside this file so that `TestFunctions/Split.lean` and
+`TestFunctions/AnalyticReflect.lean` share the single periodisation argument. -/
+theorem periodic_eq_of_eq_on_Ico {q r : ℝ → ℂ} {T : ℝ} (hT : 0 < T)
     (hq : Function.Periodic q T) (hr : Function.Periodic r T)
     (hqr : ∀ x ∈ Set.Ico 0 T, q x = r x) : q = r := by
   funext x

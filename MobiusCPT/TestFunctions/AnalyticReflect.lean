@@ -382,30 +382,6 @@ private theorem periodize_neg_eq (g : ℝ → ℂ) (θ : ℝ) :
         periodize (2 * Real.pi) g (-θ + 2 * Real.pi) := hper.symm
     _ = periodize (2 * Real.pi) g (2 * Real.pi - θ) := by congr 1 <;> ring
 
-/-- Two periodic functions which agree on one half-open period agree everywhere. -/
-private theorem periodic_eq_of_eq_on_Ico_reflect {q r : ℝ → ℂ} {T : ℝ} (hT : 0 < T)
-    (hq : Function.Periodic q T) (hr : Function.Periodic r T)
-    (hqr : ∀ x ∈ Set.Ico 0 T, q x = r x) : q = r := by
-  funext x
-  let k : ℤ := ⌊x / T⌋
-  let y : ℝ := x - (k : ℝ) * T
-  have hy0 : 0 ≤ y := by
-    dsimp [y, k]
-    exact Int.sub_floor_div_mul_nonneg x hT
-  have hyT : y < T := by
-    dsimp [y, k]
-    exact Int.sub_floor_div_mul_lt x hT
-  have hy : y ∈ Set.Ico 0 T := ⟨hy0, hyT⟩
-  have hxy : x = y + (k : ℝ) * T := by
-    dsimp [y]
-    ring
-  have hqk := hq.int_mul k y
-  have hrk := hr.int_mul k y
-  calc
-    q x = q y := by rw [hxy]; exact hqk
-    _ = r y := hqr y hy
-    _ = r x := by rw [hxy, hrk]
-
 /-- [T26], Definition 3.2; the reflection exchanges the two semicircle restrictions. -/
 theorem xRestrictLower_conj (F : AnalyticTestFn) :
     xRestrictLower F.conj = starTestFn (xRestrictUpper F) := by
@@ -413,7 +389,7 @@ theorem xRestrictLower_conj (F : AnalyticTestFn) :
   rw [xRestrictLower, toAngle_splitLower, toAngle_starTestFn, xRestrictUpper,
     toAngle_splitUpper]
   simp only [toAngle_xRestrictS1]
-  apply periodic_eq_of_eq_on_Ico_reflect Real.two_pi_pos
+  apply periodic_eq_of_eq_on_Ico Real.two_pi_pos
     (periodic_periodize (2 * Real.pi) Real.two_pi_pos
       (cutIcc Real.pi (2 * Real.pi)
         (fun y : ℝ => (F.conj).toFun (Circle.exp y))))

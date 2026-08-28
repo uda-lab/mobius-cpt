@@ -43,30 +43,6 @@ private theorem periodic_iteratedDeriv_split {g : ℝ → ℂ} {T : ℝ}
   | zero => simpa only [iteratedDeriv_zero] using hper
   | succ j ih => simpa only [iteratedDeriv_succ] using deriv_periodic ih
 
-/-- A pair of periodic angle functions agreeing on one half-open period agrees everywhere. -/
-private theorem periodic_eq_of_eq_on_Ico_split {q r : ℝ → ℂ} {T : ℝ} (hT : 0 < T)
-    (hq : Function.Periodic q T) (hr : Function.Periodic r T)
-    (hqr : ∀ x ∈ Set.Ico 0 T, q x = r x) : q = r := by
-  funext x
-  let k : ℤ := ⌊x / T⌋
-  let y : ℝ := x - (k : ℝ) * T
-  have hy0 : 0 ≤ y := by
-    dsimp [y, k]
-    exact Int.sub_floor_div_mul_nonneg x hT
-  have hyT : y < T := by
-    dsimp [y, k]
-    exact Int.sub_floor_div_mul_lt x hT
-  have hy : y ∈ Set.Ico 0 T := ⟨hy0, hyT⟩
-  have hxy : x = y + (k : ℝ) * T := by
-    dsimp [y]
-    ring
-  have hqk := hq.int_mul k y
-  have hrk := hr.int_mul k y
-  calc
-    q x = q y := by rw [hxy]; exact hqk
-    _ = r y := hqr y hy
-    _ = r x := by rw [hxy, hrk]
-
 /-- [T26], §3; endpoint flatness gives zero angle derivatives at the endpoint at angle `2π`. -/
 theorem IsEndpointFlat.two_pi {f : TestFn} (h : IsEndpointFlat f) (j : ℕ) :
     iteratedDeriv j (toAngle f) (2 * Real.pi) = 0 := by
@@ -154,7 +130,7 @@ theorem splitUpper_of_suppUpper {f : TestFn} (hf : SuppUpper f) :
     splitUpper f (IsEndpointFlat.of_suppUpper hf) = f := by
   let h : IsEndpointFlat f := IsEndpointFlat.of_suppUpper hf
   apply toAngle_injective
-  apply periodic_eq_of_eq_on_Ico_split Real.two_pi_pos
+  apply periodic_eq_of_eq_on_Ico Real.two_pi_pos
     (periodic_toAngle (splitUpper f h)) (periodic_toAngle f)
   intro θ hθ
   by_cases hθle : θ ≤ Real.pi
@@ -179,7 +155,7 @@ theorem splitLower_of_suppLower {f : TestFn} (hf : SuppLower f) :
     splitLower f (IsEndpointFlat.of_suppLower hf) = f := by
   let h : IsEndpointFlat f := IsEndpointFlat.of_suppLower hf
   apply toAngle_injective
-  apply periodic_eq_of_eq_on_Ico_split Real.two_pi_pos
+  apply periodic_eq_of_eq_on_Ico Real.two_pi_pos
     (periodic_toAngle (splitLower f h)) (periodic_toAngle f)
   intro θ hθ
   by_cases hθ0 : θ = 0
@@ -218,7 +194,7 @@ theorem splitUpper_add_splitLower (f : TestFn) (h : IsEndpointFlat f) :
   apply toAngle_injective
   rw [toAngle_add, toAngle_splitUpper, toAngle_splitLower]
   symm
-  apply periodic_eq_of_eq_on_Ico_split Real.two_pi_pos (periodic_toAngle f)
+  apply periodic_eq_of_eq_on_Ico Real.two_pi_pos (periodic_toAngle f)
     ((periodic_periodize (2 * Real.pi) Real.two_pi_pos
       (cutIcc 0 Real.pi (toAngle f))).add
       (periodic_periodize (2 * Real.pi) Real.two_pi_pos

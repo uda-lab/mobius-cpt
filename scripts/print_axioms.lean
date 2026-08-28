@@ -562,3 +562,4 @@ import MobiusCPT
 #print axioms MobiusCPT.AnalyticTestFn.diffContOnCl_invExt
 #print axioms MobiusCPT.eqOn_Oexterior_of_xRestrictS1_eq
 #print axioms MobiusCPT.AnalyticTestFn.evalSphere_congr
+#print axioms MobiusCPT.periodic_eq_of_eq_on_Ico
