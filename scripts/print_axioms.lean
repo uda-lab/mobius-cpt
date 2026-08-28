@@ -772,3 +772,11 @@ import MobiusCPT
 #print axioms MobiusCPT.eventually_forall_norm_angleDeriv_diff_quotient_sub_lt
 #print axioms MobiusCPT.hasTestFnDerivAt_betaBoost
 #print axioms MobiusCPT.differentiableOn_clm_comp_betaBoost
+
+-- MobiusCPT/Wightman/BoostCurve.lean — [T26] Lemma 3.6, second clause: the scalar functions of
+-- Definition 3.1 built from the complex boost are continuous on the closed strip and holomorphic
+-- in its interior (Issue #8).
+#print axioms MobiusCPT.continuousOn_compatApply_multiSmear_betaBoost
+#print axioms MobiusCPT.differentiableOn_compatApply_multiSmear_betaBoost
+#print axioms MobiusCPT.continuousOn_compatApply_smearedProduct_betaBoost
+#print axioms MobiusCPT.differentiableOn_compatApply_smearedProduct_betaBoost

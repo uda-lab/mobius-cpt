@@ -56,3 +56,4 @@ import MobiusCPT.Mobius.ComplexBetaHoloSlice
 import MobiusCPT.Mobius.ComplexBetaDeriv
 import MobiusCPT.Mobius.ComplexBetaDerivFn
 import MobiusCPT.Mobius.ComplexBetaHolo
+import MobiusCPT.Wightman.BoostCurve
