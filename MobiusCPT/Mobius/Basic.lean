@@ -466,7 +466,10 @@ theorem boostMat_smul_mem_lowerArc (t : ℝ) {z : Circle} (hz : z ∈ lowerArc) 
   rw [im_boostMat_smul]
   exact div_neg_of_neg_of_pos hz (Complex.normSq_pos.mpr (j_ne_zero (boostMat t) z))
 
-/-- [T26], §1: `{\pm 1} ⊆ SU(1,1)`, the kernel of the action on `S¹`. -/
+/-- [T26], §1: the subgroup `{±1} ⊆ SU(1,1)` that is quotiented out to form
+`Möb = PSU(1,1)`. Its two elements act trivially on `S¹` (`smul_neg_eq`), which is what makes
+the action descend to the quotient; that it is the *whole* kernel of the action is not claimed
+here and is not needed, since [T26] §1 defines `Möb` as `SU(1,1)/{±1}`. -/
 def signSubgroup : Subgroup SU11 where
   carrier := {1, SU11.neg 1}
   one_mem' := by simp

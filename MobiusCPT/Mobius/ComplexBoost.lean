@@ -134,10 +134,12 @@ theorem normSq_cnum_neg_sub_normSq_cden_neg (τ : ℂ) (z : Circle) :
 theorem norm_cden_neg_le_norm_cnum_neg {τ : ℂ} (h₀ : 0 ≤ τ.im)
     (h₁ : τ.im ≤ Real.pi) {z : Circle} (hz : 0 ≤ (z : ℂ).im) :
     ‖cden (-τ) z‖ ≤ ‖cnum (-τ) z‖ := by
+  -- `hsin` is where the closed-strip hypotheses `h₀`, `h₁` do their work, and `hz` is where the
+  -- closed-semicircle hypothesis does: the difference of norm squares is `2 sin(Im τ) · Im z`.
   have hsin : 0 ≤ Real.sin τ.im := Real.sin_nonneg_of_nonneg_of_le_pi h₀ h₁
   have hdiff : 0 ≤ Complex.normSq (cnum (-τ) z) - Complex.normSq (cden (-τ) z) := by
     rw [normSq_cnum_neg_sub_normSq_cden_neg]
-    positivity
+    exact mul_nonneg (mul_nonneg (by norm_num) hsin) hz
   apply (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
   rw [Complex.sq_norm, Complex.sq_norm]
   linarith
