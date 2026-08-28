@@ -285,6 +285,20 @@ theorem beta_boostMat_apply (d : ℕ) (t : ℝ) (f : TestFn) (z : Circle) :
         f (boostMat (-t) • z) := by
   rw [beta_apply, X_boostMat_inv_smul, boostMat_inv]
 
+namespace Mob
+
+/-- [T26], eq. (3.4)-(3.5), at the level of `Möb = PSU(1,1)`:
+`(β_d(v_t)f)(z) = (cosh t + Re(z) sinh t)^{d-1} f(v_{-t} · z)`. This is the form the capstone
+uses, since the main theorem is stated over this instance. -/
+theorem beta_boost_apply (d : ℕ) (t : ℝ) (f : TestFn) (z : Circle) :
+    beta d (boost t) f z =
+      (((Real.cosh t + (z : ℂ).re * Real.sinh t) ^ ((d : ℤ) - 1) : ℝ) : ℂ) *
+        f (boost (-t) • z) := by
+  rw [boost, beta_mk, boost, mk_smul]
+  exact beta_boostMat_apply d t f z
+
+end Mob
+
 end
 
 end MobiusCPT

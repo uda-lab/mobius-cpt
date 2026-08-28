@@ -1,4 +1,5 @@
 import MobiusCPT.TestFunctions.Support
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.GroupTheory.QuotientGroup.Basic
 
 /-!
@@ -365,6 +366,12 @@ def boostMat (t : ℝ) : SU11 :=
     simpa only [Complex.normSq_ofReal, Complex.normSq_neg, pow_two] using
       Real.cosh_sq_sub_sinh_sq (t / 2)⟩
 
+/-- [T26], §3: the first coordinate of the boost matrix. -/
+theorem boostMat_alpha (t : ℝ) : (boostMat t).α = ((Real.cosh (t / 2) : ℝ) : ℂ) := rfl
+
+/-- [T26], §3: the second coordinate of the boost matrix. -/
+theorem boostMat_beta (t : ℝ) : (boostMat t).β = -((Real.sinh (t / 2) : ℝ) : ℂ) := rfl
+
 /-- [T26], §3: the boost matrix at parameter zero is the identity. -/
 @[simp]
 theorem boostMat_zero : boostMat 0 = 1 := by
@@ -596,8 +603,8 @@ theorem rot_two_pi : rot (2 * Real.pi) = 1 := by
   rw [rot, rotMat_two_pi, mk_neg, mk_one]
 
 /-- [T26], §1: the rotation subgroup is not trivial — `r_π` moves the point `1` to `-1`.
-Together with `rot_two_pi` this pins the period at `2π` rather than at some smaller value,
-and rules out a degenerate model in which `Möb` collapses to the trivial group. -/
+This rules out a degenerate model in which `Möb` collapses to the trivial group, so that
+`rot_two_pi` has content. -/
 theorem rot_pi_ne_one : rot Real.pi ≠ 1 := by
   intro h
   have h1 : rot Real.pi • (1 : Circle) = (1 : Circle) := by
@@ -607,6 +614,36 @@ theorem rot_pi_ne_one : rot Real.pi ≠ 1 := by
     congrArg (fun w : Circle => (w : ℂ)) h1
   rw [Circle.coe_exp, Complex.exp_pi_mul_I, Circle.coe_one] at h2
   exact (by norm_num : (-1 : ℂ) ≠ 1) h2
+
+/-- [T26], §1: the kernel of the rotation subgroup is contained in `2πℤ`. Since the kernel is a
+subgroup of `ℝ` (by `rot_zero` and `rot_add`) and contains `2π` (by `rot_two_pi`), the two
+together pin the period of `θ ↦ r_θ` at exactly `2π`. -/
+theorem exists_int_of_rot_eq_one {θ : ℝ} (h : rot θ = 1) :
+    ∃ n : ℤ, θ = n * (2 * Real.pi) := by
+  have h1 : rot θ • (1 : Circle) = (1 : Circle) := by
+    rw [h, one_smul]
+  rw [rot_smul, mul_one] at h1
+  exact Circle.exp_eq_one.mp h1
+
+/-- [T26], §3: the boost subgroup is faithful — `v_t` is the identity of `Möb` only at `t = 0`.
+With `boost_add` this makes `t ↦ v_t` a genuine one-parameter flow rather than a collapsed
+family, which is what the continued-boost argument of [T26] §3 relies on. -/
+theorem boost_ne_one {t : ℝ} (ht : t ≠ 0) : boost t ≠ 1 := by
+  intro h
+  rw [boost, ← mk_one, mk_eq_mk] at h
+  rcases h with h | h
+  · have hβ : ((1 : SU11).β) = (boostMat t).β := congrArg SU11.β h
+    rw [SU11.one_beta, boostMat_beta] at hβ
+    have hs : ((Real.sinh (t / 2) : ℝ) : ℂ) = 0 := neg_eq_zero.mp hβ.symm
+    have ht2 : Real.sinh (t / 2) = 0 := Complex.ofReal_eq_zero.mp hs
+    exact ht (by have := Real.sinh_eq_zero.mp ht2; linarith)
+  · have hα : ((1 : SU11).α) = (SU11.neg (boostMat t)).α := congrArg SU11.α h
+    rw [SU11.one_alpha, SU11.neg_alpha, boostMat_alpha] at hα
+    have hc : (1 : ℝ) = -Real.cosh (t / 2) := by
+      have h1 := congrArg Complex.re hα
+      simpa only [Complex.one_re, Complex.neg_re, Complex.ofReal_re] using h1
+    have := Real.one_le_cosh (t / 2)
+    linarith
 
 end Mob
 

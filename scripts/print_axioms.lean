@@ -245,6 +245,8 @@ import MobiusCPT
 #print axioms MobiusCPT.rotMat_two_pi
 #print axioms MobiusCPT.rotMat_smul
 #print axioms MobiusCPT.boostMat
+#print axioms MobiusCPT.boostMat_alpha
+#print axioms MobiusCPT.boostMat_beta
 #print axioms MobiusCPT.boostMat_zero
 #print axioms MobiusCPT.boostMat_add
 #print axioms MobiusCPT.j_boostMat
@@ -274,6 +276,8 @@ import MobiusCPT
 #print axioms MobiusCPT.Mob.boost_add
 #print axioms MobiusCPT.Mob.rot_two_pi
 #print axioms MobiusCPT.Mob.rot_pi_ne_one
+#print axioms MobiusCPT.Mob.exists_int_of_rot_eq_one
+#print axioms MobiusCPT.Mob.boost_ne_one
 
 -- MobiusCPT/Mobius/ComplexBoost.lean — the complex boost v_tau, the closed strip and v_{i*pi} = inversion.
 #print axioms MobiusCPT.cnum
@@ -339,6 +343,7 @@ import MobiusCPT
 #print axioms MobiusCPT.beta_rotMat_monomial
 #print axioms MobiusCPT.Mob.beta_rot_monomial
 #print axioms MobiusCPT.beta_boostMat_apply
+#print axioms MobiusCPT.Mob.beta_boost_apply
 
 -- MobiusCPT/Mobius/Covariance.lean — the covariance rewrite moving U(gamma) through smeared products.
 #print axioms MobiusCPT.WightmanData.IsCovariant.smear_comm
