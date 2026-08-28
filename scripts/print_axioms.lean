@@ -739,3 +739,9 @@ import MobiusCPT
 #print axioms MobiusCPT.betaBoostVal_add_ofReal
 #print axioms MobiusCPT.beta_boostMat_betaBoost
 #print axioms MobiusCPT.betaBoost_I_mul_pi
+
+-- MobiusCPT/Mobius/ComplexBetaHoloSlice.lean — [T26] Lemma 3.6: holomorphy in the strip parameter
+-- of the complex boost and of each of its angle derivatives (Issue #8).
+#print axioms MobiusCPT.norm_cden_div_cnum_lt_one
+#print axioms MobiusCPT.differentiableOn_betaBoostVal
+#print axioms MobiusCPT.differentiableOn_betaBoostSlice

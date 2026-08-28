@@ -52,3 +52,4 @@ import MobiusCPT.Mobius.ComplexBetaLawsCore
 import MobiusCPT.Mobius.ComplexBetaDef
 import MobiusCPT.Mobius.ComplexBetaCont
 import MobiusCPT.Mobius.ComplexBetaLaws
+import MobiusCPT.Mobius.ComplexBetaHoloSlice
