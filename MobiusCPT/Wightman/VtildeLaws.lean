@@ -12,9 +12,9 @@ namespace WightmanData
 
 /-- [T26], Definition 3.1; translating a point by a real number preserves membership in the
 interior of the strip. -/
-private theorem add_ofReal_mem_interior_closedStrip_iff (τ : ℂ) (t : ℝ) (z : ℂ) :
+private theorem add_ofReal_mem_interior_strip_iff (τ : ℂ) (t : ℝ) (z : ℂ) :
     z + (t : ℂ) ∈ interior (strip τ) ↔ z ∈ interior (strip τ) := by
-  simp only [interior_closedStrip, Set.mem_setOf_eq, Complex.add_im, Complex.ofReal_im,
+  simp only [interior_strip, Set.mem_setOf_eq, Complex.add_im, Complex.ofReal_im,
     add_zero]
 
 /-- [T26], Definition 3.1; translating the parameter by a real number translates the companion
@@ -25,9 +25,9 @@ theorem IsBoostContinuation.add_ofReal {W : WightmanData G TF 𝓓 𝓕} {τ : �
     W.IsBoostContinuation (τ + (t : ℂ)) Φ (W.boost t Ψ) Gf := by
   intro lam
   refine ⟨?_, ?_, ?_, ?_⟩
-  · rw [closedStrip_add_ofReal]
+  · rw [strip_add_ofReal]
     exact (h lam).1
-  · rw [closedStrip_add_ofReal]
+  · rw [strip_add_ofReal]
     exact (h lam).2.1
   · exact (h lam).2.2.1
   · intro s
@@ -53,16 +53,16 @@ theorem IsBoostContinuation.precomp_boost
   have hmaps : Set.MapsTo (fun z : ℂ => z + (t : ℂ)) (strip τ)
       (strip (τ + (t : ℂ))) := by
     intro z hz
-    rw [closedStrip_add_ofReal]
-    exact (add_ofReal_mem_closedStrip_iff τ t z).2 hz
+    rw [strip_add_ofReal]
+    exact (add_ofReal_mem_strip_iff τ t z).2 hz
   have hdiff : DifferentiableOn ℂ (fun z : ℂ => z + (t : ℂ))
       (interior (strip τ)) :=
     (differentiable_id.add_const (t : ℂ)).differentiableOn
   have hmaps' : Set.MapsTo (fun z : ℂ => z + (t : ℂ))
       (interior (strip τ)) (interior (strip (τ + (t : ℂ)))) := by
     intro z hz
-    rw [closedStrip_add_ofReal]
-    exact (add_ofReal_mem_interior_closedStrip_iff τ t z).2 hz
+    rw [strip_add_ofReal]
+    exact (add_ofReal_mem_interior_strip_iff τ t z).2 hz
   refine ⟨(h lam).1.comp' hcont hmaps, (h lam).2.1.fun_comp hdiff hmaps', ?_, ?_⟩
   · intro s
     change Gf lam ((s : ℂ) + (t : ℂ)) =
@@ -98,9 +98,9 @@ theorem IsBoostContinuation.postcomp_boost
       (strip (τ + (t : ℂ))) (strip τ) := by
     intro z hz
     have hz' : z ∈ strip τ := by
-      simpa only [closedStrip_add_ofReal] using hz
+      simpa only [strip_add_ofReal] using hz
     simpa only [sub_eq_add_neg, Complex.ofReal_neg] using
-      (add_ofReal_mem_closedStrip_iff τ (-t) z).2 hz'
+      (add_ofReal_mem_strip_iff τ (-t) z).2 hz'
   have hdiff : DifferentiableOn ℂ (fun z : ℂ => z - (t : ℂ))
       (interior (strip (τ + (t : ℂ)))) :=
     (differentiable_id.sub_const (t : ℂ)).differentiableOn
@@ -108,9 +108,9 @@ theorem IsBoostContinuation.postcomp_boost
       (interior (strip (τ + (t : ℂ)))) (interior (strip τ)) := by
     intro z hz
     have hz' : z ∈ interior (strip τ) := by
-      simpa only [closedStrip_add_ofReal] using hz
+      simpa only [strip_add_ofReal] using hz
     simpa only [sub_eq_add_neg, Complex.ofReal_neg] using
-      (add_ofReal_mem_interior_closedStrip_iff τ (-t) z).2 hz'
+      (add_ofReal_mem_interior_strip_iff τ (-t) z).2 hz'
   refine ⟨(h lam).1.comp' hcont hmaps, (h lam).2.1.fun_comp hdiff hmaps', ?_, ?_⟩
   · intro s
     change Gf lam ((s : ℂ) - (t : ℂ)) =

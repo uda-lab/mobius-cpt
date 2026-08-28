@@ -49,7 +49,7 @@ theorem isBoostContinuation_eqOn (W : WightmanData G TF 𝓓 𝓕) {τ : ℂ} {�
     (h : W.IsBoostContinuation τ Φ Ψ Gf) (h' : W.IsBoostContinuation τ Φ Ψ' Gf')
     (lam : W.toWightmanStruct.Compat) :
     Set.EqOn (Gf lam) (Gf' lam) (strip τ) := by
-  apply eqOn_closedStrip_of_eqOn_ofReal
+  apply eqOn_strip_of_eqOn_ofReal
       (h lam).1 (h lam).2.1 (h' lam).1 (h' lam).2.1
   intro t
   rw [(h lam).2.2.1 t, (h' lam).2.2.1 t]
@@ -65,7 +65,7 @@ theorem vtildeVal_unique (W : WightmanData G TF 𝓓 𝓕)
   apply (W.toWightmanStruct.actsRegularly_iff.mp hreg) Ψ Ψ'
   intro lam
   have hboundary := W.isBoostContinuation_eqOn hGf hGf' lam
-    (add_ofReal_mem_closedStrip τ 0)
+    (add_ofReal_mem_strip τ 0)
   rw [(hGf lam).2.2.2 0, (hGf' lam).2.2.2 0] at hboundary
   simpa only [W.boost_zero] using hboundary
 

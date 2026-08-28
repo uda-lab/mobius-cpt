@@ -49,7 +49,7 @@ theorem vtilde_real_of_boostOrbitContinuous (W : WightmanData G TF 𝓓 𝓕)
   intro lam
   refine ⟨?_, ?_, ?_, ?_⟩
   · exact ((hcont lam Φ).comp Complex.continuous_re).continuousOn
-  · rw [interior_closedStrip_ofReal]
+  · rw [interior_strip_ofReal]
     exact differentiableOn_empty
   · intro s
     simp only [Gf, Complex.ofReal_re]
@@ -72,7 +72,7 @@ theorem boostOrbitContinuous_of_vtilde_real (W : WightmanData G TF 𝓓 𝓕)
   obtain ⟨Gf, hGf⟩ := hΨ
   have hGfReal : Continuous (Gf lam ∘ fun s : ℝ => (s : ℂ)) :=
     (hGf lam).1.comp_continuous Complex.continuous_ofReal
-      (fun s => ofReal_mem_closedStrip ((0 : ℝ) : ℂ) s)
+      (fun s => ofReal_mem_strip ((0 : ℝ) : ℂ) s)
   exact hGfReal.congr fun s => (hGf lam).2.2.1 s
 
 /-- [T26], Definition 2.4; covariance rewritten as

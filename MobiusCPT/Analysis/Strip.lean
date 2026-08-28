@@ -20,85 +20,90 @@ determined by `Im τ` alone: a real translation does not make the strip oblique,
 def strip (τ : ℂ) : Set ℂ :=
   {z : ℂ | min 0 τ.im ≤ z.im ∧ z.im ≤ max 0 τ.im}
 
-/-- The defining description of the closed strip. -/
-theorem closedStrip_eq :
+/-- [T26], Definition 3.1; the geometric closed strip bounded by `ℝ` and `ℝ + τ`. For real `τ`
+this degenerates to `ℝ`. -/
+theorem strip_eq :
     ∀ τ : ℂ, strip τ = { z : ℂ | min 0 τ.im ≤ z.im ∧ z.im ≤ max 0 τ.im } := by
   intro τ
   rfl
 
-/-- Membership in the closed strip in terms of the imaginary part. -/
-theorem mem_closedStrip {τ z : ℂ} :
+/-- [T26], Definition 3.1; membership in the closed strip is a condition on the imaginary part
+alone. -/
+theorem mem_strip {τ z : ℂ} :
     z ∈ strip τ ↔ min 0 τ.im ≤ z.im ∧ z.im ≤ max 0 τ.im := by
   rfl
 
-/-- The closed strip as a product in real and imaginary coordinates. -/
-theorem closedStrip_eq_reProdIm (τ : ℂ) :
+/-- [T26], Definition 3.1; the closed strip in real and imaginary coordinates, the form in which
+mathlib's product lemmas compute its interior and closure. -/
+theorem strip_eq_reProdIm (τ : ℂ) :
     strip τ = Set.univ ×ℂ Set.Icc (min 0 τ.im) (max 0 τ.im) := by
   ext z
-  simp only [mem_closedStrip, Complex.mem_reProdIm, Set.mem_univ, Set.mem_Icc, true_and]
+  simp only [mem_strip, Complex.mem_reProdIm, Set.mem_univ, Set.mem_Icc, true_and]
 
-/-- The interior of the closed strip is obtained by making both imaginary inequalities strict. -/
-theorem interior_closedStrip (τ : ℂ) :
+/-- [T26], Definition 3.1; the interior of the closed strip makes both imaginary inequalities
+strict, so for real `τ` it is empty. -/
+theorem interior_strip (τ : ℂ) :
     interior (strip τ) =
       { z : ℂ | min 0 τ.im < z.im ∧ z.im < max 0 τ.im } := by
-  rw [closedStrip_eq_reProdIm, Complex.interior_reProdIm, interior_univ, interior_Icc]
+  rw [strip_eq_reProdIm, Complex.interior_reProdIm, interior_univ, interior_Icc]
   ext z
   simp only [Complex.mem_reProdIm, Set.mem_univ, Set.mem_Ioo, Set.mem_setOf_eq, true_and]
 
 /-- [T26], Definition 3.1; the real axis is a boundary line of every strip. -/
-theorem ofReal_mem_closedStrip (τ : ℂ) (t : ℝ) : (t : ℂ) ∈ strip τ := by
-  rw [mem_closedStrip]
+theorem ofReal_mem_strip (τ : ℂ) (t : ℝ) : (t : ℂ) ∈ strip τ := by
+  rw [mem_strip]
   simp only [Complex.ofReal_im]
   exact ⟨min_le_left 0 τ.im, le_max_left 0 τ.im⟩
 
 /-- [T26], Definition 3.1; `ℝ + τ` is the other boundary line. -/
-theorem add_ofReal_mem_closedStrip (τ : ℂ) (t : ℝ) :
+theorem add_ofReal_mem_strip (τ : ℂ) (t : ℝ) :
     τ + (t : ℂ) ∈ strip τ := by
-  rw [mem_closedStrip]
+  rw [mem_strip]
   simp only [Complex.add_im, Complex.ofReal_im, add_zero]
   exact ⟨min_le_right 0 τ.im, le_max_right 0 τ.im⟩
 
 /-- [T26], Definition 3.1 and footnote 7; a real translation of the parameter does not move the
 strip. -/
-theorem closedStrip_add_ofReal (τ : ℂ) (t : ℝ) :
+theorem strip_add_ofReal (τ : ℂ) (t : ℝ) :
     strip (τ + (t : ℂ)) = strip τ := by
   ext z
-  simp only [mem_closedStrip, Complex.add_im, Complex.ofReal_im, add_zero]
+  simp only [mem_strip, Complex.add_im, Complex.ofReal_im, add_zero]
 
 /-- [T26], Definition 3.1; the strip is invariant under real translation of its points. -/
-theorem add_ofReal_mem_closedStrip_iff (τ : ℂ) (t : ℝ) (z : ℂ) :
+theorem add_ofReal_mem_strip_iff (τ : ℂ) (t : ℝ) (z : ℂ) :
     z + (t : ℂ) ∈ strip τ ↔ z ∈ strip τ := by
-  simp only [mem_closedStrip, Complex.add_im, Complex.ofReal_im, add_zero]
+  simp only [mem_strip, Complex.add_im, Complex.ofReal_im, add_zero]
 
 /-- [T26], Definition 3.1; negation exchanges the strip of `τ` with the strip of `-τ`. -/
-theorem neg_mem_closedStrip_iff (τ z : ℂ) :
+theorem neg_mem_strip_iff (τ z : ℂ) :
     -z ∈ strip (-τ) ↔ z ∈ strip τ := by
   rcases le_total 0 τ.im with hτ | hτ
-  · simp only [mem_closedStrip, Complex.neg_im, min_eq_left hτ, max_eq_right hτ,
+  · simp only [mem_strip, Complex.neg_im, min_eq_left hτ, max_eq_right hτ,
       min_eq_right (neg_nonpos.mpr hτ), max_eq_left (neg_nonpos.mpr hτ), neg_le_neg_iff]
     constructor <;> intro h <;> constructor <;> linarith
-  · simp only [mem_closedStrip, Complex.neg_im, min_eq_right hτ, max_eq_left hτ,
+  · simp only [mem_strip, Complex.neg_im, min_eq_right hτ, max_eq_left hτ,
       min_eq_left (neg_nonneg.mpr hτ), max_eq_right (neg_nonneg.mpr hτ), neg_le_neg_iff]
     constructor <;> intro h <;> constructor <;> linarith
 
 /-- [T26], Definition 3.1; a real parameter degenerates the strip to the real axis. -/
-theorem closedStrip_ofReal (t : ℝ) : strip (t : ℂ) = { z : ℂ | z.im = 0 } := by
+theorem strip_ofReal (t : ℝ) : strip (t : ℂ) = { z : ℂ | z.im = 0 } := by
   ext z
-  simp only [mem_closedStrip, Complex.ofReal_im, min_self, max_self, Set.mem_setOf_eq]
+  simp only [mem_strip, Complex.ofReal_im, min_self, max_self, Set.mem_setOf_eq]
   exact ⟨fun h ↦ le_antisymm h.2 h.1, fun h ↦ by simp [h]⟩
 
 /-- [T26], Definition 3.1; the degenerate strip has empty interior, so holomorphy there is
 vacuous. -/
-theorem interior_closedStrip_ofReal (t : ℝ) :
+theorem interior_strip_ofReal (t : ℝ) :
     interior (strip (t : ℂ)) = ∅ := by
-  rw [interior_closedStrip]
+  rw [interior_strip]
   ext z
   simp only [Set.mem_setOf_eq, Complex.ofReal_im, min_self, max_self,
     Set.mem_empty_iff_false, iff_false, not_and, not_lt]
   exact fun h ↦ h.le
 
-/-- A continuous function that vanishes on a dense subset of its domain vanishes everywhere on
-that domain. -/
+/-- [T26], Definition 3.1, boundary step; a function continuous on `t` that vanishes on a subset
+`s` whose closure covers `t` vanishes on all of `t`. This is what carries the conclusion from the
+open strip to the far boundary line `ℝ + τ`. -/
 private theorem eqZero_of_subset_closure {f : ℂ → ℂ} {s t : Set ℂ}
     (hf : ContinuousOn f t) (hst : s ⊆ t) (hts : t ⊆ closure s)
     (h : ∀ z ∈ s, f z = 0) : ∀ z ∈ t, f z = 0 := by
@@ -112,9 +117,11 @@ private theorem eqZero_of_subset_closure {f : ℂ → ℂ} {s t : Set ℂ}
     tendsto_const_nhds.congr' heq.symm
   exact tendsto_nhds_unique hf_lim hzero_lim
 
-/-- The positive-height case of boundary uniqueness, proved by zero extension and Morera's
-theorem. -/
-private theorem eqOn_zero_closedStrip_of_im_pos {τ : ℂ} {f : ℂ → ℂ}
+/-- [T26], Definition 3.1; the positive-height case of boundary uniqueness. `f` is extended by
+zero below the real axis — no Schwarz reflection and no conjugation is needed, because `f` vanishes
+identically on `ℝ` rather than merely being real there — the extension is holomorphic on the
+enlarged open strip by Morera, and the identity theorem finishes. -/
+private theorem eqOn_zero_strip_of_im_pos {τ : ℂ} {f : ℂ → ℂ}
     (hc : ContinuousOn f (strip τ))
     (hd : DifferentiableOn ℂ f (interior (strip τ)))
     (h0 : ∀ t : ℝ, f (t : ℂ) = 0) (hb : 0 < τ.im) :
@@ -171,7 +178,7 @@ private theorem eqOn_zero_closedStrip_of_im_pos {τ : ℂ} {f : ℂ → ℂ}
     have hA_at (hzA : 0 ≤ z.im) : ContinuousWithinAt F (U ∩ A) z := by
       have hsub : U ∩ A ⊆ strip τ := by
         intro y hy
-        rw [mem_closedStrip, min_eq_left hb.le, max_eq_right hb.le]
+        rw [mem_strip, min_eq_left hb.le, max_eq_right hb.le]
         exact ⟨hy.2, ((hU_mem y).mp hy.1).2.le⟩
       have hzstrip : z ∈ strip τ := hsub ⟨hz, hzA⟩
       exact (hc z hzstrip).congr_mono
@@ -251,7 +258,7 @@ private theorem eqOn_zero_closedStrip_of_im_pos {τ : ℂ} {f : ℂ → ℂ}
             Set.Ioo (min z.im w.im) (max z.im w.im) ⊆
           interior (strip τ) := by
       intro x hx
-      rw [interior_closedStrip]
+      rw [interior_strip]
       rw [Complex.mem_reProdIm] at hx
       rw [min_eq_left hb.le, max_eq_right hb.le]
       constructor
@@ -361,7 +368,7 @@ private theorem eqOn_zero_closedStrip_of_im_pos {τ : ℂ} {f : ℂ → ℂ}
       _ = 0 := by simpa only [Pi.zero_apply] using hFzero hzU
   have hs_sub : s ⊆ strip τ := by
     intro z hz
-    rw [mem_closedStrip, min_eq_left hb.le, max_eq_right hb.le]
+    rw [mem_strip, min_eq_left hb.le, max_eq_right hb.le]
     exact ⟨hz.1, hz.2.le⟩
   have hs_eq : s = Set.univ ×ℂ Set.Ico 0 b := by
     ext z
@@ -369,7 +376,7 @@ private theorem eqOn_zero_closedStrip_of_im_pos {τ : ℂ} {f : ℂ → ℂ}
       true_and]
   have hclosure : closure s = strip τ := by
     rw [hs_eq, Complex.closure_reProdIm, closure_univ, closure_Ico (ne_of_lt hb'),
-      closedStrip_eq_reProdIm, min_eq_left hb.le, max_eq_right hb.le, hbdef]
+      strip_eq_reProdIm, min_eq_left hb.le, max_eq_right hb.le, hbdef]
   intro z hz
   exact eqZero_of_subset_closure hc hs_sub (fun _ hz' ↦ by rwa [hclosure]) hs_zero z hz
 
@@ -378,7 +385,7 @@ closed strip and holomorphic in its interior that vanishes on the real boundary 
 the whole strip. [T26] records the extension as "necessarily unique" without argument; this is
 that argument. Note the hypothesis is genuinely a boundary one: the real axis consists of
 non-interior points of the strip, so the identity theorem does not apply to it directly. -/
-theorem eqOn_zero_closedStrip_of_ofReal {τ : ℂ} {f : ℂ → ℂ}
+theorem eqOn_zero_strip_of_ofReal {τ : ℂ} {f : ℂ → ℂ}
     (hc : ContinuousOn f (strip τ))
     (hd : DifferentiableOn ℂ f (interior (strip τ)))
     (h0 : ∀ t : ℝ, f (t : ℂ) = 0) :
@@ -387,16 +394,16 @@ theorem eqOn_zero_closedStrip_of_ofReal {τ : ℂ} {f : ℂ → ℂ}
   · let g : ℂ → ℂ := fun z ↦ f (-z)
     have hmap_closed : Set.MapsTo (fun z : ℂ ↦ -z) (strip (-τ)) (strip τ) := by
       intro z hz
-      have := (neg_mem_closedStrip_iff (-τ) z).mpr hz
+      have := (neg_mem_strip_iff (-τ) z).mpr hz
       simpa only [neg_neg] using this
     have hgc : ContinuousOn g (strip (-τ)) := by
       simpa only [g] using hc.comp' continuous_neg.continuousOn hmap_closed
     have hmap_interior : Set.MapsTo (fun z : ℂ ↦ -z)
         (interior (strip (-τ))) (interior (strip τ)) := by
       intro z hz
-      rw [interior_closedStrip, Set.mem_setOf_eq, Complex.neg_im,
+      rw [interior_strip, Set.mem_setOf_eq, Complex.neg_im,
         min_eq_left (neg_nonneg.mpr hb.le), max_eq_right (neg_nonneg.mpr hb.le)] at hz
-      simp only [interior_closedStrip, Set.mem_setOf_eq, Complex.neg_im,
+      simp only [interior_strip, Set.mem_setOf_eq, Complex.neg_im,
         min_eq_right hb.le, max_eq_left hb.le]
       constructor <;> linarith [hz.1, hz.2]
     have hgd : DifferentiableOn ℂ g (interior (strip (-τ))) := by
@@ -409,13 +416,13 @@ theorem eqOn_zero_closedStrip_of_ofReal {τ : ℂ} {f : ℂ → ℂ}
       dsimp [g]
       simpa using h0 (-t)
     have hpos : 0 < (-τ).im := by simpa only [Complex.neg_im] using neg_pos.mpr hb
-    have hgzero := eqOn_zero_closedStrip_of_im_pos hgc hgd hg0 hpos
+    have hgzero := eqOn_zero_strip_of_im_pos hgc hgd hg0 hpos
     intro z hz
-    have hnz : -z ∈ strip (-τ) := (neg_mem_closedStrip_iff τ z).mpr hz
+    have hnz : -z ∈ strip (-τ) := (neg_mem_strip_iff τ z).mpr hz
     simpa only [g, neg_neg, Pi.zero_apply] using hgzero hnz
   · intro z hz
     have him : z.im = 0 := by
-      rw [mem_closedStrip, hb, min_self, max_self] at hz
+      rw [mem_strip, hb, min_self, max_self] at hz
       exact le_antisymm hz.2 hz.1
     have hzreal : z = (z.re : ℂ) := by
       apply Complex.ext
@@ -423,11 +430,11 @@ theorem eqOn_zero_closedStrip_of_ofReal {τ : ℂ} {f : ℂ → ℂ}
       · simpa [him]
     rw [hzreal]
     simpa only [Pi.zero_apply] using h0 z.re
-  · exact eqOn_zero_closedStrip_of_im_pos hc hd h0 hb
+  · exact eqOn_zero_strip_of_im_pos hc hd h0 hb
 
 /-- [T26], Definition 3.1; two continuations agreeing on the real boundary agree on the strip.
 This is the uniqueness statement Definition 3.1 needs. -/
-theorem eqOn_closedStrip_of_eqOn_ofReal {τ : ℂ} {f g : ℂ → ℂ}
+theorem eqOn_strip_of_eqOn_ofReal {τ : ℂ} {f g : ℂ → ℂ}
     (hcf : ContinuousOn f (strip τ))
     (hdf : DifferentiableOn ℂ f (interior (strip τ)))
     (hcg : ContinuousOn g (strip τ))
@@ -435,7 +442,7 @@ theorem eqOn_closedStrip_of_eqOn_ofReal {τ : ℂ} {f g : ℂ → ℂ}
     (h : ∀ t : ℝ, f (t : ℂ) = g (t : ℂ)) :
     Set.EqOn f g (strip τ) := by
   have hzero : Set.EqOn (f - g) 0 (strip τ) :=
-    eqOn_zero_closedStrip_of_ofReal (hcf.sub hcg) (hdf.sub hdg) fun t ↦ sub_eq_zero.mpr (h t)
+    eqOn_zero_strip_of_ofReal (hcf.sub hcg) (hdf.sub hdg) fun t ↦ sub_eq_zero.mpr (h t)
   intro z hz
   exact sub_eq_zero.mp (by simpa only [Pi.sub_apply, Pi.zero_apply] using hzero hz)
 

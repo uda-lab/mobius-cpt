@@ -566,19 +566,19 @@ import MobiusCPT
 
 -- MobiusCPT/Analysis/Strip.lean — [T26] Def. 3.1: the closed strip and the boundary-uniqueness
 -- lemma behind "necessarily unique" (Issue #6).
-#print axioms MobiusCPT.closedStrip_eq
-#print axioms MobiusCPT.mem_closedStrip
-#print axioms MobiusCPT.closedStrip_eq_reProdIm
-#print axioms MobiusCPT.interior_closedStrip
-#print axioms MobiusCPT.ofReal_mem_closedStrip
-#print axioms MobiusCPT.add_ofReal_mem_closedStrip
-#print axioms MobiusCPT.closedStrip_add_ofReal
-#print axioms MobiusCPT.add_ofReal_mem_closedStrip_iff
-#print axioms MobiusCPT.neg_mem_closedStrip_iff
-#print axioms MobiusCPT.closedStrip_ofReal
-#print axioms MobiusCPT.interior_closedStrip_ofReal
-#print axioms MobiusCPT.eqOn_zero_closedStrip_of_ofReal
-#print axioms MobiusCPT.eqOn_closedStrip_of_eqOn_ofReal
+#print axioms MobiusCPT.strip_eq
+#print axioms MobiusCPT.mem_strip
+#print axioms MobiusCPT.strip_eq_reProdIm
+#print axioms MobiusCPT.interior_strip
+#print axioms MobiusCPT.ofReal_mem_strip
+#print axioms MobiusCPT.add_ofReal_mem_strip
+#print axioms MobiusCPT.strip_add_ofReal
+#print axioms MobiusCPT.add_ofReal_mem_strip_iff
+#print axioms MobiusCPT.neg_mem_strip_iff
+#print axioms MobiusCPT.strip_ofReal
+#print axioms MobiusCPT.interior_strip_ofReal
+#print axioms MobiusCPT.eqOn_zero_strip_of_ofReal
+#print axioms MobiusCPT.eqOn_strip_of_eqOn_ofReal
 
 -- MobiusCPT/Wightman/Vtilde.lean — [T26] Def. 3.1: `D(Ṽ_τ)`, uniqueness of the companion vector
 -- via separation of points, and the compatible-functional characterisation (Issue #6).
