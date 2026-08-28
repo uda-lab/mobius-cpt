@@ -56,8 +56,8 @@ theorem hasConformalDim_smear_vac (W : WightmanData G TF 𝓓 𝓕) (hW4 : W.W4)
 
 /-- [T26], proof of Lemma 3.7, step 2: (W3) applied to a single mode.  For a rotation
 eigenvector of strictly positive weight `n`, the vector `φ(f)Ω` has conformal dimension
-`-n < 0` and therefore vanishes.  This is the only place (W3) is used, and it is used on a
-genuine conformal-dimension eigenvector. -/
+`-n < 0` and therefore vanishes.  (W3) is applied here to a genuine conformal-dimension
+eigenvector; the product form is `weightedProduct_eq_zero_of_sum_pos`. -/
 theorem smear_vac_eq_zero_of_rotWeight_pos (W : WightmanData G TF 𝓓 𝓕)
     (hW3 : W.W3) (hW4 : W.W4) {φ : 𝓕} {d : ℕ} (hcov : W.IsCovariant φ d)
     {f : TF} {n : ℤ} (hf : IsRotWeight G d f n) (hn : 0 < n) :

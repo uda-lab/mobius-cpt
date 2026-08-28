@@ -22,8 +22,10 @@ at the origin, "and thus `φ(F∘z⁻¹|_{S¹})` strictly lowers conformal dimen
    (separation of points by `D*_𝓕`) then upgrades this to `φ(f)Ω = 0`.
 
 (W3) is never applied to `φ(f)Ω` for a general `f`: that vector is not a rotation
-eigenvector and carries no conformal dimension.  The only (W3) application in this
-development is `WightmanData.smear_vac_eq_zero_of_rotWeight_pos`, on a genuine eigenvector.
+eigenvector and carries no conformal dimension.  Every (W3) application in this development
+— `WightmanData.smear_vac_eq_zero_of_rotWeight_pos`, `WightmanData.weightedProduct_eq_zero_of_sum_pos`
+and `WightmanData.smearedProduct_monomial_eq_zero` — is on a vector with a proved conformal
+dimension.
 
 **The `n ≤ 0` hypothesis is the source's and cannot be weakened to `n < 0`.** [T26] uses
 `F ∘ z⁻¹` holomorphic on the disc *and vanishing at `0`*, so its Taylor expansion has only
