@@ -61,6 +61,7 @@ import MobiusCPT.Mobius.ComplexBetaHolo
 import MobiusCPT.Wightman.BoostCurve
 import MobiusCPT.Mobius.BoostContinuity
 import MobiusCPT.Mobius.BoostAngle
+import MobiusCPT.Mobius.BoostPBounds
 import MobiusCPT.Wightman.Lemma37Continuation
 import MobiusCPT.TestFunctions.FourierCauchy
 import MobiusCPT.Wightman.LocalityLimit

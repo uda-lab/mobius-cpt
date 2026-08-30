@@ -924,3 +924,20 @@ import MobiusCPT
 #print axioms MobiusCPT.hasDerivAt_circleExp_boostAngle
 #print axioms MobiusCPT.circleExp_boostAngle
 #print axioms MobiusCPT.circleExp_boostAngle'
+
+-- Issue #10, Block B growth bounds: exponential-in-|t| growth of the iterated angle
+-- derivatives of boostP and its antiderivative boostAngle, via the Faa di Bruno bound
+-- norm_iteratedFDeriv_comp_le' on the reciprocal restricted away from its zero.
+#print axioms MobiusCPT.iteratedDeriv_cos_eq
+#print axioms MobiusCPT.norm_iteratedDeriv_cos_le
+#print axioms MobiusCPT.boostP_eq
+#print axioms MobiusCPT.iteratedDeriv_boostP_succ_eq
+#print axioms MobiusCPT.abs_sinh_le_exp_abs
+#print axioms MobiusCPT.norm_iteratedDeriv_boostP_le
+#print axioms MobiusCPT.contDiff_boostP
+#print axioms MobiusCPT.exp_neg_abs_le_boostP
+#print axioms MobiusCPT.iteratedDeriv_inv_eq
+#print axioms MobiusCPT.norm_iteratedDeriv_inv_le_of_ge
+#print axioms MobiusCPT.norm_iteratedDeriv_inv_le_exp
+#print axioms MobiusCPT.contDiff_boostAngle
+#print axioms MobiusCPT.norm_iteratedDeriv_boostAngle_le
