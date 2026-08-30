@@ -846,3 +846,14 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanData.isBoostContinuation_betaBoost
 #print axioms MobiusCPT.WightmanData.lemma_3_7
 #print axioms MobiusCPT.WightmanBundle.lemma_3_7
+
+-- Issue #9, Block B ([T26], owner bridge 1, 2026-08-28): the `n ≤ 0` Fourier coefficients of
+-- `inv (xRestrictS1 F)` vanish, via the Cauchy integral formula (n = 0, the load-bearing zero
+-- mode) and Cauchy's theorem (n < 0) applied to `F.invExt`'s `DiffContOnCl` extension (#7).
+-- Composed with the landed (#26) `smear_vac_eq_zero_of_fourierCoef_eq_zero'`, this discharges
+-- Contract.lean's `theorem_wanted w3_vacuum_annihilation`, byte-identical statement text.
+#print axioms MobiusCPT.toAngle_inv_xRestrictS1
+#print axioms MobiusCPT.fourierCoef_inv_xRestrictS1_eq
+#print axioms MobiusCPT.fourierCoef_inv_xRestrictS1_eq_zero_of_le_zero
+#print axioms MobiusCPT.WightmanData.w3_vacuum_annihilation
+#print axioms MobiusCPT.WightmanBundle.w3_vacuum_annihilation

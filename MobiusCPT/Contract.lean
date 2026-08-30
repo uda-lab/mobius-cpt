@@ -55,7 +55,7 @@ too, projecting the `𝓕`-strong topology; it is a `def_wanted` rather than an
 deliberately not a global instance.  The instance holes `domAddCommGroup` and
 `domModule` are gone: the bundle carries them. `W2` and `IsWightmanCFT` are
 transparent projections of `W`, so besides the bundle hole `W` itself the only
-remaining #4-adjacent hole is `w3_vacuum_annihilation`, owned by Issue #26. The
+remaining #4-adjacent hole was `w3_vacuum_annihilation`, discharged below by Issue #9. The
 capstone obligations taking `❰IsWightmanCFT❱` as a hypothesis are genuinely
 conditional on [T26], Definition 2.5.
 
@@ -100,6 +100,15 @@ Issue #8/#38's already-landed Lemma 3.6 continuity/holomorphy
 boost-translation identities for the concrete complex boost
 (`betaBoost_ofReal_mob`, `beta_boostMat_betaBoost`). `lemma_3_7_at_ipi` remains a
 `theorem_wanted`, owed by a later block of Issue #9.
+
+Issue #9's second block discharges `w3_vacuum_annihilation`, the (W3) vacuum-annihilation
+bridge: a proved theorem `MobiusCPT.WightmanBundle.w3_vacuum_annihilation` in
+`MobiusCPT.TestFunctions.FourierCauchy` with identical statement text, so it is gone from
+here. The proof identifies the boundary values of `inv (xRestrictS1 F)` with `F.invExt`
+(#7's disc-holomorphic inversion), shows its Fourier coefficients vanish for every `n ≤ 0` by
+Cauchy's theorem (`n < 0`) and the Cauchy integral formula at the origin (`n = 0`, using
+`F.invExt 0 = 0`), and feeds that into the already-landed (#26)
+`smear_vac_eq_zero_of_fourierCoef_eq_zero'`.
 -/
 
 namespace MobiusCPT
@@ -194,12 +203,6 @@ def_wanted MemPUpperOmega : ❰Dom❱ → Prop :=
 real interface landed by Issue #4. -/
 def_wanted MemPLowerOmega : ❰Dom❱ → Prop :=
   fun Φ => (❰W❱).data.toWightmanStruct.MemPLowerOmega Φ
-
-/-- [T26], the (W3) bridge used in the proof of Lemma 3.7, still owed by Issue #26. -/
-theorem_wanted w3_vacuum_annihilation :
-    ❰IsWightmanCFT❱ →
-      ∀ (φ : ❰Field❱) (F : AnalyticTestFn),
-        ❰smear❱ φ (inv (xRestrictS1 F)) ❰vac❱ = 0
 
 /-- [T26], Lemma 3.7(ii); at `τ = Complex.I * Real.pi`, the analytic-core vector maps to the
 reversed product with the conformal-dimension sign, owned by Issue #9. Here
