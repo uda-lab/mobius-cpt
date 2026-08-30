@@ -909,3 +909,18 @@ import MobiusCPT
 -- Issue #10, Block A ([T26], Lemma 3.8): joint continuity of a finite multilinear functional
 -- on TestFn gives a product bound in one common defining C^N norm.
 #print axioms MobiusCPT.cnorm_bound_of_continuous_multilinear
+
+-- Issue #10, Block B core: the real angle lift of the negative real boost v_{-t}, defined as
+-- the antiderivative of the reciprocal automorphy-factor base and identified with the boost
+-- action by an ODE-uniqueness argument (both sides solve y' = I y / boostP t with the same
+-- value 1 at theta = 0). Valid on the whole circle, not the boost-chart route.
+#print axioms MobiusCPT.sq_add_one_eq_two_mul_re
+#print axioms MobiusCPT.boostPz_pos
+#print axioms MobiusCPT.boostP_pos
+#print axioms MobiusCPT.boostPz_smul_eq
+#print axioms MobiusCPT.boostMat_neg_smul_one
+#print axioms MobiusCPT.hasDerivAt_boostAngle
+#print axioms MobiusCPT.hasDerivAt_boostSmulExp
+#print axioms MobiusCPT.hasDerivAt_circleExp_boostAngle
+#print axioms MobiusCPT.circleExp_boostAngle
+#print axioms MobiusCPT.circleExp_boostAngle'
