@@ -946,3 +946,11 @@ import MobiusCPT
 -- at most exponentially in the boost parameter, uniformly in the test function.
 #print axioms MobiusCPT.toAngle_beta_boost_eq
 #print axioms MobiusCPT.cnorm_boost_le
+
+-- Issue #10, Block C ([T26], Lemma 3.8): telescope the multilinear functional slot by slot,
+-- bridge equal-length zipped lists to Fin-indexed tuples, and combine Blocks A and B into the
+-- contract estimate. Contract.lean discharge: `lemma_3_8`, byte-identical statement text.
+#print axioms MobiusCPT.MultilinearMap.norm_sub_le_of_cnorm_bound
+#print axioms MobiusCPT.List.zip_eq_ofFn_get_of_length_eq
+#print axioms MobiusCPT.WightmanData.lemma_3_8
+#print axioms MobiusCPT.WightmanBundle.lemma_3_8

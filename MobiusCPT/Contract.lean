@@ -122,6 +122,10 @@ itself using (W2) through the endpoint-cutoff limit (`MobiusCPT.Wightman.Localit
 `MobiusCPT.TestFunctions.EndpointCutoff`) and carrying no sign of its own — the total
 `(-1)^{Σ(d_j+1)} · (-1)^k` collapsing to the contract's `(-1)^{Σ d_j}` since `Σ(d_j+1) = Σd_j +
 k` and `(-1)^{2k} = 1`.
+
+Issue #10 has landed: `lemma_3_8` is now the proved theorem
+`MobiusCPT.WightmanBundle.lemma_3_8` in `MobiusCPT.Wightman.Lemma38`, with byte-identical
+statement text, so it is gone from here.
 -/
 
 namespace MobiusCPT
@@ -216,29 +220,6 @@ def_wanted MemPUpperOmega : ❰Dom❱ → Prop :=
 real interface landed by Issue #4. -/
 def_wanted MemPLowerOmega : ❰Dom❱ → Prop :=
   fun Φ => (❰W❱).data.toWightmanStruct.MemPLowerOmega Φ
-
-/-- [T26], Lemma 3.8; for fixed fields and compatible functional, the exponential
-continuity estimate has constants independent of test-function lists and `t`. The `foldr max 0`
-is the source's maximum because its entries are nonnegative by construction; for `k = 0` it gives
-`0 ≤ 0`, where the source's maximum over an empty index set is undefined. A positive integer `N`
-is required, owned by Issue #10. -/
-theorem_wanted lemma_3_8 :
-    ❰IsWightmanCFT❱ →
-      ∀ (φs : List ❰Field❱) (lam : ❰Compat❱),
-        ∃ (N : ℕ) (C : ℝ → ℝ) (k₁ k₂ : ℝ),
-          0 < N ∧ 0 < k₁ ∧ 0 < k₂ ∧
-            (∀ t : ℝ, 0 < C t) ∧
-            (∀ t : ℝ, C t ≤ k₁ * Real.exp (k₂ * |t|)) ∧
-            ∀ (t : ℝ) (fs gs : List TestFn),
-              fs.length = φs.length → gs.length = φs.length →
-                ‖❰compatApply❱ lam
-                    (❰boost❱ t (❰smearedProduct❱ (φs.zip fs)) -
-                      ❰boost❱ t (❰smearedProduct❱ (φs.zip gs)))‖ ≤
-                  C t *
-                      ((((fs.zip gs).map
-                        (fun p => 1 + cnorm N p.1 + cnorm N p.2)).prod : NNReal) : ℝ) *
-                    ((List.foldr max 0
-                      ((fs.zip gs).map (fun p => cnorm N (p.1 - p.2))) : NNReal) : ℝ)
 
 /-- [T26], Theorem 3.10(i); upper and lower localized vectors lie in the corresponding domains
 of the partially defined imaginary boosts, owned by Issue #12. -/

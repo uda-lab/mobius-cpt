@@ -1,7 +1,10 @@
 import MobiusCPT.Analysis.MultilinearBound
 import MobiusCPT.Mobius.BoostGrowth
 import MobiusCPT.Mobius.Covariance
+import MobiusCPT.Wightman.Bundle
 import MobiusCPT.Wightman.Continuity
+import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Data.List.MinMax
 
 /-!
 # MobiusCPT.Wightman.Lemma38
@@ -199,6 +202,310 @@ theorem MultilinearMap.norm_sub_le_of_cnorm_bound {k : ℕ}
     _ = A * (k : ℝ) * ((Finset.univ.sup fun i => cnorm N (b i - a i) : NNReal) : ℝ) *
           ∏ i : Fin k, (1 + (cnorm N (b i) : ℝ) + (cnorm N (a i) : ℝ)) := by ring
 
+/-- Equal-length lists zip to the tuple obtained by indexing both by their common `Fin` type. -/
+theorem List.zip_eq_ofFn_get_of_length_eq {α β : Type*} (xs : List α) (ys : List β)
+    (h : ys.length = xs.length) :
+    xs.zip ys = List.ofFn fun i : Fin xs.length =>
+      (xs.get i, ys.get (Fin.cast h.symm i)) := by
+  induction xs generalizing ys with
+  | nil =>
+      have hys : ys = [] := List.length_eq_zero_iff.mp (by simpa using h)
+      subst ys
+      simp
+  | cons x xs ih =>
+      cases ys with
+      | nil => simp at h
+      | cons y ys =>
+          have htail : ys.length = xs.length := Nat.succ.inj h
+          simpa [List.ofFn_succ] using
+            congrArg (fun zs => (x, y) :: zs) (ih ys htail)
+
+namespace WightmanData
+variable {𝓓 𝓕 : Type*} [AddCommGroup 𝓓] [Module ℂ 𝓓]
+/-- [T26], Lemma 3.8: real boosts obey a uniform exponential `C^N` continuity estimate. -/
+theorem lemma_3_8 (W : WightmanData Mob TestFn 𝓓 𝓕) (hW : W.IsWightmanCFT)
+    (φs : List 𝓕) (lam : W.toWightmanStruct.Compat) :
+    ∃ (N : ℕ) (C : ℝ → ℝ) (k₁ k₂ : ℝ),
+      0 < N ∧ 0 < k₁ ∧ 0 < k₂ ∧
+        (∀ t : ℝ, 0 < C t) ∧
+        (∀ t : ℝ, C t ≤ k₁ * Real.exp (k₂ * |t|)) ∧
+        ∀ (t : ℝ) (fs gs : List TestFn),
+          fs.length = φs.length → gs.length = φs.length →
+            ‖W.toWightmanStruct.compatApply lam
+                (W.boost t (W.toWightmanStruct.smearedProduct (φs.zip fs)) -
+                  W.boost t (W.toWightmanStruct.smearedProduct (φs.zip gs)))‖ ≤
+              C t *
+                  ((((fs.zip gs).map
+                    (fun p => 1 + cnorm N p.1 + cnorm N p.2)).prod : NNReal) : ℝ) *
+                ((List.foldr max 0
+                  ((fs.zip gs).map (fun p => cnorm N (p.1 - p.2))) : NNReal) : ℝ) := by
+  classical
+  let φFin : Fin φs.length → 𝓕 := φs.get
+  let M : MultilinearMap ℂ (fun _ : Fin φs.length => TestFn) ℂ :=
+    lam.1.compMultilinearMap
+      (W.toWightmanStruct.multiSmearMultilinear φFin W.vac)
+  have hM : Continuous M := by
+    apply (lam.2 φs.length φFin W.vac).congr
+    intro f
+    simp only [M, LinearMap.compMultilinearMap_apply,
+      WightmanStruct.multiSmearMultilinear_apply]
+  obtain ⟨N₀, A, hA, hbound₀⟩ := cnorm_bound_of_continuous_multilinear M hM
+  let N : ℕ := N₀ + 1
+  have hN : 0 < N := by simp [N]
+  have hbound : ∀ f : Fin φs.length → TestFn,
+      ‖M f‖ ≤ A * ∏ i, (cnorm N (f i) : ℝ) := by
+    intro f
+    calc
+      ‖M f‖ ≤ A * ∏ i, (cnorm N₀ (f i) : ℝ) := hbound₀ f
+      _ ≤ A * ∏ i, (cnorm N (f i) : ℝ) := by
+        gcongr with i
+        exact_mod_cast cnorm_mono (by simp [N]) (f i)
+  choose B rate hB hrate hboost using
+    fun i : Fin φs.length => cnorm_boost_le N (W.dim (φFin i))
+  let B₀ : ℝ := 1 + ∑ i, B i
+  let rate₀ : ℝ := 1 + ∑ i, rate i
+  have hB₀ : 0 < B₀ := by
+    dsimp [B₀]
+    have : 0 ≤ ∑ i, B i := Finset.sum_nonneg fun i _ => (hB i).le
+    linarith
+  have hrate₀ : 0 < rate₀ := by
+    dsimp [rate₀]
+    have : 0 ≤ ∑ i, rate i := Finset.sum_nonneg fun i _ => (hrate i).le
+    linarith
+  have hB_le (i : Fin φs.length) : B i ≤ B₀ := by
+    have hi : B i ≤ ∑ j, B j :=
+      Finset.single_le_sum (fun j _ => (hB j).le) (Finset.mem_univ i)
+    dsimp [B₀]
+    linarith
+  have hrate_le (i : Fin φs.length) : rate i ≤ rate₀ := by
+    have hi : rate i ≤ ∑ j, rate j :=
+      Finset.single_le_sum (fun j _ => (hrate j).le) (Finset.mem_univ i)
+    dsimp [rate₀]
+    linarith
+  let k₁ : ℝ := 1 + A * (φs.length : ℝ) * B₀ ^ (φs.length + 1)
+  let k₂ : ℝ := ((φs.length + 1 : ℕ) : ℝ) * rate₀
+  let C : ℝ → ℝ := fun t => k₁ * Real.exp (k₂ * |t|)
+  have hk₁ : 0 < k₁ := by
+    dsimp [k₁]
+    have hnonneg : 0 ≤ A * (φs.length : ℝ) * B₀ ^ (φs.length + 1) := by positivity
+    linarith
+  have hk₂ : 0 < k₂ := by
+    dsimp [k₂]
+    positivity
+  refine ⟨N, C, k₁, k₂, hN, hk₁, hk₂, ?_, ?_, ?_⟩
+  · intro t
+    exact mul_pos hk₁ (Real.exp_pos _)
+  · intro t
+    exact le_rfl
+  · intro t fs gs hfs hgs
+    let fsFin : Fin φs.length → TestFn := fun i => fs.get (Fin.cast hfs.symm i)
+    let gsFin : Fin φs.length → TestFn := fun i => gs.get (Fin.cast hgs.symm i)
+    let bfs : Fin φs.length → TestFn := fun i =>
+      Mob.beta (W.dim (φFin i)) (Mob.boost t) (fsFin i)
+    let bgs : Fin φs.length → TestFn := fun i =>
+      Mob.beta (W.dim (φFin i)) (Mob.boost t) (gsFin i)
+    have hzip_fs : φs.zip fs = List.ofFn fun i : Fin φs.length => (φFin i, fsFin i) := by
+      simpa only [φFin, fsFin] using List.zip_eq_ofFn_get_of_length_eq φs fs hfs
+    have hzip_gs : φs.zip gs = List.ofFn fun i : Fin φs.length => (φFin i, gsFin i) := by
+      simpa only [φFin, gsFin] using List.zip_eq_ofFn_get_of_length_eq φs gs hgs
+    have hcov_fs : ∀ p ∈ φs.zip fs, W.IsCovariant p.1 (W.dim p.1) := by
+      intro p _
+      exact W1.covariant W hW.w1 p.1
+    have hcov_gs : ∀ p ∈ φs.zip gs, W.IsCovariant p.1 (W.dim p.1) := by
+      intro p _
+      exact W1.covariant W hW.w1 p.1
+    have hboost_fs :
+        W.boost t (W.toWightmanStruct.smearedProduct (φs.zip fs)) =
+          W.toWightmanStruct.multiSmear φFin W.vac bfs := by
+      calc
+        W.boost t (W.toWightmanStruct.smearedProduct (φs.zip fs)) =
+            W.toWightmanStruct.smearedProduct
+              ((φs.zip fs).map fun p =>
+                (p.1, MobiusAction.beta (W.dim p.1)
+                  (MobiusAction.boostElt (G := Mob) (TF := TestFn) t) p.2)) :=
+          WightmanData.boost_smearedProduct hW.w4 t _ hcov_fs
+        _ = W.toWightmanStruct.multiSmear φFin W.vac bfs := by
+          rw [hzip_fs, List.map_ofFn]
+          rfl
+    have hboost_gs :
+        W.boost t (W.toWightmanStruct.smearedProduct (φs.zip gs)) =
+          W.toWightmanStruct.multiSmear φFin W.vac bgs := by
+      calc
+        W.boost t (W.toWightmanStruct.smearedProduct (φs.zip gs)) =
+            W.toWightmanStruct.smearedProduct
+              ((φs.zip gs).map fun p =>
+                (p.1, MobiusAction.beta (W.dim p.1)
+                  (MobiusAction.boostElt (G := Mob) (TF := TestFn) t) p.2)) :=
+          WightmanData.boost_smearedProduct hW.w4 t _ hcov_gs
+        _ = W.toWightmanStruct.multiSmear φFin W.vac bgs := by
+          rw [hzip_gs, List.map_ofFn]
+          rfl
+    have hlhs :
+        W.toWightmanStruct.compatApply lam
+            (W.boost t (W.toWightmanStruct.smearedProduct (φs.zip fs)) -
+              W.boost t (W.toWightmanStruct.smearedProduct (φs.zip gs))) =
+          M bfs - M bgs := by
+      change lam.1 _ = _
+      rw [map_sub, hboost_fs, hboost_gs]
+      rfl
+    have hzip_fg : fs.zip gs = List.ofFn fun i : Fin φs.length => (fsFin i, gsFin i) := by
+      have hfg : gs.length = fs.length := hgs.trans hfs.symm
+      have hz := List.zip_eq_ofFn_get_of_length_eq fs gs hfg
+      simpa only [hfs, fsFin, gsFin, Fin.cast_refl, Fin.cast_cast] using hz
+    let listProd : ℝ :=
+      ((((fs.zip gs).map
+        (fun p => 1 + cnorm N p.1 + cnorm N p.2)).prod : NNReal) : ℝ)
+    let listMax : NNReal :=
+      List.foldr max 0 ((fs.zip gs).map fun p => cnorm N (p.1 - p.2))
+    have hprod_eq : listProd =
+        ∏ i : Fin φs.length,
+          (1 + (cnorm N (fsFin i) : ℝ) + (cnorm N (gsFin i) : ℝ)) := by
+      dsimp [listProd]
+      rw [hzip_fg, List.map_ofFn, List.prod_ofFn, NNReal.coe_prod]
+      simp
+    let q : ℝ := B₀ * Real.exp (rate₀ * |t|)
+    have hq : 0 < q := mul_pos hB₀ (Real.exp_pos _)
+    have hone_q : 1 ≤ q := by
+      have he : 1 ≤ Real.exp (rate₀ * |t|) :=
+        Real.one_le_exp (mul_nonneg hrate₀.le (abs_nonneg t))
+      have hBone : 1 ≤ B₀ := by
+        dsimp [B₀]
+        exact le_add_of_nonneg_right (Finset.sum_nonneg fun i _ => (hB i).le)
+      exact one_le_mul_of_one_le_of_one_le hBone he
+    have hboost_uniform (i : Fin φs.length) (f : TestFn) :
+        (cnorm N (Mob.beta (W.dim (φFin i)) (Mob.boost t) f) : ℝ) ≤
+          q * (cnorm N f : ℝ) := by
+      calc
+        (cnorm N (Mob.beta (W.dim (φFin i)) (Mob.boost t) f) : ℝ) ≤
+            B i * Real.exp (rate i * |t|) * (cnorm N f : ℝ) := hboost i t f
+        _ ≤ q * (cnorm N f : ℝ) := by
+          dsimp [q]
+          gcongr
+          · exact hB_le i
+          · exact hrate_le i
+    have hmem_diff (i : Fin φs.length) :
+        cnorm N (fsFin i - gsFin i) ∈
+          (fs.zip gs).map (fun p => cnorm N (p.1 - p.2)) := by
+      rw [hzip_fg, List.map_ofFn]
+      simp
+    have hdiff_le_max (i : Fin φs.length) :
+        cnorm N (fsFin i - gsFin i) ≤ listMax := by
+      exact List.le_max_of_le (hmem_diff i) le_rfl
+    let qNN : NNReal := ⟨q, hq.le⟩
+    have hsupNN :
+        Finset.univ.sup (fun i => cnorm N (bfs i - bgs i)) ≤ qNN * listMax := by
+      apply Finset.sup_le
+      intro i _
+      apply NNReal.coe_le_coe.mp
+      change (cnorm N (bfs i - bgs i) : ℝ) ≤ q * (listMax : ℝ)
+      have hdiff : bfs i - bgs i =
+          Mob.beta (W.dim (φFin i)) (Mob.boost t) (fsFin i - gsFin i) := by
+        simp only [bfs, bgs, map_sub]
+      rw [hdiff]
+      exact (hboost_uniform i (fsFin i - gsFin i)).trans
+        (mul_le_mul_of_nonneg_left (by exact_mod_cast hdiff_le_max i) hq.le)
+    have hsup :
+        ((Finset.univ.sup (fun i => cnorm N (bfs i - bgs i)) : NNReal) : ℝ) ≤
+          q * (listMax : ℝ) := by
+      calc
+        ((Finset.univ.sup (fun i => cnorm N (bfs i - bgs i)) : NNReal) : ℝ) ≤
+            ((qNN * listMax : NNReal) : ℝ) := NNReal.coe_le_coe.mpr hsupNN
+        _ = q * (listMax : ℝ) := by
+          rw [NNReal.coe_mul]
+          congr 1
+    have hfactor (i : Fin φs.length) :
+        1 + (cnorm N (bfs i) : ℝ) + (cnorm N (bgs i) : ℝ) ≤
+          q * (1 + (cnorm N (fsFin i) : ℝ) + (cnorm N (gsFin i) : ℝ)) := by
+      have hf := hboost_uniform i (fsFin i)
+      have hg := hboost_uniform i (gsFin i)
+      change (cnorm N (bfs i) : ℝ) ≤ _ at hf
+      change (cnorm N (bgs i) : ℝ) ≤ _ at hg
+      nlinarith [NNReal.coe_nonneg (cnorm N (fsFin i)),
+        NNReal.coe_nonneg (cnorm N (gsFin i))]
+    have hprod_boost :
+        (∏ i : Fin φs.length,
+          (1 + (cnorm N (bfs i) : ℝ) + (cnorm N (bgs i) : ℝ))) ≤
+            q ^ φs.length * listProd := by
+      calc
+        (∏ i : Fin φs.length,
+            (1 + (cnorm N (bfs i) : ℝ) + (cnorm N (bgs i) : ℝ))) ≤
+            ∏ i : Fin φs.length,
+              q * (1 + (cnorm N (fsFin i) : ℝ) + (cnorm N (gsFin i) : ℝ)) := by
+          apply Finset.prod_le_prod
+          · intro i _
+            positivity
+          · intro i _
+            exact hfactor i
+        _ = q ^ φs.length * listProd := by
+          rw [Finset.prod_mul_distrib, hprod_eq]
+          simp
+    have hqpow : q ^ (φs.length + 1) =
+        B₀ ^ (φs.length + 1) * Real.exp (k₂ * |t|) := by
+      dsimp [q, k₂]
+      rw [mul_pow, ← Real.exp_nat_mul]
+      congr 2
+      push_cast
+      ring
+    have hcoef : A * (φs.length : ℝ) * B₀ ^ (φs.length + 1) ≤ k₁ := by
+      dsimp [k₁]
+      linarith
+    have htel := MultilinearMap.norm_sub_le_of_cnorm_bound
+      M N A hA.le hbound bfs bgs
+    calc
+      ‖W.toWightmanStruct.compatApply lam
+          (W.boost t (W.toWightmanStruct.smearedProduct (φs.zip fs)) -
+            W.boost t (W.toWightmanStruct.smearedProduct (φs.zip gs)))‖ =
+          ‖M bfs - M bgs‖ := congrArg norm hlhs
+      _ ≤ A * (φs.length : ℝ) *
+            ((Finset.univ.sup (fun i => cnorm N (bfs i - bgs i)) : NNReal) : ℝ) *
+              ∏ i : Fin φs.length,
+                (1 + (cnorm N (bfs i) : ℝ) + (cnorm N (bgs i) : ℝ)) := htel
+      _ ≤ A * (φs.length : ℝ) * (q * (listMax : ℝ)) *
+            (q ^ φs.length * listProd) := by
+          gcongr
+      _ = A * (φs.length : ℝ) * q ^ (φs.length + 1) * listProd * (listMax : ℝ) := by
+          rw [pow_succ]
+          ring
+      _ = (A * (φs.length : ℝ) * B₀ ^ (φs.length + 1)) *
+            Real.exp (k₂ * |t|) * listProd * (listMax : ℝ) := by
+          rw [hqpow]
+          ring
+      _ ≤ k₁ * Real.exp (k₂ * |t|) * listProd * (listMax : ℝ) := by
+          gcongr
+      _ = C t * (listProd * (listMax : ℝ)) := by
+          dsimp [C]
+          ring
+      _ = C t *
+            ((((fs.zip gs).map
+              (fun p => 1 + cnorm N p.1 + cnorm N p.2)).prod : NNReal) : ℝ) *
+              ((List.foldr max 0
+                ((fs.zip gs).map (fun p => cnorm N (p.1 - p.2))) : NNReal) : ℝ) := by
+          dsimp [listProd, listMax]
+          ring
+
+end WightmanData
+namespace WightmanBundle
+/-- [T26], Lemma 3.8. Issue #10 discharges `MobiusCPT.Contract`'s
+`theorem_wanted lemma_3_8`, byte-identical statement text. -/
+theorem lemma_3_8 (W : WightmanBundle) (h : W.data.IsWightmanCFT)
+    (φs : List W.𝓕) (lam : W.data.toWightmanStruct.Compat) :
+    ∃ (N : ℕ) (C : ℝ → ℝ) (k₁ k₂ : ℝ),
+      0 < N ∧ 0 < k₁ ∧ 0 < k₂ ∧
+        (∀ t : ℝ, 0 < C t) ∧
+        (∀ t : ℝ, C t ≤ k₁ * Real.exp (k₂ * |t|)) ∧
+        ∀ (t : ℝ) (fs gs : List TestFn),
+          fs.length = φs.length → gs.length = φs.length →
+            ‖W.data.toWightmanStruct.compatApply lam
+                (W.data.boost t (W.data.toWightmanStruct.smearedProduct (φs.zip fs)) -
+                  W.data.boost t (W.data.toWightmanStruct.smearedProduct (φs.zip gs)))‖ ≤
+              C t *
+                  ((((fs.zip gs).map
+                    (fun p => 1 + cnorm N p.1 + cnorm N p.2)).prod : NNReal) : ℝ) *
+                ((List.foldr max 0
+                  ((fs.zip gs).map (fun p => cnorm N (p.1 - p.2))) : NNReal) : ℝ) :=
+  WightmanData.lemma_3_8 W.data h φs lam
+
+end WightmanBundle
 end
 
 end MobiusCPT
