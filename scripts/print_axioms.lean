@@ -837,3 +837,71 @@ import MobiusCPT
 -- `WightmanBundle` now fixed to `Mob`/`mobiusActionMobTestFn`
 -- (docs/adr/0001-fix-mobius-group-in-bundle.md).
 #print axioms MobiusCPT.WightmanBundle.vtilde_real
+
+-- Issue #9, Block A ([T26], Lemma 3.7(i)): the `G_λ` continuation family built from `betaBoost`
+-- is an `IsBoostContinuation` witness between the upper-restricted smeared product and the
+-- `betaBoost`-smeared product, assembled from Issue #8/#38's landed Lemma 3.6 and covariance
+-- infrastructure. Contract.lean discharge: `lemma_3_7`, byte-identical statement text.
+#print axioms MobiusCPT.strip_subset_strip_I_mul_pi
+#print axioms MobiusCPT.WightmanData.isBoostContinuation_betaBoost
+#print axioms MobiusCPT.WightmanData.lemma_3_7
+#print axioms MobiusCPT.WightmanBundle.lemma_3_7
+
+-- Issue #9, Block B ([T26], owner bridge 1, 2026-08-28): the `n ≤ 0` Fourier coefficients of
+-- `inv (xRestrictS1 F)` vanish, via the Cauchy integral formula (n = 0, the load-bearing zero
+-- mode) and Cauchy's theorem (n < 0) applied to `F.invExt`'s `DiffContOnCl` extension (#7).
+-- Composed with the landed (#26) `smear_vac_eq_zero_of_fourierCoef_eq_zero'`, this discharges
+-- Contract.lean's `theorem_wanted w3_vacuum_annihilation`, byte-identical statement text.
+#print axioms MobiusCPT.toAngle_inv_xRestrictS1
+#print axioms MobiusCPT.fourierCoef_inv_xRestrictS1_eq
+#print axioms MobiusCPT.fourierCoef_inv_xRestrictS1_eq_zero_of_le_zero
+#print axioms MobiusCPT.WightmanData.w3_vacuum_annihilation
+#print axioms MobiusCPT.WightmanBundle.w3_vacuum_annihilation
+
+-- Issue #9, Block C infrastructure (owner bridge 2, 2026-08-28): the general (W2)-through-a-
+-- limit bridge. Given a sequence of test functions with disjoint support from a fixed `f` at
+-- every finite stage, converging to a limit `g` that need not itself have disjoint support
+-- from `f`, the two smearing orders still agree — passed through every compatible functional
+-- (never a direct vector limit in `𝓓`) and upgraded to a vector identity by regularity. Takes
+-- the approximating sequence as given; does not itself build the endpoint cutoff sequence.
+#print axioms MobiusCPT.WightmanStruct.continuous_compatApply_smear_smear_snd
+#print axioms MobiusCPT.WightmanStruct.continuous_compatApply_smear_smear_fst
+#print axioms MobiusCPT.WightmanStruct.compatApply_smear_comm_of_tendsto
+#print axioms MobiusCPT.WightmanStruct.smear_comm_of_tendsto
+
+-- Issue #9, Block C infrastructure: a pure single-variable calculus lemma, independent of
+-- this project's TestFn/Circle types. Given a smooth function vanishing outside an open
+-- interval, produces a sequence of smooth functions each vanishing outside a compact
+-- sub-interval strictly inside it, converging together with every derivative order,
+-- uniformly over all of ℝ. This is the real-analysis core of [T26]'s endpoint cutoff
+-- construction (docs/math/pct-theorem.md's "cutoff-and-continuity argument" for Lemma 3.7).
+#print axioms MobiusCPT.exists_contDiff_zero_outside_compact_tendstoUniformly
+
+-- Issue #9, Block C: the TestFn-specific wiring completing the endpoint cutoff construction.
+-- Builds an actual sequence of test functions, each supported strictly inside the open
+-- semicircle (not just the closed one SuppLower/SuppUpper give), converging to a given
+-- SuppLower/SuppUpper test function; and the two small connecting lemmas showing that a
+-- tsupport bound inside the open opposite arc gives genuine DisjointSupport against a field
+-- supported in the other closed semicircle -- the fact SuppUpper/SuppLower alone cannot give,
+-- since closed supports may touch at +-1.
+#print axioms MobiusCPT.exists_tendsto_of_suppLower
+#print axioms MobiusCPT.exists_tendsto_of_suppUpper
+#print axioms MobiusCPT.disjointSupport_of_suppUpper_of_tsupport_subset_lowerArc
+#print axioms MobiusCPT.disjointSupport_of_suppLower_of_tsupport_subset_upperArc
+
+-- Issue #9, Block D core: the combinatorial sign-reversal identity behind [T26] Lemma 3.7(ii),
+-- [CRTT25]'s `phi_1(g_1)...phi_k(g_k)Omega = (-1)^k phi_k(h_k)...phi_1(h_1)Omega`. The first
+-- lemma commutes one SuppLower operator past a whole product of SuppUpper-smeared operators
+-- (induction on the list, invoking the (W2)-through-a-limit bridge at each step); the second
+-- is the sign-reversal induction itself, using the vacuum-annihilation identity
+-- (w3_vacuum_annihilation, on the sum of the two endpoint restrictions) once per list entry.
+-- Final assembly into lemma_3_7_at_ipi is a separate, later step.
+#print axioms MobiusCPT.WightmanStruct.smear_comm_smearedProductOn_of_suppLower_of_forall_suppUpper
+#print axioms MobiusCPT.WightmanData.smearedProduct_invLower_eq_smearedProduct_invUpper_reverse
+
+-- Issue #9, final assembly ([T26], Lemma 3.7(ii)): combines Lemma 3.7(i), the conformal-factor
+-- sign betaBoost_I_mul_pi, and the sign-reversal core above into the analytic-core vector at
+-- tau = i*pi. Contract.lean discharge: `lemma_3_7_at_ipi`, byte-identical statement text. This
+-- completes Issue #9 -- both Lemma 3.7(i) and (ii) are now proved theorems.
+#print axioms MobiusCPT.WightmanData.lemma_3_7_at_ipi
+#print axioms MobiusCPT.WightmanBundle.lemma_3_7_at_ipi

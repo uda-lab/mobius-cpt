@@ -55,7 +55,7 @@ too, projecting the `𝓕`-strong topology; it is a `def_wanted` rather than an
 deliberately not a global instance.  The instance holes `domAddCommGroup` and
 `domModule` are gone: the bundle carries them. `W2` and `IsWightmanCFT` are
 transparent projections of `W`, so besides the bundle hole `W` itself the only
-remaining #4-adjacent hole is `w3_vacuum_annihilation`, owned by Issue #26. The
+remaining #4-adjacent hole was `w3_vacuum_annihilation`, discharged below by Issue #9. The
 capstone obligations taking `❰IsWightmanCFT❱` as a hypothesis are genuinely
 conditional on [T26], Definition 2.5.
 
@@ -88,6 +88,40 @@ arbitrary group, since an abstract group's `MobiusAction` instance carries no co
 `boostOrbitContinuous_of_beta_continuous` to consume.  The statement Issue #38 owned,
 `vtilde_real`, is a proved theorem `MobiusCPT.WightmanBundle.vtilde_real` in
 `MobiusCPT.Wightman.VtildeReal` with identical statement text, so it is gone from here.
+
+Issue #9 is landing in blocks. Its first block discharges `lemma_3_7`, [T26] Lemma 3.7(i): a
+proved theorem `MobiusCPT.WightmanBundle.lemma_3_7` in `MobiusCPT.Wightman.Lemma37Continuation`
+with identical statement text, so it is gone from here. The proof exhibits the `G_λ` family of
+[T26], Definition 3.1 built from `betaBoost` as an `IsBoostContinuation` witness, assembled from
+Issue #8/#38's already-landed Lemma 3.6 continuity/holomorphy
+(`continuousOn_compatApply_smearedProduct_betaBoost`,
+`differentiableOn_compatApply_smearedProduct_betaBoost`) and covariance
+(`WightmanData.boost_smearedProduct`) infrastructure together with the real-parameter and
+boost-translation identities for the concrete complex boost
+(`betaBoost_ofReal_mob`, `beta_boostMat_betaBoost`).
+
+Issue #9's second block discharges `w3_vacuum_annihilation`, the (W3) vacuum-annihilation
+bridge: a proved theorem `MobiusCPT.WightmanBundle.w3_vacuum_annihilation` in
+`MobiusCPT.TestFunctions.FourierCauchy` with identical statement text, so it is gone from
+here. The proof identifies the boundary values of `inv (xRestrictS1 F)` with `F.invExt`
+(#7's disc-holomorphic inversion), shows its Fourier coefficients vanish for every `n ≤ 0` by
+Cauchy's theorem (`n < 0`) and the Cauchy integral formula at the origin (`n = 0`, using
+`F.invExt 0 = 0`), and feeds that into the already-landed (#26)
+`smear_vac_eq_zero_of_fourierCoef_eq_zero'`.
+
+Issue #9's third block discharges `lemma_3_7_at_ipi`, [T26] Lemma 3.7(ii): a proved theorem
+`MobiusCPT.WightmanBundle.lemma_3_7_at_ipi` in `MobiusCPT.Wightman.Lemma37` with identical
+statement text, so it is gone from here — completing Issue #9. The proof combines Lemma 3.7(i)
+at `τ = iπ` with the conformal-factor sign `betaBoost_I_mul_pi` (`(-1)^{d+1}` per field) and a
+combinatorial sign-reversal identity (`MobiusCPT.Wightman.SignReversal`,
+`smearedProduct_invLower_eq_smearedProduct_invUpper_reverse`): moving each field's
+`inv (xRestrictUpper F)` piece from adjacent-to-vacuum to the front of the product picks up one
+`(-1)` from the vacuum-annihilation identity per field (`w3_vacuum_annihilation` applied to
+`inv (xRestrictUpper F) + inv (xRestrictLower F) = inv (xRestrictS1 F)`), with the reordering
+itself using (W2) through the endpoint-cutoff limit (`MobiusCPT.Wightman.LocalityLimit`,
+`MobiusCPT.TestFunctions.EndpointCutoff`) and carrying no sign of its own — the total
+`(-1)^{Σ(d_j+1)} · (-1)^k` collapsing to the contract's `(-1)^{Σ d_j}` since `Σ(d_j+1) = Σd_j +
+k` and `(-1)^{2k} = 1`.
 -/
 
 namespace MobiusCPT
@@ -182,35 +216,6 @@ def_wanted MemPUpperOmega : ❰Dom❱ → Prop :=
 real interface landed by Issue #4. -/
 def_wanted MemPLowerOmega : ❰Dom❱ → Prop :=
   fun Φ => (❰W❱).data.toWightmanStruct.MemPLowerOmega Φ
-
-/-- [T26], the (W3) bridge used in the proof of Lemma 3.7, still owed by Issue #26. -/
-theorem_wanted w3_vacuum_annihilation :
-    ❰IsWightmanCFT❱ →
-      ∀ (φ : ❰Field❱) (F : AnalyticTestFn),
-        ❰smear❱ φ (inv (xRestrictS1 F)) ❰vac❱ = 0
-
-/-- [T26], Lemma 3.7(i); the analytic-core continued-boost formula on upper-supported
-analytic restrictions, owned by Issue #9. -/
-theorem_wanted lemma_3_7 :
-    ❰IsWightmanCFT❱ →
-      ∀ (l : List (❰Field❱ × AnalyticTestFn)) (τ : ℂ), τ ∈ strip (Complex.I * Real.pi) →
-        ❰VtildeDom❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) ∧
-          ❰VtildeMap❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) =
-            ❰smearedProduct❱ (l.map (fun p => (p.1, betaBoost (❰dim❱ p.1) τ p.2)))
-
-/-- [T26], Lemma 3.7(ii); at `τ = Complex.I * Real.pi`, the analytic-core vector maps to the
-reversed product with the conformal-dimension sign, owned by Issue #9. Here
-`inv (xRestrictUpper p.2)` means `F|_{I_+} ∘ z⁻¹`, supported in `I_-`; this is deliberately
-the opposite restriction from `MobiusCPT.betaBoost_I_mul_pi`, where the source needs
-`(F ∘ z⁻¹)|_{I_+} = F|_{I_-} ∘ z⁻¹` and therefore uses `xRestrictLower`. -/
-theorem_wanted lemma_3_7_at_ipi :
-    ❰IsWightmanCFT❱ →
-      ∀ (l : List (❰Field❱ × AnalyticTestFn)),
-        ❰VtildeMap❱ (Complex.I * Real.pi)
-            (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) =
-          (-1 : ℂ) ^ ((l.map (fun p => ❰dim❱ p.1)).sum) •
-            ❰smearedProduct❱
-              (l.reverse.map (fun p => (p.1, inv (xRestrictUpper p.2))))
 
 /-- [T26], Lemma 3.8; for fixed fields and compatible functional, the exponential
 continuity estimate has constants independent of test-function lists and `t`. The `foldr max 0`
