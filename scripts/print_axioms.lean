@@ -837,3 +837,12 @@ import MobiusCPT
 -- `WightmanBundle` now fixed to `Mob`/`mobiusActionMobTestFn`
 -- (docs/adr/0001-fix-mobius-group-in-bundle.md).
 #print axioms MobiusCPT.WightmanBundle.vtilde_real
+
+-- Issue #9, Block A ([T26], Lemma 3.7(i)): the `G_λ` continuation family built from `betaBoost`
+-- is an `IsBoostContinuation` witness between the upper-restricted smeared product and the
+-- `betaBoost`-smeared product, assembled from Issue #8/#38's landed Lemma 3.6 and covariance
+-- infrastructure. Contract.lean discharge: `lemma_3_7`, byte-identical statement text.
+#print axioms MobiusCPT.strip_subset_strip_I_mul_pi
+#print axioms MobiusCPT.WightmanData.isBoostContinuation_betaBoost
+#print axioms MobiusCPT.WightmanData.lemma_3_7
+#print axioms MobiusCPT.WightmanBundle.lemma_3_7

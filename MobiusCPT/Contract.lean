@@ -88,6 +88,18 @@ arbitrary group, since an abstract group's `MobiusAction` instance carries no co
 `boostOrbitContinuous_of_beta_continuous` to consume.  The statement Issue #38 owned,
 `vtilde_real`, is a proved theorem `MobiusCPT.WightmanBundle.vtilde_real` in
 `MobiusCPT.Wightman.VtildeReal` with identical statement text, so it is gone from here.
+
+Issue #9 is landing in blocks. Its first block discharges `lemma_3_7`, [T26] Lemma 3.7(i): a
+proved theorem `MobiusCPT.WightmanBundle.lemma_3_7` in `MobiusCPT.Wightman.Lemma37Continuation`
+with identical statement text, so it is gone from here. The proof exhibits the `G_λ` family of
+[T26], Definition 3.1 built from `betaBoost` as an `IsBoostContinuation` witness, assembled from
+Issue #8/#38's already-landed Lemma 3.6 continuity/holomorphy
+(`continuousOn_compatApply_smearedProduct_betaBoost`,
+`differentiableOn_compatApply_smearedProduct_betaBoost`) and covariance
+(`WightmanData.boost_smearedProduct`) infrastructure together with the real-parameter and
+boost-translation identities for the concrete complex boost
+(`betaBoost_ofReal_mob`, `beta_boostMat_betaBoost`). `lemma_3_7_at_ipi` remains a
+`theorem_wanted`, owed by a later block of Issue #9.
 -/
 
 namespace MobiusCPT
@@ -188,15 +200,6 @@ theorem_wanted w3_vacuum_annihilation :
     ❰IsWightmanCFT❱ →
       ∀ (φ : ❰Field❱) (F : AnalyticTestFn),
         ❰smear❱ φ (inv (xRestrictS1 F)) ❰vac❱ = 0
-
-/-- [T26], Lemma 3.7(i); the analytic-core continued-boost formula on upper-supported
-analytic restrictions, owned by Issue #9. -/
-theorem_wanted lemma_3_7 :
-    ❰IsWightmanCFT❱ →
-      ∀ (l : List (❰Field❱ × AnalyticTestFn)) (τ : ℂ), τ ∈ strip (Complex.I * Real.pi) →
-        ❰VtildeDom❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) ∧
-          ❰VtildeMap❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) =
-            ❰smearedProduct❱ (l.map (fun p => (p.1, betaBoost (❰dim❱ p.1) τ p.2)))
 
 /-- [T26], Lemma 3.7(ii); at `τ = Complex.I * Real.pi`, the analytic-core vector maps to the
 reversed product with the conformal-dimension sign, owned by Issue #9. Here

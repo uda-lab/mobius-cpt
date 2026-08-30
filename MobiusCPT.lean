@@ -59,3 +59,4 @@ import MobiusCPT.Mobius.ComplexBetaDerivFn
 import MobiusCPT.Mobius.ComplexBetaHolo
 import MobiusCPT.Wightman.BoostCurve
 import MobiusCPT.Mobius.BoostContinuity
+import MobiusCPT.Wightman.Lemma37Continuation
