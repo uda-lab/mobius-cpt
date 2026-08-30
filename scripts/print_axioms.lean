@@ -888,3 +888,13 @@ import MobiusCPT
 #print axioms MobiusCPT.exists_tendsto_of_suppUpper
 #print axioms MobiusCPT.disjointSupport_of_suppUpper_of_tsupport_subset_lowerArc
 #print axioms MobiusCPT.disjointSupport_of_suppLower_of_tsupport_subset_upperArc
+
+-- Issue #9, Block D core: the combinatorial sign-reversal identity behind [T26] Lemma 3.7(ii),
+-- [CRTT25]'s `phi_1(g_1)...phi_k(g_k)Omega = (-1)^k phi_k(h_k)...phi_1(h_1)Omega`. The first
+-- lemma commutes one SuppLower operator past a whole product of SuppUpper-smeared operators
+-- (induction on the list, invoking the (W2)-through-a-limit bridge at each step); the second
+-- is the sign-reversal induction itself, using the vacuum-annihilation identity
+-- (w3_vacuum_annihilation, on the sum of the two endpoint restrictions) once per list entry.
+-- Final assembly into lemma_3_7_at_ipi is a separate, later step.
+#print axioms MobiusCPT.WightmanStruct.smear_comm_smearedProductOn_of_suppLower_of_forall_suppUpper
+#print axioms MobiusCPT.WightmanData.smearedProduct_invLower_eq_smearedProduct_invUpper_reverse
