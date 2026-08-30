@@ -857,3 +857,14 @@ import MobiusCPT
 #print axioms MobiusCPT.fourierCoef_inv_xRestrictS1_eq_zero_of_le_zero
 #print axioms MobiusCPT.WightmanData.w3_vacuum_annihilation
 #print axioms MobiusCPT.WightmanBundle.w3_vacuum_annihilation
+
+-- Issue #9, Block C infrastructure (owner bridge 2, 2026-08-28): the general (W2)-through-a-
+-- limit bridge. Given a sequence of test functions with disjoint support from a fixed `f` at
+-- every finite stage, converging to a limit `g` that need not itself have disjoint support
+-- from `f`, the two smearing orders still agree — passed through every compatible functional
+-- (never a direct vector limit in `𝓓`) and upgraded to a vector identity by regularity. Takes
+-- the approximating sequence as given; does not itself build the endpoint cutoff sequence.
+#print axioms MobiusCPT.WightmanStruct.continuous_compatApply_smear_smear_snd
+#print axioms MobiusCPT.WightmanStruct.continuous_compatApply_smear_smear_fst
+#print axioms MobiusCPT.WightmanStruct.compatApply_smear_comm_of_tendsto
+#print axioms MobiusCPT.WightmanStruct.smear_comm_of_tendsto

@@ -61,3 +61,4 @@ import MobiusCPT.Wightman.BoostCurve
 import MobiusCPT.Mobius.BoostContinuity
 import MobiusCPT.Wightman.Lemma37Continuation
 import MobiusCPT.TestFunctions.FourierCauchy
+import MobiusCPT.Wightman.LocalityLimit
