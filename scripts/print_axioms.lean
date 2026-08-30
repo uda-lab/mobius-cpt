@@ -905,3 +905,7 @@ import MobiusCPT
 -- completes Issue #9 -- both Lemma 3.7(i) and (ii) are now proved theorems.
 #print axioms MobiusCPT.WightmanData.lemma_3_7_at_ipi
 #print axioms MobiusCPT.WightmanBundle.lemma_3_7_at_ipi
+
+-- Issue #10, Block A ([T26], Lemma 3.8): joint continuity of a finite multilinear functional
+-- on TestFn gives a product bound in one common defining C^N norm.
+#print axioms MobiusCPT.cnorm_bound_of_continuous_multilinear
