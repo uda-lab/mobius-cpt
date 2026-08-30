@@ -868,3 +868,13 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanStruct.continuous_compatApply_smear_smear_fst
 #print axioms MobiusCPT.WightmanStruct.compatApply_smear_comm_of_tendsto
 #print axioms MobiusCPT.WightmanStruct.smear_comm_of_tendsto
+
+-- Issue #9, Block C infrastructure: a pure single-variable calculus lemma, independent of
+-- this project's TestFn/Circle types. Given a smooth function vanishing outside an open
+-- interval, produces a sequence of smooth functions each vanishing outside a compact
+-- sub-interval strictly inside it, converging together with every derivative order,
+-- uniformly over all of ℝ. This is the real-analysis core of [T26]'s endpoint cutoff
+-- construction (docs/math/pct-theorem.md's "cutoff-and-continuity argument" for Lemma 3.7);
+-- the TestFn-specific wiring (building an actual cutoff sequence of test functions and its
+-- DisjointSupport property) is a separate, still-open piece.
+#print axioms MobiusCPT.exists_contDiff_zero_outside_compact_tendstoUniformly
