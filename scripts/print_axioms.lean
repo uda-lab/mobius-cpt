@@ -874,7 +874,17 @@ import MobiusCPT
 -- interval, produces a sequence of smooth functions each vanishing outside a compact
 -- sub-interval strictly inside it, converging together with every derivative order,
 -- uniformly over all of ℝ. This is the real-analysis core of [T26]'s endpoint cutoff
--- construction (docs/math/pct-theorem.md's "cutoff-and-continuity argument" for Lemma 3.7);
--- the TestFn-specific wiring (building an actual cutoff sequence of test functions and its
--- DisjointSupport property) is a separate, still-open piece.
+-- construction (docs/math/pct-theorem.md's "cutoff-and-continuity argument" for Lemma 3.7).
 #print axioms MobiusCPT.exists_contDiff_zero_outside_compact_tendstoUniformly
+
+-- Issue #9, Block C: the TestFn-specific wiring completing the endpoint cutoff construction.
+-- Builds an actual sequence of test functions, each supported strictly inside the open
+-- semicircle (not just the closed one SuppLower/SuppUpper give), converging to a given
+-- SuppLower/SuppUpper test function; and the two small connecting lemmas showing that a
+-- tsupport bound inside the open opposite arc gives genuine DisjointSupport against a field
+-- supported in the other closed semicircle -- the fact SuppUpper/SuppLower alone cannot give,
+-- since closed supports may touch at +-1.
+#print axioms MobiusCPT.exists_tendsto_of_suppLower
+#print axioms MobiusCPT.exists_tendsto_of_suppUpper
+#print axioms MobiusCPT.disjointSupport_of_suppUpper_of_tsupport_subset_lowerArc
+#print axioms MobiusCPT.disjointSupport_of_suppLower_of_tsupport_subset_upperArc
