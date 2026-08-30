@@ -817,3 +817,23 @@ import MobiusCPT
 #print axioms MobiusCPT.I_mul_pi_mem_strip
 #print axioms MobiusCPT.forall_norm_angleDeriv_betaBoost_sub_lt
 #print axioms MobiusCPT.betaBoost_apply_of_mem_upper
+
+-- Issue #38 ([CRTT25], Lemma 2.10(i)): the real-parameter joint-smoothness-to-continuity core,
+-- and boost/rotation continuity of the conformal action on test functions.
+#print axioms MobiusCPT.continuous_of_jointlySmooth_periodic
+#print axioms MobiusCPT.beta_rotMat_apply
+#print axioms MobiusCPT.Mob.beta_rot_apply
+#print axioms MobiusCPT.contDiff_betaRotJoint
+#print axioms MobiusCPT.continuous_beta_rot
+#print axioms MobiusCPT.boostMat_neg_alpha
+#print axioms MobiusCPT.boostMat_neg_beta
+#print axioms MobiusCPT.j_boostMat_neg_eq
+#print axioms MobiusCPT.contMDiff_boostAngleNegSmul
+#print axioms MobiusCPT.contDiff_betaBoostJoint
+#print axioms MobiusCPT.continuous_beta_boost
+#print axioms MobiusCPT.hbeta_mobiusActionMobTestFn
+
+-- Issue #38, Contract.lean discharge: `vtilde_real`, byte-identical statement text, for the
+-- `WightmanBundle` now fixed to `Mob`/`mobiusActionMobTestFn`
+-- (docs/adr/0001-fix-mobius-group-in-bundle.md).
+#print axioms MobiusCPT.WightmanBundle.vtilde_real

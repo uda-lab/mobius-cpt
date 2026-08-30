@@ -48,6 +48,7 @@ import MobiusCPT.Mobius.ComplexBeta
 import MobiusCPT.Mobius.ComplexBetaSmooth
 import MobiusCPT.Mobius.ComplexBetaFlat
 import MobiusCPT.Analysis.TestFnCurve
+import MobiusCPT.Analysis.ParamCurve
 import MobiusCPT.Mobius.ComplexBetaLawsCore
 import MobiusCPT.Mobius.ComplexBetaDef
 import MobiusCPT.Mobius.ComplexBetaCont
@@ -57,3 +58,4 @@ import MobiusCPT.Mobius.ComplexBetaDeriv
 import MobiusCPT.Mobius.ComplexBetaDerivFn
 import MobiusCPT.Mobius.ComplexBetaHolo
 import MobiusCPT.Wightman.BoostCurve
+import MobiusCPT.Mobius.BoostContinuity
