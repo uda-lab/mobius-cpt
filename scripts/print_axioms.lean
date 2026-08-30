@@ -832,3 +832,8 @@ import MobiusCPT
 #print axioms MobiusCPT.contDiff_betaBoostJoint
 #print axioms MobiusCPT.continuous_beta_boost
 #print axioms MobiusCPT.hbeta_mobiusActionMobTestFn
+
+-- Issue #38, Contract.lean discharge: `vtilde_real`, byte-identical statement text, for the
+-- `WightmanBundle` now fixed to `Mob`/`mobiusActionMobTestFn`
+-- (docs/adr/0001-fix-mobius-group-in-bundle.md).
+#print axioms MobiusCPT.WightmanBundle.vtilde_real

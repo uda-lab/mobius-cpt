@@ -1,4 +1,6 @@
 import MobiusCPT.Wightman.Vtilde
+import MobiusCPT.Wightman.Bundle
+import MobiusCPT.Mobius.BoostContinuity
 
 namespace MobiusCPT
 
@@ -193,5 +195,20 @@ theorem boostOrbitContinuous_of_beta_continuous (W : WightmanData G TF 𝓓 𝓕
     rfl
 
 end WightmanData
+
+namespace WightmanBundle
+
+/-- [T26], Definition 3.1; [CRTT25], Lemma 2.10(i). Issue #38 discharges
+`MobiusCPT.Contract`'s `theorem_wanted vtilde_real`, byte-identical statement text: for the
+concrete Möbius group and conformal action `WightmanBundle` fixes (`docs/adr/0001-fix-mobius-group-in-bundle.md`),
+boost-orbit continuity is unconditional, via `hbeta_mobiusActionMobTestFn`
+(`MobiusCPT.Mobius.BoostContinuity`), so the real-parameter case of `Ṽ_τ` holds outright. -/
+theorem vtilde_real (W : WightmanBundle) (h : W.data.IsWightmanCFT) :
+    ∀ (t : ℝ) (Φ : W.𝓓),
+      W.data.VtildeDom (t : ℂ) Φ ∧ W.data.vtildeMap (t : ℂ) Φ = W.data.boost t Φ :=
+  WightmanData.vtilde_real_of_boostOrbitContinuous W.data h
+    (WightmanData.boostOrbitContinuous_of_beta_continuous W.data h hbeta_mobiusActionMobTestFn)
+
+end WightmanBundle
 
 end MobiusCPT

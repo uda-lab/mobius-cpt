@@ -73,13 +73,21 @@ projections of the real `WightmanData.VtildeDom` and `WightmanData.vtildeMap` fr
 `MobiusCPT.Wightman.Vtilde`.  The statements Issue #6 owned (`strip_eq`, `vtilde_spec`,
 `vtilde_translation`, `vtilde_vacuum`) are proved theorems in `MobiusCPT.Analysis.Strip`,
 `MobiusCPT.Wightman.Vtilde` and `MobiusCPT.Wightman.VtildeLaws`, so their statements are gone
-from here.  `vtilde_real` is deliberately still a hole: for real `τ` the strip degenerates to
-the real axis, so [T26] Def. 3.1's `ContinuousOn` clause is exactly continuity of
-`t ↦ λ(V_t Φ)`, which is a *consequence* of the source's axioms ([CRTT25], Lemma 2.10(i)) and
-not derivable from this repository's `IsWightmanCFT` — (W1) gives continuity in the vector, not
-in the group parameter.  `MobiusCPT.Wightman.VtildeReal` names that input as
-`WightmanData.BoostOrbitContinuous`, proves the real-parameter statement from it, and reduces it
-to continuity of `t ↦ β_d(v_t) f` on test functions.
+from here.
+
+Issue #38 has landed.  For real `τ` the strip degenerates to the real axis, so [T26] Def.
+3.1's `ContinuousOn` clause is exactly continuity of `t ↦ λ(V_t Φ)`, which [CRTT25], Lemma
+2.10(i) gives as a *consequence* of the source's axioms rather than a hypothesis of this
+repository's `IsWightmanCFT` — (W1) gives continuity in the vector, not in the group parameter.
+`MobiusCPT.Wightman.VtildeReal` names that input as `WightmanData.BoostOrbitContinuous` and
+proves the real-parameter statement from it, reducing it to continuity of `t ↦ β_d(v_t) f` on
+test functions; `MobiusCPT.Mobius.BoostContinuity` proves that continuity for the concrete
+conformal action.  Discharging `vtilde_real` from these needed `WightmanBundle` to fix the
+group and the action ([docs/adr/0001-fix-mobius-group-in-bundle.md]) rather than bundling an
+arbitrary group, since an abstract group's `MobiusAction` instance carries no continuity for
+`boostOrbitContinuous_of_beta_continuous` to consume.  The statement Issue #38 owned,
+`vtilde_real`, is a proved theorem `MobiusCPT.WightmanBundle.vtilde_real` in
+`MobiusCPT.Wightman.VtildeReal` with identical statement text, so it is gone from here.
 -/
 
 namespace MobiusCPT
@@ -159,14 +167,6 @@ def_wanted VtildeDom : ℂ → ❰Dom❱ → Prop :=
 the uniqueness statement, so it is never an unconstrained choice. -/
 def_wanted VtildeMap : ℂ → ❰Dom❱ → ❰Dom❱ :=
   fun τ Φ => (❰W❱).data.vtildeMap τ Φ
-
-/-- [T26], Definition 3.1; real parameters give the ordinary boost on all of `𝓓`; the leading
-Wightman hypothesis supplies the regularity/continuity axiom for `t ↦ λ(V_t Φ)` needed here,
-owned by Issue #6. -/
-theorem_wanted vtilde_real :
-    ❰IsWightmanCFT❱ →
-      ∀ (t : ℝ) (Φ : ❰Dom❱),
-        ❰VtildeDom❱ (t : ℂ) Φ ∧ ❰VtildeMap❱ (t : ℂ) Φ = ❰boost❱ t Φ
 
 /-- [T26], §2; the left-to-right product `φ₁(f₁)⋯φ_k(f_k)Ω`, now projected from
 the real interface landed by Issue #4. -/
