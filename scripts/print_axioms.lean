@@ -941,3 +941,8 @@ import MobiusCPT
 #print axioms MobiusCPT.norm_iteratedDeriv_inv_le_exp
 #print axioms MobiusCPT.contDiff_boostAngle
 #print axioms MobiusCPT.norm_iteratedDeriv_boostAngle_le
+
+-- Issue #10, Block B target: every fixed C^N seminorm of a real-boosted test function grows
+-- at most exponentially in the boost parameter, uniformly in the test function.
+#print axioms MobiusCPT.toAngle_beta_boost_eq
+#print axioms MobiusCPT.cnorm_boost_le
