@@ -917,8 +917,11 @@ import MobiusCPT
 #print axioms MobiusCPT.sq_add_one_eq_two_mul_re
 #print axioms MobiusCPT.boostPz_pos
 #print axioms MobiusCPT.boostP_pos
+#print axioms MobiusCPT.continuous_boostP
+#print axioms MobiusCPT.continuous_boostPInv
 #print axioms MobiusCPT.boostPz_smul_eq
 #print axioms MobiusCPT.boostMat_neg_smul_one
+#print axioms MobiusCPT.boostAngle_zero
 #print axioms MobiusCPT.hasDerivAt_boostAngle
 #print axioms MobiusCPT.hasDerivAt_boostSmulExp
 #print axioms MobiusCPT.hasDerivAt_circleExp_boostAngle
