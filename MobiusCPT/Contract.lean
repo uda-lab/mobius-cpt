@@ -98,8 +98,7 @@ Issue #8/#38's already-landed Lemma 3.6 continuity/holomorphy
 `differentiableOn_compatApply_smearedProduct_betaBoost`) and covariance
 (`WightmanData.boost_smearedProduct`) infrastructure together with the real-parameter and
 boost-translation identities for the concrete complex boost
-(`betaBoost_ofReal_mob`, `beta_boostMat_betaBoost`). `lemma_3_7_at_ipi` remains a
-`theorem_wanted`, owed by a later block of Issue #9.
+(`betaBoost_ofReal_mob`, `beta_boostMat_betaBoost`).
 
 Issue #9's second block discharges `w3_vacuum_annihilation`, the (W3) vacuum-annihilation
 bridge: a proved theorem `MobiusCPT.WightmanBundle.w3_vacuum_annihilation` in
@@ -109,6 +108,20 @@ here. The proof identifies the boundary values of `inv (xRestrictS1 F)` with `F.
 Cauchy's theorem (`n < 0`) and the Cauchy integral formula at the origin (`n = 0`, using
 `F.invExt 0 = 0`), and feeds that into the already-landed (#26)
 `smear_vac_eq_zero_of_fourierCoef_eq_zero'`.
+
+Issue #9's third block discharges `lemma_3_7_at_ipi`, [T26] Lemma 3.7(ii): a proved theorem
+`MobiusCPT.WightmanBundle.lemma_3_7_at_ipi` in `MobiusCPT.Wightman.Lemma37` with identical
+statement text, so it is gone from here — completing Issue #9. The proof combines Lemma 3.7(i)
+at `τ = iπ` with the conformal-factor sign `betaBoost_I_mul_pi` (`(-1)^{d+1}` per field) and a
+combinatorial sign-reversal identity (`MobiusCPT.Wightman.SignReversal`,
+`smearedProduct_invLower_eq_smearedProduct_invUpper_reverse`): moving each field's
+`inv (xRestrictUpper F)` piece from adjacent-to-vacuum to the front of the product picks up one
+`(-1)` from the vacuum-annihilation identity per field (`w3_vacuum_annihilation` applied to
+`inv (xRestrictUpper F) + inv (xRestrictLower F) = inv (xRestrictS1 F)`), with the reordering
+itself using (W2) through the endpoint-cutoff limit (`MobiusCPT.Wightman.LocalityLimit`,
+`MobiusCPT.TestFunctions.EndpointCutoff`) and carrying no sign of its own — the total
+`(-1)^{Σ(d_j+1)} · (-1)^k` collapsing to the contract's `(-1)^{Σ d_j}` since `Σ(d_j+1) = Σd_j +
+k` and `(-1)^{2k} = 1`.
 -/
 
 namespace MobiusCPT
@@ -203,20 +216,6 @@ def_wanted MemPUpperOmega : ❰Dom❱ → Prop :=
 real interface landed by Issue #4. -/
 def_wanted MemPLowerOmega : ❰Dom❱ → Prop :=
   fun Φ => (❰W❱).data.toWightmanStruct.MemPLowerOmega Φ
-
-/-- [T26], Lemma 3.7(ii); at `τ = Complex.I * Real.pi`, the analytic-core vector maps to the
-reversed product with the conformal-dimension sign, owned by Issue #9. Here
-`inv (xRestrictUpper p.2)` means `F|_{I_+} ∘ z⁻¹`, supported in `I_-`; this is deliberately
-the opposite restriction from `MobiusCPT.betaBoost_I_mul_pi`, where the source needs
-`(F ∘ z⁻¹)|_{I_+} = F|_{I_-} ∘ z⁻¹` and therefore uses `xRestrictLower`. -/
-theorem_wanted lemma_3_7_at_ipi :
-    ❰IsWightmanCFT❱ →
-      ∀ (l : List (❰Field❱ × AnalyticTestFn)),
-        ❰VtildeMap❱ (Complex.I * Real.pi)
-            (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) =
-          (-1 : ℂ) ^ ((l.map (fun p => ❰dim❱ p.1)).sum) •
-            ❰smearedProduct❱
-              (l.reverse.map (fun p => (p.1, inv (xRestrictUpper p.2))))
 
 /-- [T26], Lemma 3.8; for fixed fields and compatible functional, the exponential
 continuity estimate has constants independent of test-function lists and `t`. The `foldr max 0`

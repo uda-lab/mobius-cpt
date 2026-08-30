@@ -65,3 +65,4 @@ import MobiusCPT.Wightman.LocalityLimit
 import MobiusCPT.Analysis.IntervalShrink
 import MobiusCPT.TestFunctions.EndpointCutoff
 import MobiusCPT.Wightman.SignReversal
+import MobiusCPT.Wightman.Lemma37

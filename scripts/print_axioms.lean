@@ -898,3 +898,10 @@ import MobiusCPT
 -- Final assembly into lemma_3_7_at_ipi is a separate, later step.
 #print axioms MobiusCPT.WightmanStruct.smear_comm_smearedProductOn_of_suppLower_of_forall_suppUpper
 #print axioms MobiusCPT.WightmanData.smearedProduct_invLower_eq_smearedProduct_invUpper_reverse
+
+-- Issue #9, final assembly ([T26], Lemma 3.7(ii)): combines Lemma 3.7(i), the conformal-factor
+-- sign betaBoost_I_mul_pi, and the sign-reversal core above into the analytic-core vector at
+-- tau = i*pi. Contract.lean discharge: `lemma_3_7_at_ipi`, byte-identical statement text. This
+-- completes Issue #9 -- both Lemma 3.7(i) and (ii) are now proved theorems.
+#print axioms MobiusCPT.WightmanData.lemma_3_7_at_ipi
+#print axioms MobiusCPT.WightmanBundle.lemma_3_7_at_ipi
