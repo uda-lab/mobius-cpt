@@ -780,3 +780,40 @@ import MobiusCPT
 #print axioms MobiusCPT.differentiableOn_compatApply_multiSmear_betaBoost
 #print axioms MobiusCPT.continuousOn_compatApply_smearedProduct_betaBoost
 #print axioms MobiusCPT.differentiableOn_compatApply_smearedProduct_betaBoost
+
+-- Audit completion for Issue #8: every remaining public theorem in the files this PR adds or
+-- extends, so that the live audit covers the whole exported surface and not only the headline
+-- results.  The five `FlatGluing` entries pre-date this PR and are added here for completeness,
+-- the file having been extended by it.
+#print axioms MobiusCPT.zeroExtend_eq_of_mem
+#print axioms MobiusCPT.zeroExtend_eq_zero_of_notMem
+#print axioms MobiusCPT.zeroExtendIcc_eqOn
+#print axioms MobiusCPT.zeroExtendIcc_eq_zero_of_notMem
+#print axioms MobiusCPT.iteratedDeriv_zeroExtendIcc_left
+#print axioms MobiusCPT.iteratedDeriv_zeroExtendIcc_right
+#print axioms MobiusCPT.iteratedDeriv_zeroExtendIcc_of_notMem
+#print axioms MobiusCPT.stepRight_of_le
+#print axioms MobiusCPT.stepRight_of_lt
+#print axioms MobiusCPT.deriv_stepRight
+#print axioms MobiusCPT.cutIcc_eq_of_mem
+#print axioms MobiusCPT.cutIcc_eq_zero_of_notMem
+#print axioms MobiusCPT.sliceDeriv_succ
+#print axioms MobiusCPT.AnalyticTestFn.invQuot_of_ne
+#print axioms MobiusCPT.AnalyticTestFn.invQuot_zero
+#print axioms MobiusCPT.im_I_mul_pi
+#print axioms MobiusCPT.cnum_neg_circleExp_ne_zero
+#print axioms MobiusCPT.betaBoostVal_circleExp_zero
+#print axioms MobiusCPT.betaBoostVal_circleExp_pi
+#print axioms MobiusCPT.uniqueDiffOn_discNear
+#print axioms MobiusCPT.zero_notMem_discNear
+#print axioms MobiusCPT.discNear_eventuallyEq
+#print axioms MobiusCPT.mapsTo_inv_discNear
+#print axioms MobiusCPT.cosh_add_re_mul_sinh_ofReal
+#print axioms MobiusCPT.ofReal_mem_strip_I_mul_pi
+#print axioms MobiusCPT.cnum_neg_I_mul_pi
+#print axioms MobiusCPT.cden_neg_I_mul_pi
+#print axioms MobiusCPT.cosh_I_mul_pi
+#print axioms MobiusCPT.sinh_I_mul_pi
+#print axioms MobiusCPT.I_mul_pi_mem_strip
+#print axioms MobiusCPT.forall_norm_angleDeriv_betaBoost_sub_lt
+#print axioms MobiusCPT.betaBoost_apply_of_mem_upper
