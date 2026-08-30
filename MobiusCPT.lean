@@ -12,6 +12,7 @@ import MobiusCPT.Wightman.Bundle
 import MobiusCPT.Wightman.Continuity
 import MobiusCPT.Analysis.FlatGluing
 import MobiusCPT.Analysis.SeparateJoint
+import MobiusCPT.Analysis.MultilinearBound
 import MobiusCPT.Analysis.Strip
 import MobiusCPT.Analysis.FlatCalculus
 import MobiusCPT.Analysis.GaussianConv
@@ -59,6 +60,9 @@ import MobiusCPT.Mobius.ComplexBetaDerivFn
 import MobiusCPT.Mobius.ComplexBetaHolo
 import MobiusCPT.Wightman.BoostCurve
 import MobiusCPT.Mobius.BoostContinuity
+import MobiusCPT.Mobius.BoostAngle
+import MobiusCPT.Mobius.BoostPBounds
+import MobiusCPT.Mobius.BoostGrowth
 import MobiusCPT.Wightman.Lemma37Continuation
 import MobiusCPT.TestFunctions.FourierCauchy
 import MobiusCPT.Wightman.LocalityLimit
@@ -66,3 +70,4 @@ import MobiusCPT.Analysis.IntervalShrink
 import MobiusCPT.TestFunctions.EndpointCutoff
 import MobiusCPT.Wightman.SignReversal
 import MobiusCPT.Wightman.Lemma37
+import MobiusCPT.Wightman.Lemma38

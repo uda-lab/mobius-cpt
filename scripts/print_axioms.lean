@@ -905,3 +905,55 @@ import MobiusCPT
 -- completes Issue #9 -- both Lemma 3.7(i) and (ii) are now proved theorems.
 #print axioms MobiusCPT.WightmanData.lemma_3_7_at_ipi
 #print axioms MobiusCPT.WightmanBundle.lemma_3_7_at_ipi
+
+-- Issue #10, Block A ([T26], Lemma 3.8): joint continuity of a finite multilinear functional
+-- on TestFn gives a product bound in one common defining C^N norm.
+#print axioms MobiusCPT.cnorm_bound_of_continuous_multilinear
+
+-- Issue #10, Block B core: the real angle lift of the negative real boost v_{-t}, defined as
+-- the antiderivative of the reciprocal automorphy-factor base and identified with the boost
+-- action by an ODE-uniqueness argument (both sides solve y' = I y / boostP t with the same
+-- value 1 at theta = 0). Valid on the whole circle, not the boost-chart route.
+#print axioms MobiusCPT.sq_add_one_eq_two_mul_re
+#print axioms MobiusCPT.boostPz_pos
+#print axioms MobiusCPT.boostP_pos
+#print axioms MobiusCPT.continuous_boostP
+#print axioms MobiusCPT.continuous_boostPInv
+#print axioms MobiusCPT.boostPz_smul_eq
+#print axioms MobiusCPT.boostMat_neg_smul_one
+#print axioms MobiusCPT.boostAngle_zero
+#print axioms MobiusCPT.hasDerivAt_boostAngle
+#print axioms MobiusCPT.hasDerivAt_boostSmulExp
+#print axioms MobiusCPT.hasDerivAt_circleExp_boostAngle
+#print axioms MobiusCPT.circleExp_boostAngle
+#print axioms MobiusCPT.circleExp_boostAngle'
+
+-- Issue #10, Block B growth bounds: exponential-in-|t| growth of the iterated angle
+-- derivatives of boostP and its antiderivative boostAngle, via the Faa di Bruno bound
+-- norm_iteratedFDeriv_comp_le' on the reciprocal restricted away from its zero.
+#print axioms MobiusCPT.iteratedDeriv_cos_eq
+#print axioms MobiusCPT.norm_iteratedDeriv_cos_le
+#print axioms MobiusCPT.boostP_eq
+#print axioms MobiusCPT.iteratedDeriv_boostP_succ_eq
+#print axioms MobiusCPT.abs_sinh_le_exp_abs
+#print axioms MobiusCPT.norm_iteratedDeriv_boostP_le
+#print axioms MobiusCPT.contDiff_boostP
+#print axioms MobiusCPT.exp_neg_abs_le_boostP
+#print axioms MobiusCPT.iteratedDeriv_inv_eq
+#print axioms MobiusCPT.norm_iteratedDeriv_inv_le_of_ge
+#print axioms MobiusCPT.norm_iteratedDeriv_inv_le_exp
+#print axioms MobiusCPT.contDiff_boostAngle
+#print axioms MobiusCPT.norm_iteratedDeriv_boostAngle_le
+
+-- Issue #10, Block B target: every fixed C^N seminorm of a real-boosted test function grows
+-- at most exponentially in the boost parameter, uniformly in the test function.
+#print axioms MobiusCPT.toAngle_beta_boost_eq
+#print axioms MobiusCPT.cnorm_boost_le
+
+-- Issue #10, Block C ([T26], Lemma 3.8): telescope the multilinear functional slot by slot,
+-- bridge equal-length zipped lists to Fin-indexed tuples, and combine Blocks A and B into the
+-- contract estimate. Contract.lean discharge: `lemma_3_8`, byte-identical statement text.
+#print axioms MobiusCPT.MultilinearMap.norm_sub_le_of_cnorm_bound
+#print axioms MobiusCPT.List.zip_eq_ofFn_get_of_length_eq
+#print axioms MobiusCPT.WightmanData.lemma_3_8
+#print axioms MobiusCPT.WightmanBundle.lemma_3_8
