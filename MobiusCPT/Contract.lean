@@ -14,6 +14,7 @@ import MobiusCPT.TestFunctions.Support
 import MobiusCPT.Wightman.Bundle
 import MobiusCPT.Wightman.VtildeLinear
 import MobiusCPT.Wightman.VtildeLaws
+import MobiusCPT.Mobius.ComplexBetaLaws
 
 /-!
 # MobiusCPT.Contract
@@ -41,7 +42,7 @@ Issue #7 has landed as well: `AnalyticTestFn` ([T26], Definition 3.2), `xRestric
 `xRestrictUpper` and `xRestrictLower` below are the genuine definitions from
 `MobiusCPT.TestFunctions.Analytic`, not holes, and the statements Issue #7 owned
 (`xRestrictUpper_supp`, `xRestrictLower_supp`, `xRestrict_split`) are proved theorems there.
-`betaBoost` is still a hole, but its type no longer mentions one.  Lemma 3.4 is proved as
+Lemma 3.4 is proved as
 `lemma_3_4_density_upper` in `MobiusCPT.TestFunctions.AnalyticDensity`, so its statement is gone
 from here too.
 
@@ -57,6 +58,14 @@ transparent projections of `W`, so besides the bundle hole `W` itself the only
 remaining #4-adjacent hole is `w3_vacuum_annihilation`, owned by Issue #26. The
 capstone obligations taking `❰IsWightmanCFT❱` as a hypothesis are genuinely
 conditional on [T26], Definition 2.5.
+
+Issue #8 has landed.  `betaBoost` below is the genuine definition
+`MobiusCPT.betaBoost` from `MobiusCPT.Mobius.ComplexBetaDef` ([T26], Definition 3.5,
+eq. (3.4), with the `d = 0` removable singularity built in), not a hole, so it is referred to
+directly rather than through `❰…❱`; the statement of `lemma_3_7` is unchanged, since a
+transparent `def_wanted` inlines to exactly this definition.  The statement Issue #5 owned,
+`beta_boost_at_ipi`, is a proved theorem `MobiusCPT.betaBoost_I_mul_pi` in
+`MobiusCPT.Mobius.ComplexBetaLaws` with identical statement text, so it is gone from here.
 
 Issue #6 has landed.  `strip` below is the genuine definition from
 `MobiusCPT.Analysis.Strip`, not a hole, and `VtildeDom` and `VtildeMap` are transparent
@@ -74,10 +83,6 @@ to continuity of `t ↦ β_d(v_t) f` on test functions.
 -/
 
 namespace MobiusCPT
-
-/-- [T26], Definition 3.5, equation (3.4); the closed-strip removable-singularity
-extension `β_d(v_τ)F|_{I_+}`, owned by Issues #5 and #8. -/
-def_wanted betaBoost : ℕ → ℂ → AnalyticTestFn → TestFn
 
 /-- [T26], Definitions 2.4–2.5; the Wightman CFT this contract is about. Its
 carriers are bundled so this is the only Wightman-data hole. -/
@@ -184,16 +189,6 @@ theorem_wanted w3_vacuum_annihilation :
       ∀ (φ : ❰Field❱) (F : AnalyticTestFn),
         ❰smear❱ φ (inv (xRestrictS1 F)) ❰vac❱ = 0
 
-/-- [T26], Definition 3.5, equation (3.4); at `τ = iπ` the source scalar
-`(-1)^(d-1)` is represented as `(-1)^(d+1)` for `d : ℕ`, since these exponents
-have the same parity in `ℂ`; owned by Issue #5.
-The restriction is the lower one because inversion exchanges the semicircles: the source uses
-`(F ∘ z⁻¹)|_{I_+} = F|_{I_-} ∘ z⁻¹`. -/
-theorem_wanted beta_boost_at_ipi :
-    ∀ (d : ℕ) (F : AnalyticTestFn),
-      ❰betaBoost❱ d (Complex.I * Real.pi) F =
-        (-1 : ℂ) ^ (d + 1) • inv (xRestrictLower F)
-
 /-- [T26], Lemma 3.7(i); the analytic-core continued-boost formula on upper-supported
 analytic restrictions, owned by Issue #9. -/
 theorem_wanted lemma_3_7 :
@@ -201,12 +196,12 @@ theorem_wanted lemma_3_7 :
       ∀ (l : List (❰Field❱ × AnalyticTestFn)) (τ : ℂ), τ ∈ strip (Complex.I * Real.pi) →
         ❰VtildeDom❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) ∧
           ❰VtildeMap❱ τ (❰smearedProduct❱ (l.map (fun p => (p.1, xRestrictUpper p.2)))) =
-            ❰smearedProduct❱ (l.map (fun p => (p.1, ❰betaBoost❱ (❰dim❱ p.1) τ p.2)))
+            ❰smearedProduct❱ (l.map (fun p => (p.1, betaBoost (❰dim❱ p.1) τ p.2)))
 
 /-- [T26], Lemma 3.7(ii); at `τ = Complex.I * Real.pi`, the analytic-core vector maps to the
 reversed product with the conformal-dimension sign, owned by Issue #9. Here
 `inv (xRestrictUpper p.2)` means `F|_{I_+} ∘ z⁻¹`, supported in `I_-`; this is deliberately
-the opposite restriction from `beta_boost_at_ipi`, where the source needs
+the opposite restriction from `MobiusCPT.betaBoost_I_mul_pi`, where the source needs
 `(F ∘ z⁻¹)|_{I_+} = F|_{I_-} ∘ z⁻¹` and therefore uses `xRestrictLower`. -/
 theorem_wanted lemma_3_7_at_ipi :
     ❰IsWightmanCFT❱ →

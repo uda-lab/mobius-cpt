@@ -426,4 +426,48 @@ theorem contDiff_periodize {T : ℝ} (hT : 0 < T) {h : ℝ → ℂ} (hh : ContDi
     exact hlocal.contDiffAt.congr_of_eventuallyEq
       (hinterior.eventuallyEq_of_mem (isOpen_Ioo.mem_nhds hxint))
 
+/-- A function supported in the first half of its period agrees with its periodisation on an open
+interval straddling the origin, so the two have the same derivatives there. -/
+theorem eqOn_periodize_of_support_le_half {T : ℝ} (hT : 0 < T) {h : ℝ → ℂ}
+    (hsupp : ∀ x : ℝ, x ∉ Set.Icc 0 (T / 2) → h x = 0) :
+    Set.EqOn (periodize T h) h (Set.Ioo (-(T / 2)) T) := by
+  intro x hx
+  by_cases hxnonneg : 0 ≤ x
+  · exact periodize_eq_self hT ⟨hxnonneg, hx.2⟩
+  · have hxneg : x < 0 := lt_of_not_ge hxnonneg
+    have hxdiv_lower : (-1 : ℝ) ≤ x / T := by
+      apply (le_div_iff₀ hT).2
+      linarith [hx.1, hT]
+    have hxdiv_upper : x / T < 0 := by
+      apply (div_lt_iff₀ hT).2
+      simpa using hxneg
+    have hfloor : ⌊x / T⌋ = (-1 : ℤ) := by
+      apply Int.floor_eq_iff.mpr
+      constructor
+      · simpa using hxdiv_lower
+      · simpa using hxdiv_upper
+    have hxshift_notmem : x + T ∉ Set.Icc 0 (T / 2) := by
+      intro hxshift
+      have hxshift_lower : T / 2 < x + T := by
+        linarith [hx.1]
+      linarith [hxshift.2]
+    have hx_notmem : x ∉ Set.Icc 0 (T / 2) := by
+      intro hxmem
+      linarith [hxneg, hxmem.1]
+    calc
+      periodize T h x = h (x + T) := by simp [periodize, hfloor]
+      _ = 0 := hsupp (x + T) hxshift_notmem
+      _ = h x := (hsupp x hx_notmem).symm
+
+/-- Consequently every iterated derivative of the periodisation agrees with that of the original
+function on the open interval. -/
+theorem iteratedDeriv_periodize_eqOn {T : ℝ} (hT : 0 < T) {h : ℝ → ℂ}
+    (hsupp : ∀ x : ℝ, x ∉ Set.Icc 0 (T / 2) → h x = 0) (n : ℕ) :
+    Set.EqOn (iteratedDeriv n (periodize T h)) (iteratedDeriv n h)
+      (Set.Ioo (-(T / 2)) T) := by
+  intro x hx
+  exact Filter.EventuallyEq.iteratedDeriv_eq n
+    ((eqOn_periodize_of_support_le_half hT hsupp).eventuallyEq_of_mem
+      (isOpen_Ioo.mem_nhds hx))
+
 end MobiusCPT

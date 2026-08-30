@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Analytic.OfScalars
+import Mathlib.Analysis.Calculus.ContDiff.Bounds
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
 import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
 import Mathlib.Analysis.Calculus.IteratedDeriv.Analytic
@@ -298,5 +299,443 @@ theorem iteratedFDerivWithin_eq_zero_of_flat_holomorphic {U : Set ℂ} {p : ℂ}
         (Metric.ball_mem_nhds p hr)).symm
     _ = flatSeries f p p n := heq.symm
     _ = 0 := by simp [flatSeries]
+
+/-- The zero extension of a function from a closed interval. -/
+noncomputable def zeroExtendIcc (a b : ℝ) (g : ℝ → ℂ) : ℝ → ℂ :=
+  fun x => if x ∈ Set.Icc a b then g x else 0
+
+/-- The zero extension agrees with the original function at points of the interval. -/
+theorem zeroExtend_eq_of_mem {a b x : ℝ} (g : ℝ → ℂ) (h : x ∈ Set.Icc a b) :
+    zeroExtendIcc a b g x = g x := by
+  simp [zeroExtendIcc, h]
+
+/-- The zero extension is zero at points outside the interval. -/
+theorem zeroExtend_eq_zero_of_notMem {a b x : ℝ} (g : ℝ → ℂ) (h : x ∉ Set.Icc a b) :
+    zeroExtendIcc a b g x = 0 := by
+  simp [zeroExtendIcc, h]
+
+/-- Iterated derivatives within a set compose by adding their orders. -/
+theorem iteratedDerivWithin_iteratedDerivWithin {s : Set ℝ} (hs : UniqueDiffOn ℝ s)
+    {g : ℝ → ℂ} (m i : ℕ) :
+    Set.EqOn (iteratedDerivWithin m (iteratedDerivWithin i g s) s)
+      (iteratedDerivWithin (m + i) g s) s := by
+  induction m generalizing i with
+  | zero =>
+      intro x hx
+      simp
+  | succ m ih =>
+      intro x hx
+      calc
+        iteratedDerivWithin (m + 1) (iteratedDerivWithin i g s) s x =
+            iteratedDerivWithin m (derivWithin (iteratedDerivWithin i g s) s) s x := by
+          rw [iteratedDerivWithin_succ']
+        _ = iteratedDerivWithin m (iteratedDerivWithin (i + 1) g s) s x := by
+          rw [← iteratedDerivWithin_succ]
+        _ = iteratedDerivWithin (m + (i + 1)) g s x := ih (i + 1) hx
+        _ = iteratedDerivWithin ((m + 1) + i) g s x := by
+          congr 1
+          omega
+
+/-- Every iterated derivative within a closed interval is bounded by a power of the
+distance from an endpoint at which all within derivatives vanish. -/
+theorem exists_norm_iteratedDerivWithin_le_pow {a b : ℝ} (hab : a < b) {g : ℝ → ℂ}
+    (hg : ContDiffOn ℝ ∞ g (Set.Icc a b))
+    (ha : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) a = 0) (k M : ℕ) :
+    ∃ K : ℝ, ∀ x ∈ Set.Icc a b,
+      ‖iteratedDerivWithin k g (Set.Icc a b) x‖ ≤ K * (x - a) ^ M := by
+  let s : Set ℝ := Set.Icc a b
+  have hs : UniqueDiffOn ℝ s := uniqueDiffOn_Icc hab
+  have ha_mem : a ∈ s := by
+    dsimp [s]
+    exact ⟨le_rfl, hab.le⟩
+  have hflat (j : ℕ) : iteratedDerivWithin j (iteratedDerivWithin k g s) s a = 0 := by
+    have hcomp := iteratedDerivWithin_iteratedDerivWithin (s := s) hs (g := g) j k
+    rw [hcomp ha_mem]
+    exact ha (j + k)
+  cases M with
+  | zero =>
+      have hcont : ContinuousOn (iteratedDerivWithin k g s) s :=
+        hg.continuousOn_iteratedDerivWithin (by exact_mod_cast le_top) hs
+      obtain ⟨K, hK⟩ := isCompact_Icc.exists_bound_of_continuousOn hcont
+      refine ⟨max K 0, ?_⟩
+      intro x hx
+      calc
+        ‖iteratedDerivWithin k g s x‖ ≤ K := hK x hx
+        _ ≤ max K 0 * (x - a) ^ 0 := by
+          simpa only [pow_zero, mul_one] using le_max_left K 0
+  | succ M =>
+      have hcont_iter : ∀ n : ℕ, ContDiffOn ℝ ∞ (iteratedDerivWithin n g s) s := by
+        intro n
+        induction n with
+        | zero =>
+            simpa only [iteratedDerivWithin_zero] using hg
+        | succ n ih =>
+            rw [iteratedDerivWithin_succ]
+            exact (contDiffOn_infty_iff_derivWithin hs).mp ih |>.2
+      have hfk : ContDiffOn ℝ (M + 1) (iteratedDerivWithin k g s) s :=
+        (hcont_iter k).of_le (by exact_mod_cast le_top)
+      obtain ⟨C, hC⟩ := exists_taylor_mean_remainder_bound (f := iteratedDerivWithin k g s)
+        (a := a) (b := b) (n := M) hab.le hfk
+      have htaylor (x : ℝ) :
+          taylorWithinEval (iteratedDerivWithin k g s) M s a x = 0 := by
+        rw [taylor_within_apply]
+        apply Finset.sum_eq_zero
+        intro j hj
+        rw [hflat j]
+        exact smul_zero _
+      refine ⟨C, ?_⟩
+      intro x hx
+      have hrem := hC x hx
+      rw [htaylor x, sub_zero] at hrem
+      exact hrem
+
+private theorem hasDerivAt_zeroExtendIcc_of_differentiableOn {a b : ℝ} (hab : a < b)
+    {g : ℝ → ℂ} (hg : DifferentiableOn ℝ g (Set.Icc a b))
+    (hga : g a = 0) (hgb : g b = 0)
+    (hda : derivWithin g (Set.Icc a b) a = 0)
+    (hdb : derivWithin g (Set.Icc a b) b = 0) (x : ℝ) :
+    HasDerivAt (zeroExtendIcc a b g)
+      (zeroExtendIcc a b (derivWithin g (Set.Icc a b)) x) x := by
+  have hamem : a ∈ Set.Icc a b := ⟨le_rfl, hab.le⟩
+  have hbmem : b ∈ Set.Icc a b := ⟨hab.le, le_rfl⟩
+  -- The zero extension vanishes on a neighbourhood of every point strictly outside `[a, b]`.
+  have houtside : ∀ y : ℝ, y ∉ Set.Icc a b →
+      HasDerivAt (zeroExtendIcc a b g)
+        (zeroExtendIcc a b (derivWithin g (Set.Icc a b)) y) y := by
+    intro y hy
+    have htarget : zeroExtendIcc a b (derivWithin g (Set.Icc a b)) y = 0 :=
+      zeroExtend_eq_zero_of_notMem _ hy
+    rw [htarget]
+    refine (hasDerivAt_const y (0 : ℂ)).congr_of_eventuallyEq ?_
+    have hopen : IsOpen (Set.Icc a b)ᶜ := isClosed_Icc.isOpen_compl
+    filter_upwards [hopen.mem_nhds hy] with z hz
+    exact (zeroExtend_eq_zero_of_notMem g hz)
+  -- At the left endpoint the two one-sided derivatives are both zero.
+  have hleftEnd : HasDerivAt (zeroExtendIcc a b g) 0 a := by
+    have hga' : HasDerivWithinAt g 0 (Set.Icc a b) a := by
+      have h := (hg a hamem).hasDerivWithinAt
+      rwa [hda] at h
+    have hright : HasDerivWithinAt (zeroExtendIcc a b g) 0 (Set.Ici a) a := by
+      have hmono : HasDerivWithinAt g 0 (Set.Icc a b) a := hga'
+      refine (hmono.mono_of_mem_nhdsWithin ?_).congr_of_eventuallyEq ?_ ?_
+      · exact Icc_mem_nhdsGE hab
+      · filter_upwards [Icc_mem_nhdsGE hab] with y hy
+        exact zeroExtend_eq_of_mem g hy
+      · exact zeroExtend_eq_of_mem g hamem
+    have hleft : HasDerivWithinAt (zeroExtendIcc a b g) 0 (Set.Iic a) a := by
+      refine (hasDerivWithinAt_const a (Set.Iic a) (0 : ℂ)).congr_of_eventuallyEq ?_ ?_
+      · filter_upwards [self_mem_nhdsWithin] with y hy
+        by_cases hys : y ∈ Set.Icc a b
+        · have hya : y = a := le_antisymm hy hys.1
+          rw [hya, zeroExtend_eq_of_mem g hamem, hga]
+        · rw [zeroExtend_eq_zero_of_notMem g hys]
+      · rw [zeroExtend_eq_of_mem g hamem, hga]
+    have hfull : HasDerivWithinAt (zeroExtendIcc a b g) 0 (Set.Iic a ∪ Set.Ici a) a :=
+      hleft.union hright
+    rw [Set.Iic_union_Ici] at hfull
+    exact hasDerivWithinAt_univ.mp hfull
+  -- At the right endpoint, symmetrically.
+  have hrightEnd : HasDerivAt (zeroExtendIcc a b g) 0 b := by
+    have hgb' : HasDerivWithinAt g 0 (Set.Icc a b) b := by
+      have h := (hg b hbmem).hasDerivWithinAt
+      rwa [hdb] at h
+    have hleft : HasDerivWithinAt (zeroExtendIcc a b g) 0 (Set.Iic b) b := by
+      refine (hgb'.mono_of_mem_nhdsWithin ?_).congr_of_eventuallyEq ?_ ?_
+      · exact Icc_mem_nhdsLE hab
+      · filter_upwards [Icc_mem_nhdsLE hab] with y hy
+        exact zeroExtend_eq_of_mem g hy
+      · exact zeroExtend_eq_of_mem g hbmem
+    have hright : HasDerivWithinAt (zeroExtendIcc a b g) 0 (Set.Ici b) b := by
+      refine (hasDerivWithinAt_const b (Set.Ici b) (0 : ℂ)).congr_of_eventuallyEq ?_ ?_
+      · filter_upwards [self_mem_nhdsWithin] with y hy
+        by_cases hys : y ∈ Set.Icc a b
+        · have hyb : y = b := le_antisymm hys.2 hy
+          rw [hyb, zeroExtend_eq_of_mem g hbmem, hgb]
+        · rw [zeroExtend_eq_zero_of_notMem g hys]
+      · rw [zeroExtend_eq_of_mem g hbmem, hgb]
+    have hfull : HasDerivWithinAt (zeroExtendIcc a b g) 0 (Set.Iic b ∪ Set.Ici b) b :=
+      hleft.union hright
+    rw [Set.Iic_union_Ici] at hfull
+    exact hasDerivWithinAt_univ.mp hfull
+  by_cases hxmem : x ∈ Set.Icc a b
+  · rcases eq_or_lt_of_le hxmem.1 with hxa | hxa
+    · rw [← hxa, zeroExtend_eq_of_mem (derivWithin g (Set.Icc a b)) hamem, hda]
+      exact hleftEnd
+    · rcases eq_or_lt_of_le hxmem.2 with hxb | hxb
+      · rw [hxb, zeroExtend_eq_of_mem (derivWithin g (Set.Icc a b)) hbmem, hdb]
+        exact hrightEnd
+      · -- an interior point: the extension agrees with `g` near `x`
+        have hnhds : Set.Icc a b ∈ nhds x := Icc_mem_nhds hxa hxb
+        have hAt : HasDerivAt g (derivWithin g (Set.Icc a b) x) x := by
+          rw [derivWithin_of_mem_nhds hnhds]
+          exact ((hg x hxmem).differentiableAt hnhds).hasDerivAt
+        rw [zeroExtend_eq_of_mem (derivWithin g (Set.Icc a b)) hxmem]
+        refine hAt.congr_of_eventuallyEq ?_
+        filter_upwards [hnhds] with y hy
+        exact zeroExtend_eq_of_mem g hy
+  · exact houtside x hxmem
+
+private theorem deriv_zeroExtendIcc_of_differentiableOn {a b : ℝ} (hab : a < b)
+    {g : ℝ → ℂ} (hg : DifferentiableOn ℝ g (Set.Icc a b))
+    (hga : g a = 0) (hgb : g b = 0)
+    (hda : derivWithin g (Set.Icc a b) a = 0)
+    (hdb : derivWithin g (Set.Icc a b) b = 0) :
+    deriv (zeroExtendIcc a b g) = zeroExtendIcc a b (derivWithin g (Set.Icc a b)) := by
+  funext x
+  exact (hasDerivAt_zeroExtendIcc_of_differentiableOn hab hg hga hgb hda hdb x).deriv
+
+/-- A closed-interval function whose within derivatives vanish at both endpoints has a smooth
+zero extension to the whole real line. -/
+theorem contDiff_zeroExtend_of_flat_contDiffOn {a b : ℝ} (hab : a < b) {g : ℝ → ℂ}
+    (hg : ContDiffOn ℝ ∞ g (Set.Icc a b))
+    (ha : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) a = 0)
+    (hb : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) b = 0) :
+    ContDiff ℝ ∞ (zeroExtendIcc a b g) := by
+  have hs : UniqueDiffOn ℝ (Set.Icc a b) := uniqueDiffOn_Icc hab
+  have hfinite : ∀ n : ℕ, ∀ h : ℝ → ℂ,
+      ContDiffOn ℝ ∞ h (Set.Icc a b) →
+      (∀ j : ℕ, iteratedDerivWithin j h (Set.Icc a b) a = 0) →
+      (∀ j : ℕ, iteratedDerivWithin j h (Set.Icc a b) b = 0) →
+      ContDiff ℝ n (zeroExtendIcc a b h) := by
+    intro n
+    induction n with
+    | zero =>
+        intro h hh hha hhb
+        change ContDiff ℝ (0 : ℕ∞ω) (zeroExtendIcc a b h)
+        rw [contDiff_zero]
+        have hha0 : h a = 0 := by
+          simpa only [iteratedDerivWithin_zero] using hha 0
+        have hhb0 : h b = 0 := by
+          simpa only [iteratedDerivWithin_zero] using hhb 0
+        have hda : derivWithin h (Set.Icc a b) a = 0 := by
+          simpa only [iteratedDerivWithin_one] using hha 1
+        have hdb : derivWithin h (Set.Icc a b) b = 0 := by
+          simpa only [iteratedDerivWithin_one] using hhb 1
+        have hdiff : Differentiable ℝ (zeroExtendIcc a b h) := fun x =>
+          (hasDerivAt_zeroExtendIcc_of_differentiableOn hab (hh.differentiableOn (by simp))
+            hha0 hhb0 hda hdb x).differentiableAt
+        exact hdiff.continuous
+    | succ n ih =>
+        intro h hh hha hhb
+        have hha0 : h a = 0 := by
+          simpa only [iteratedDerivWithin_zero] using hha 0
+        have hhb0 : h b = 0 := by
+          simpa only [iteratedDerivWithin_zero] using hhb 0
+        have hda : derivWithin h (Set.Icc a b) a = 0 := by
+          simpa only [iteratedDerivWithin_one] using hha 1
+        have hdb : derivWithin h (Set.Icc a b) b = 0 := by
+          simpa only [iteratedDerivWithin_one] using hhb 1
+        have hdiffOn : DifferentiableOn ℝ h (Set.Icc a b) := hh.differentiableOn (by simp)
+        have hdiff : Differentiable ℝ (zeroExtendIcc a b h) := fun x =>
+          (hasDerivAt_zeroExtendIcc_of_differentiableOn hab hdiffOn hha0 hhb0 hda hdb x).differentiableAt
+        have hderivEq := deriv_zeroExtendIcc_of_differentiableOn hab hdiffOn hha0 hhb0 hda hdb
+        have hh' : ContDiffOn ℝ ∞ (derivWithin h (Set.Icc a b)) (Set.Icc a b) :=
+          (contDiffOn_infty_iff_derivWithin hs).mp hh |>.2
+        have hha' : ∀ j : ℕ,
+            iteratedDerivWithin j (derivWithin h (Set.Icc a b)) (Set.Icc a b) a = 0 := by
+          intro j
+          have hj := hha (j + 1)
+          rw [iteratedDerivWithin_succ'] at hj
+          exact hj
+        have hhb' : ∀ j : ℕ,
+            iteratedDerivWithin j (derivWithin h (Set.Icc a b)) (Set.Icc a b) b = 0 := by
+          intro j
+          have hj := hhb (j + 1)
+          rw [iteratedDerivWithin_succ'] at hj
+          exact hj
+        have hderiv : ContDiff ℝ n (deriv (zeroExtendIcc a b h)) := by
+          rw [hderivEq]
+          exact ih (derivWithin h (Set.Icc a b)) hh' hha' hhb'
+        have hs' : ContDiff ℝ ((n : ℕ∞ω) + 1) (zeroExtendIcc a b h) :=
+          contDiff_succ_iff_deriv.mpr ⟨hdiff, by simp, hderiv⟩
+        simpa only [Nat.cast_succ] using hs'
+  exact contDiff_infty.mpr (fun n => hfinite n g hg ha hb)
+
+/-- The zero extension agrees with the original function on the closed interval. -/
+theorem zeroExtendIcc_eqOn {a b : ℝ} (g : ℝ → ℂ) :
+    Set.EqOn (zeroExtendIcc a b g) g (Set.Icc a b) := by
+  intro x hx
+  exact zeroExtend_eq_of_mem g hx
+
+/-- The zero extension vanishes outside its closed interval, so it is supported there. -/
+theorem zeroExtendIcc_eq_zero_of_notMem {a b x : ℝ} (g : ℝ → ℂ)
+    (h : x ∉ Set.Icc a b) : zeroExtendIcc a b g x = 0 :=
+  zeroExtend_eq_zero_of_notMem g h
+
+/-- Every iterated derivative of the smooth zero extension is the zero extension of the
+corresponding derivative within the interval.  In particular the extension's derivatives vanish
+outside the interval and at its endpoints. -/
+theorem iteratedDeriv_zeroExtendIcc {a b : ℝ} (hab : a < b) {g : ℝ → ℂ}
+    (hg : ContDiffOn ℝ ∞ g (Set.Icc a b))
+    (ha : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) a = 0)
+    (hb : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) b = 0) (n : ℕ) :
+    iteratedDeriv n (zeroExtendIcc a b g) =
+      zeroExtendIcc a b (iteratedDerivWithin n g (Set.Icc a b)) := by
+  have hs : UniqueDiffOn ℝ (Set.Icc a b) := uniqueDiffOn_Icc hab
+  induction n generalizing g with
+  | zero =>
+      simp only [iteratedDeriv_zero, iteratedDerivWithin_zero]
+  | succ n ih =>
+      have hga : g a = 0 := by
+        simpa only [iteratedDerivWithin_zero] using ha 0
+      have hgb : g b = 0 := by
+        simpa only [iteratedDerivWithin_zero] using hb 0
+      have hda : derivWithin g (Set.Icc a b) a = 0 := by
+        simpa only [iteratedDerivWithin_one] using ha 1
+      have hdb : derivWithin g (Set.Icc a b) b = 0 := by
+        simpa only [iteratedDerivWithin_one] using hb 1
+      have hdiffOn : DifferentiableOn ℝ g (Set.Icc a b) :=
+        hg.differentiableOn (by simp)
+      have hderivEq :
+          deriv (zeroExtendIcc a b g) =
+            zeroExtendIcc a b (derivWithin g (Set.Icc a b)) :=
+        deriv_zeroExtendIcc_of_differentiableOn hab hdiffOn hga hgb hda hdb
+      have hh' : ContDiffOn ℝ ∞ (derivWithin g (Set.Icc a b)) (Set.Icc a b) :=
+        (contDiffOn_infty_iff_derivWithin hs).mp hg |>.2
+      have hha' : ∀ j : ℕ,
+          iteratedDerivWithin j (derivWithin g (Set.Icc a b)) (Set.Icc a b) a = 0 := by
+        intro j
+        have hj := ha (j + 1)
+        rw [iteratedDerivWithin_succ'] at hj
+        exact hj
+      have hhb' : ∀ j : ℕ,
+          iteratedDerivWithin j (derivWithin g (Set.Icc a b)) (Set.Icc a b) b = 0 := by
+        intro j
+        have hj := hb (j + 1)
+        rw [iteratedDerivWithin_succ'] at hj
+        exact hj
+      rw [iteratedDeriv_succ', hderivEq]
+      rw [ih (g := derivWithin g (Set.Icc a b)) hh' hha' hhb']
+      rw [iteratedDerivWithin_succ']
+
+/-- The zero extension is flat at the left endpoint. -/
+theorem iteratedDeriv_zeroExtendIcc_left {a b : ℝ} (hab : a < b) {g : ℝ → ℂ}
+    (hg : ContDiffOn ℝ ∞ g (Set.Icc a b))
+    (ha : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) a = 0)
+    (hb : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) b = 0) (n : ℕ) :
+    iteratedDeriv n (zeroExtendIcc a b g) a = 0 := by
+  rw [iteratedDeriv_zeroExtendIcc hab hg ha hb n]
+  rw [zeroExtend_eq_of_mem _ ⟨le_rfl, hab.le⟩]
+  exact ha n
+
+/-- The zero extension is flat at the right endpoint. -/
+theorem iteratedDeriv_zeroExtendIcc_right {a b : ℝ} (hab : a < b) {g : ℝ → ℂ}
+    (hg : ContDiffOn ℝ ∞ g (Set.Icc a b))
+    (ha : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) a = 0)
+    (hb : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) b = 0) (n : ℕ) :
+    iteratedDeriv n (zeroExtendIcc a b g) b = 0 := by
+  rw [iteratedDeriv_zeroExtendIcc hab hg ha hb n]
+  rw [zeroExtend_eq_of_mem _ ⟨hab.le, le_rfl⟩]
+  exact hb n
+
+/-- Outside the interval every derivative of the zero extension vanishes. -/
+theorem iteratedDeriv_zeroExtendIcc_of_notMem {a b x : ℝ} (hab : a < b) {g : ℝ → ℂ}
+    (hg : ContDiffOn ℝ ∞ g (Set.Icc a b))
+    (ha : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) a = 0)
+    (hb : ∀ j : ℕ, iteratedDerivWithin j g (Set.Icc a b) b = 0) (n : ℕ) :
+    x ∉ Set.Icc a b → iteratedDeriv n (zeroExtendIcc a b g) x = 0 := by
+  intro hx
+  rw [iteratedDeriv_zeroExtendIcc hab hg ha hb n]
+  rw [zeroExtend_eq_zero_of_notMem _ hx]
+
+/-! General bounds and flatness lemmas for iterated derivatives within a set. -/
+
+/-- A crude common bound for the iterated derivatives of a function at one point.  Only its
+existence matters: it feeds the inner-constant slot of the composition estimate, where the outer
+constant is `0` and the inner one is therefore irrelevant. -/
+theorem exists_pow_bound_iteratedFDerivWithin {E F : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (f : E → F) (s : Set E) (x : E) (n : ℕ) :
+    ∃ D : ℝ, 1 ≤ D ∧ ∀ i : ℕ, 1 ≤ i → i ≤ n →
+      ‖iteratedFDerivWithin ℝ i f s x‖ ≤ D ^ i := by
+  classical
+  have hsum : (0 : ℝ) ≤ ∑ i ∈ Finset.range (n + 1),
+      ‖iteratedFDerivWithin ℝ i f s x‖ :=
+    Finset.sum_nonneg fun i _ => norm_nonneg _
+  refine ⟨1 + ∑ i ∈ Finset.range (n + 1),
+      ‖iteratedFDerivWithin ℝ i f s x‖, by linarith, ?_⟩
+  intro i hi hin
+  have hD1 : (1 : ℝ) ≤ 1 + ∑ i ∈ Finset.range (n + 1),
+      ‖iteratedFDerivWithin ℝ i f s x‖ := by linarith
+  have hmem : i ∈ Finset.range (n + 1) := Finset.mem_range.mpr (by omega)
+  have hle : ‖iteratedFDerivWithin ℝ i f s x‖ ≤
+      ∑ j ∈ Finset.range (n + 1), ‖iteratedFDerivWithin ℝ j f s x‖ :=
+    Finset.single_le_sum
+      (f := fun j : ℕ => ‖iteratedFDerivWithin ℝ j f s x‖)
+      (fun j _ => norm_nonneg _) hmem
+  calc ‖iteratedFDerivWithin ℝ i f s x‖
+      ≤ 1 + ∑ j ∈ Finset.range (n + 1), ‖iteratedFDerivWithin ℝ j f s x‖ := by linarith
+    _ ≤ (1 + ∑ j ∈ Finset.range (n + 1),
+          ‖iteratedFDerivWithin ℝ j f s x‖) ^ i :=
+        le_self_pow₀ hD1 (by omega)
+
+/-- A composite is flat wherever the outer function is flat at the image point: the composition
+estimate with outer constant `0` forces every iterated derivative of the composite to vanish
+exactly, not merely to be small. -/
+theorem iteratedFDerivWithin_comp_eq_zero_of_flat {E F G : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {g : F → G} {f : E → F} {s : Set E} {t : Set F} {x : E}
+    (hg : ContDiffOn ℝ ∞ g t) (hf : ContDiffOn ℝ ∞ f s)
+    (ht : UniqueDiffOn ℝ t) (hs : UniqueDiffOn ℝ s) (hst : Set.MapsTo f s t) (hx : x ∈ s)
+    (hflat : ∀ i : ℕ, iteratedFDerivWithin ℝ i g t (f x) = 0) (n : ℕ) :
+    iteratedFDerivWithin ℝ n (g ∘ f) s x = 0 := by
+  obtain ⟨D, hD1, hDbound⟩ := exists_pow_bound_iteratedFDerivWithin f s x n
+  have hC : ∀ i, i ≤ n →
+      ‖iteratedFDerivWithin ℝ i g t (f x)‖ ≤ 0 := by
+    intro i hi
+    rw [hflat i]
+    simp
+  have hD : ∀ i, 1 ≤ i → i ≤ n →
+      ‖iteratedFDerivWithin ℝ i f s x‖ ≤ D ^ i := hDbound
+  have hbound :
+      ‖iteratedFDerivWithin ℝ n (g ∘ f) s x‖ ≤
+        (Nat.factorial n : ℝ) * (0 : ℝ) * D ^ n :=
+    norm_iteratedFDerivWithin_comp_le (𝕜 := ℝ) (g := g) (f := f) (n := n)
+      (s := s) (t := t) (x := x) hg hf (by exact_mod_cast le_top)
+      ht hs hst hx (C := 0) (D := D) hC hD
+  have hnorm : ‖iteratedFDerivWithin ℝ n (g ∘ f) s x‖ ≤ 0 := by
+    simpa using hbound
+  exact norm_eq_zero.mp (le_antisymm hnorm (norm_nonneg _))
+
+/-- Multiplying a function that is flat at a point by any smooth function leaves it flat: every
+term of the Leibniz estimate carries a vanishing factor. -/
+theorem iteratedFDerivWithin_mul_eq_zero_of_flat {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {a h : E → ℂ} {s : Set E} {x : E}
+    (ha : ContDiffOn ℝ ∞ a s) (hh : ContDiffOn ℝ ∞ h s) (hs : UniqueDiffOn ℝ s) (hx : x ∈ s)
+    (hflat : ∀ i : ℕ, iteratedFDerivWithin ℝ i h s x = 0) (n : ℕ) :
+    iteratedFDerivWithin ℝ n (fun y => a y * h y) s x = 0 := by
+  have hbound :
+      ‖iteratedFDerivWithin ℝ n (fun y => a y * h y) s x‖ ≤
+        ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+          ‖iteratedFDerivWithin ℝ i a s x‖ *
+          ‖iteratedFDerivWithin ℝ (n - i) h s x‖ :=
+    norm_iteratedFDerivWithin_mul_le (𝕜 := ℝ) ha hh hs hx
+      (by exact_mod_cast le_top)
+  have hsum :
+      ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+          ‖iteratedFDerivWithin ℝ i a s x‖ *
+          ‖iteratedFDerivWithin ℝ (n - i) h s x‖ = 0 := by
+    apply Finset.sum_eq_zero
+    intro i hi
+    rw [hflat (n - i)]
+    simp
+  have hnorm : ‖iteratedFDerivWithin ℝ n (fun y => a y * h y) s x‖ ≤ 0 := by
+    calc
+      ‖iteratedFDerivWithin ℝ n (fun y => a y * h y) s x‖ ≤
+          ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+            ‖iteratedFDerivWithin ℝ i a s x‖ *
+            ‖iteratedFDerivWithin ℝ (n - i) h s x‖ := hbound
+      _ = 0 := hsum
+  exact norm_eq_zero.mp (le_antisymm hnorm (norm_nonneg _))
+
+/-- In one real variable, flatness of the iterated Fréchet derivatives is flatness of the
+iterated derivatives. -/
+theorem iteratedDerivWithin_eq_zero_of_iteratedFDerivWithin_eq_zero {s : Set ℝ} {f : ℝ → ℂ}
+    {x : ℝ} {n : ℕ} (h : iteratedFDerivWithin ℝ n f s x = 0) :
+    iteratedDerivWithin n f s x = 0 := by
+  rw [iteratedDerivWithin_eq_iteratedFDerivWithin (𝕜 := ℝ), h]
+  simp
 
 end MobiusCPT

@@ -622,3 +622,198 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanData.u_smearedProductOn
 #print axioms MobiusCPT.WightmanData.u_smearedProduct
 #print axioms MobiusCPT.WightmanData.boostOrbitContinuous_of_beta_continuous
+
+-- MobiusCPT/Analysis/FlatCalculus.lean — closed-interval flat gluing and the general flatness
+-- transfer lemmas the complex boost needs (Issue #8).
+#print axioms MobiusCPT.iteratedDerivWithin_iteratedDerivWithin
+#print axioms MobiusCPT.exists_norm_iteratedDerivWithin_le_pow
+#print axioms MobiusCPT.contDiff_zeroExtend_of_flat_contDiffOn
+#print axioms MobiusCPT.iteratedDeriv_zeroExtendIcc
+#print axioms MobiusCPT.exists_pow_bound_iteratedFDerivWithin
+#print axioms MobiusCPT.iteratedFDerivWithin_comp_eq_zero_of_flat
+#print axioms MobiusCPT.iteratedFDerivWithin_mul_eq_zero_of_flat
+#print axioms MobiusCPT.iteratedDerivWithin_eq_zero_of_iteratedFDerivWithin_eq_zero
+
+-- MobiusCPT/Analysis/FlatGluing.lean — periodisation agrees with its generator near the origin
+-- (Issue #8).
+#print axioms MobiusCPT.eqOn_periodize_of_support_le_half
+#print axioms MobiusCPT.iteratedDeriv_periodize_eqOn
+
+-- MobiusCPT/Analysis/ParamSlice.lean — smooth dependence on a parameter: the slice derivatives of
+-- a jointly smooth function, and uniformity over a compact second factor (Issue #8).
+#print axioms MobiusCPT.contDiffOn_sliceDeriv
+#print axioms MobiusCPT.continuousOn_sliceDeriv
+#print axioms MobiusCPT.hasDerivWithinAt_slice
+#print axioms MobiusCPT.sliceDeriv_eq_iteratedDerivWithin
+#print axioms MobiusCPT.eventually_forall_norm_sub_lt
+#print axioms MobiusCPT.uniqueDiffOn_of_convex
+
+-- MobiusCPT/Analysis/TestFnCurve.lean — [T26] Lemma 3.6: differentiability of a curve of test
+-- functions in the locally convex sense, and the multilinear chain rule (Issue #8).
+#print axioms MobiusCPT.cnorm_le_of_forall_angleDeriv
+#print axioms MobiusCPT.angleDeriv_sub
+#print axioms MobiusCPT.tendsto_testFn_of_forall_eventually
+#print axioms MobiusCPT.hasTestFnDerivAt_iff_tendsto_slope
+#print axioms MobiusCPT.hasDerivAt_of_multilinear
+
+-- MobiusCPT/Mobius/ComplexBetaCore.lean — [T26] eq. (3.5) in pole-free form and the divided
+-- inverted function carrying the `d = 0` removable singularity (Issue #8).
+#print axioms MobiusCPT.cosh_add_re_mul_sinh_div
+#print axioms MobiusCPT.cnum_neg_ne_zero_of_upper
+#print axioms MobiusCPT.norm_cden_div_cnum_le_one
+#print axioms MobiusCPT.cden_div_cnum_mem_closedBall
+#print axioms MobiusCPT.cden_div_cnum_of_coe_eq_one
+#print axioms MobiusCPT.cden_div_cnum_of_coe_eq_neg_one
+#print axioms MobiusCPT.AnalyticTestFn.mul_invQuot
+#print axioms MobiusCPT.AnalyticTestFn.invQuot_apply
+#print axioms MobiusCPT.AnalyticTestFn.differentiableOn_invQuot
+#print axioms MobiusCPT.AnalyticTestFn.contDiffOn_invQuot
+#print axioms MobiusCPT.mapsTo_cden_div_cnum_closedBall
+
+-- MobiusCPT/Mobius/ComplexBeta.lean — [T26] Definition 3.5, eqs. (3.4)-(3.5): the pointwise
+-- complex boost and its source correspondence (Issue #8).
+#print axioms MobiusCPT.zpow_boost_identity
+#print axioms MobiusCPT.betaBoostVal_eq_mul_inv
+#print axioms MobiusCPT.betaBoostVal_eq_source
+#print axioms MobiusCPT.betaBoostVal_eq_source_of_one_le
+#print axioms MobiusCPT.subsingleton_cden_neg_eq_zero
+
+-- MobiusCPT/Mobius/ComplexBetaSmooth.lean — joint smoothness of the complex boost in the strip
+-- parameter and the circle angle (Issue #8).
+#print axioms MobiusCPT.mem_strip_I_mul_pi
+#print axioms MobiusCPT.im_circleExp_nonneg
+#print axioms MobiusCPT.uniqueDiffOn_strip_I_mul_pi
+#print axioms MobiusCPT.uniqueDiffOn_stripUpper
+#print axioms MobiusCPT.contDiffOn_betaBoostJoint
+#print axioms MobiusCPT.contDiffOn_betaBoostAngle
+
+-- MobiusCPT/Mobius/ComplexBetaFlat.lean — [T26] Definition 3.2: the divided inverted function
+-- inherits the endpoint flatness of `F` (Issue #8).
+#print axioms MobiusCPT.AnalyticTestFn.iteratedFDerivWithin_invQuot_eq_zero
+#print axioms MobiusCPT.AnalyticTestFn.iteratedFDerivWithin_invQuot_one
+#print axioms MobiusCPT.AnalyticTestFn.iteratedFDerivWithin_invQuot_neg_one
+#print axioms MobiusCPT.AnalyticTestFn.toFun_one
+#print axioms MobiusCPT.AnalyticTestFn.toFun_neg_one
+#print axioms MobiusCPT.AnalyticTestFn.invQuot_one
+#print axioms MobiusCPT.AnalyticTestFn.invQuot_neg_one
+
+-- MobiusCPT/Mobius/ComplexBetaDef.lean — [T26] Definition 3.5: `β_d(v_τ)F|_{I_+}` as an element
+-- of `C_0^∞(I_+)` (Issue #8).
+#print axioms MobiusCPT.betaBoostVal_circleExp_eq
+#print axioms MobiusCPT.contDiffOn_betaBoostPre
+#print axioms MobiusCPT.contDiffOn_betaBoostRatio
+#print axioms MobiusCPT.mapsTo_betaBoostRatio
+#print axioms MobiusCPT.betaBoostRatio_zero
+#print axioms MobiusCPT.betaBoostRatio_pi
+#print axioms MobiusCPT.iteratedDerivWithin_betaBoostVal_circleExp_zero
+#print axioms MobiusCPT.iteratedDerivWithin_betaBoostVal_circleExp_pi
+#print axioms MobiusCPT.contDiff_betaBoostCut
+#print axioms MobiusCPT.isUpperFlat_betaBoostCut
+#print axioms MobiusCPT.toAngle_betaBoost
+#print axioms MobiusCPT.suppUpper_betaBoost
+#print axioms MobiusCPT.betaBoost_apply_circleExp
+
+-- MobiusCPT/Mobius/ComplexBetaLawsCore.lean — the boundary parameters of the strip (Issue #8).
+#print axioms MobiusCPT.cosh_add_re_mul_sinh_pos
+#print axioms MobiusCPT.cden_neg_ofReal_ne_zero
+#print axioms MobiusCPT.vApplyNegSphere_ofReal
+#print axioms MobiusCPT.cden_neg_I_mul_pi_ne_zero
+#print axioms MobiusCPT.vApplyNegSphere_I_mul_pi
+#print axioms MobiusCPT.cosh_add_re_mul_sinh_I_mul_pi
+#print axioms MobiusCPT.neg_one_zpow_sub_one
+
+-- MobiusCPT/Mobius/ComplexBetaCont.lean — [T26] Lemma 3.6, first clause: continuity of
+-- `τ ↦ β_d(v_τ)F|_{I_+}` on the closed strip (Issue #8).
+#print axioms MobiusCPT.continuousOn_betaBoostSlice
+#print axioms MobiusCPT.betaBoostSlice_eq
+#print axioms MobiusCPT.angleDeriv_betaBoost_of_mem
+#print axioms MobiusCPT.angleDeriv_betaBoost_of_notMem
+#print axioms MobiusCPT.continuousOn_betaBoost
+
+-- MobiusCPT/Mobius/ComplexBetaLaws.lean — [T26] eqs. (3.4)-(3.5) and Lemma 3.7: agreement with
+-- the real conformal action, the semigroup law, and the value at `τ = iπ` (Issue #8).
+#print axioms MobiusCPT.betaBoost_ofReal
+#print axioms MobiusCPT.betaBoost_ofReal_mob
+#print axioms MobiusCPT.cnum_neg_add_ofReal
+#print axioms MobiusCPT.cden_neg_add_ofReal
+#print axioms MobiusCPT.betaBoostVal_add_ofReal
+#print axioms MobiusCPT.beta_boostMat_betaBoost
+#print axioms MobiusCPT.betaBoost_I_mul_pi
+
+-- MobiusCPT/Mobius/ComplexBetaHoloSlice.lean — [T26] Lemma 3.6: holomorphy in the strip parameter
+-- of the complex boost and of each of its angle derivatives (Issue #8).
+#print axioms MobiusCPT.norm_cden_div_cnum_lt_one
+#print axioms MobiusCPT.differentiableOn_betaBoostVal
+#print axioms MobiusCPT.differentiableOn_betaBoostSlice
+
+-- MobiusCPT/Mobius/ComplexBetaDeriv.lean — [T26] Lemma 3.6: the parameter derivative of every
+-- angle derivative of the complex boost, and its joint continuity (Issue #8).
+#print axioms MobiusCPT.continuousOn_betaBoostSliceDot
+#print axioms MobiusCPT.hasDerivAt_betaBoostSlice
+#print axioms MobiusCPT.deriv_betaBoostSlice
+#print axioms MobiusCPT.betaBoostSliceDot_eq_zero_of_endpoint
+
+-- MobiusCPT/Mobius/ComplexBetaDerivFn.lean — [T26] Lemma 3.6: the angle and parameter derivatives
+-- of the complex boost commute, and the parameter derivative is itself in C_0^∞(I_+) (Issue #8).
+#print axioms MobiusCPT.betaBoostSliceDot_succ
+#print axioms MobiusCPT.sliceDeriv_betaBoostSliceDot
+#print axioms MobiusCPT.contDiffOn_betaBoostSliceDot_angle
+#print axioms MobiusCPT.iteratedDerivWithin_betaBoostSliceDot_angle
+#print axioms MobiusCPT.contDiff_betaBoostDerivCut
+#print axioms MobiusCPT.isUpperFlat_betaBoostDerivCut
+#print axioms MobiusCPT.toAngle_betaBoostDeriv
+#print axioms MobiusCPT.suppUpper_betaBoostDeriv
+#print axioms MobiusCPT.angleDeriv_betaBoostDeriv_of_mem
+#print axioms MobiusCPT.angleDeriv_betaBoostDeriv_of_notMem
+
+-- MobiusCPT/Mobius/ComplexBetaHolo.lean — [T26] Lemma 3.6: the complex boost is differentiable in
+-- the strip parameter as a curve of test functions, in the locally convex sense (Issue #8).
+#print axioms MobiusCPT.eventually_forall_norm_slice_diff_quotient_sub_lt
+#print axioms MobiusCPT.eventually_forall_norm_angleDeriv_diff_quotient_sub_lt
+#print axioms MobiusCPT.hasTestFnDerivAt_betaBoost
+#print axioms MobiusCPT.differentiableOn_clm_comp_betaBoost
+
+-- MobiusCPT/Wightman/BoostCurve.lean — [T26] Lemma 3.6, second clause: the scalar functions of
+-- Definition 3.1 built from the complex boost are continuous on the closed strip and holomorphic
+-- in its interior (Issue #8).
+#print axioms MobiusCPT.continuousOn_compatApply_multiSmear_betaBoost
+#print axioms MobiusCPT.differentiableOn_compatApply_multiSmear_betaBoost
+#print axioms MobiusCPT.continuousOn_compatApply_smearedProduct_betaBoost
+#print axioms MobiusCPT.differentiableOn_compatApply_smearedProduct_betaBoost
+
+-- Audit completion for Issue #8: every remaining public theorem in the files this PR adds or
+-- extends, so that the live audit covers the whole exported surface and not only the headline
+-- results.  The five `FlatGluing` entries pre-date this PR and are added here for completeness,
+-- the file having been extended by it.
+#print axioms MobiusCPT.zeroExtend_eq_of_mem
+#print axioms MobiusCPT.zeroExtend_eq_zero_of_notMem
+#print axioms MobiusCPT.zeroExtendIcc_eqOn
+#print axioms MobiusCPT.zeroExtendIcc_eq_zero_of_notMem
+#print axioms MobiusCPT.iteratedDeriv_zeroExtendIcc_left
+#print axioms MobiusCPT.iteratedDeriv_zeroExtendIcc_right
+#print axioms MobiusCPT.iteratedDeriv_zeroExtendIcc_of_notMem
+#print axioms MobiusCPT.stepRight_of_le
+#print axioms MobiusCPT.stepRight_of_lt
+#print axioms MobiusCPT.deriv_stepRight
+#print axioms MobiusCPT.cutIcc_eq_of_mem
+#print axioms MobiusCPT.cutIcc_eq_zero_of_notMem
+#print axioms MobiusCPT.sliceDeriv_succ
+#print axioms MobiusCPT.AnalyticTestFn.invQuot_of_ne
+#print axioms MobiusCPT.AnalyticTestFn.invQuot_zero
+#print axioms MobiusCPT.im_I_mul_pi
+#print axioms MobiusCPT.cnum_neg_circleExp_ne_zero
+#print axioms MobiusCPT.betaBoostVal_circleExp_zero
+#print axioms MobiusCPT.betaBoostVal_circleExp_pi
+#print axioms MobiusCPT.uniqueDiffOn_discNear
+#print axioms MobiusCPT.zero_notMem_discNear
+#print axioms MobiusCPT.discNear_eventuallyEq
+#print axioms MobiusCPT.mapsTo_inv_discNear
+#print axioms MobiusCPT.cosh_add_re_mul_sinh_ofReal
+#print axioms MobiusCPT.ofReal_mem_strip_I_mul_pi
+#print axioms MobiusCPT.cnum_neg_I_mul_pi
+#print axioms MobiusCPT.cden_neg_I_mul_pi
+#print axioms MobiusCPT.cosh_I_mul_pi
+#print axioms MobiusCPT.sinh_I_mul_pi
+#print axioms MobiusCPT.I_mul_pi_mem_strip
+#print axioms MobiusCPT.forall_norm_angleDeriv_betaBoost_sub_lt
+#print axioms MobiusCPT.betaBoost_apply_of_mem_upper
