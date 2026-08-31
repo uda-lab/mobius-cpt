@@ -40,6 +40,7 @@ import MobiusCPT.Wightman.ReehSchliederLemma
 import MobiusCPT.Wightman.W3Bridge
 import MobiusCPT.TestFunctions.Split
 import MobiusCPT.TestFunctions.Analytic
+import MobiusCPT.TestFunctions.AnalyticTopology
 import MobiusCPT.TestFunctions.AnalyticApprox
 import MobiusCPT.TestFunctions.AnalyticDensity
 import MobiusCPT.TestFunctions.AnalyticReflect

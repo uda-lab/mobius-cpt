@@ -1212,3 +1212,12 @@ import MobiusCPT
 #print axioms MobiusCPT.angleDerivS1_apply_exp
 #print axioms MobiusCPT.norm_angleDerivS1_eq_norm_angleDerivCircle
 #print axioms MobiusCPT.norm_angleDerivB_eq_norm_angleDerivS1
+
+-- Issue #53: the relative C^infty(S^1) topology on the analytic test-function class 𝓧
+-- ([T26] Def 3.2), pulled back along xRestrictS1. injective_xRestrictS1/IsEmbedding are NOT
+-- claimed: AnalyticTestFn.toFun is unconstrained strictly inside the open unit disc (none of
+-- the structure's proof fields reference that region), so xRestrictS1 is not literally
+-- injective on the raw type -- see the Fable ruling on #53 and the module docstring in
+-- TestFunctions/AnalyticTopology.lean.
+#print axioms MobiusCPT.isInducing_xRestrictS1
+#print axioms MobiusCPT.continuous_xRestrictS1
