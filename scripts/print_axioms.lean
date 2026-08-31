@@ -1015,3 +1015,16 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanData.isBoostContinuation_mirror
 #print axioms MobiusCPT.WightmanData.vtildeDom_mirror_iff
 #print axioms MobiusCPT.WightmanData.vtildeMap_mirror
+
+-- Issue #12, Block U1 (part a) ([T26] Theorem 3.10, the limiting continuation family):
+-- Lemma 3.4 analytic approximants of an arbitrary upper-supported list are uniformly Cauchy on
+-- every compact subset of the closed strip via Lemma 3.9, giving a pointwise limit `limitG`
+-- that is holomorphic on the open strip.
+#print axioms MobiusCPT.WightmanData.approxList_length
+#print axioms MobiusCPT.WightmanData.limG_eq
+#print axioms MobiusCPT.WightmanData.continuousOn_limG
+#print axioms MobiusCPT.WightmanData.differentiableOn_limG
+#print axioms MobiusCPT.WightmanData.uniformCauchySeqOn_limG
+#print axioms MobiusCPT.WightmanData.tendsto_limG
+#print axioms MobiusCPT.WightmanData.tendstoLocallyUniformlyOn_limG
+#print axioms MobiusCPT.WightmanData.differentiableOn_limitG
