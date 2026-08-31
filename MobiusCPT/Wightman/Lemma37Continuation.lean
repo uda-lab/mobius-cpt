@@ -11,8 +11,11 @@ import MobiusCPT.Mobius.ComplexBetaLaws
 This module discharges `MobiusCPT.Contract`'s `theorem_wanted lemma_3_7`. The proof follows
 [T26]'s own route via Lemma 3.6: exhibit the family `G_λ(τ') = λ(φ₁(β(v_{τ'})F₁)⋯φ_k(β(v_{τ'})F_k)Ω)`
 as an `IsBoostContinuation` witness between the upper-restricted product and the
-`betaBoost`-smeared product. Its continuity and holomorphy clauses are exactly [T26], Lemma 3.6,
-already proved for a general `WightmanStruct` by `MobiusCPT.Wightman.BoostCurve` (Issue #8); its
+`betaBoost`-smeared product. Its continuity and holomorphy clauses are the scalarised consequence
+of [T26], Lemma 3.6(ii) (the paper states that clause for the `D`-valued map; `IsBoostContinuation`
+and Definition 3.1's continuity/holomorphy requirement are stated for exactly this scalarised
+family, so no `D`-valued formalisation is needed for them), already proved for a general
+`WightmanStruct` by `MobiusCPT.Wightman.BoostCurve` (Issue #8); its
 two real-boundary clauses reduce algebraically to `betaBoost_ofReal_mob` (the real-parameter
 value of the complex boost) and `beta_boostMat_betaBoost` (the real/complex boost translation
 cocycle), both already proved in `MobiusCPT.Mobius.ComplexBetaLaws`, together with the covariance
