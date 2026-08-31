@@ -110,7 +110,7 @@ theorem angleDeriv_betaBoost_of_notMem (d : ℕ) (F : AnalyticTestFn) (j : ℕ) 
     _ = 0 := zeroExtend_eq_zero_of_notMem _ hnot
 
 /-- Every real number is congruent modulo `2π` to a point of `[0, 2π)`. -/
-private theorem exists_sub_int_mul_mem_Ico (θ : ℝ) :
+theorem exists_sub_int_mul_mem_Ico (θ : ℝ) :
     ∃ n : ℤ, θ - n * (2 * Real.pi) ∈ Set.Ico 0 (2 * Real.pi) := by
   refine ⟨⌊θ / (2 * Real.pi)⌋, ⟨?_, ?_⟩⟩
   · have h := Int.floor_le (θ / (2 * Real.pi))
@@ -147,9 +147,15 @@ theorem forall_norm_angleDeriv_betaBoost_sub_lt (d : ℕ) (F : AnalyticTestFn) (
     (periodic_angleDeriv j (betaBoost d ρ F)).sub_int_mul_eq n
   rw [← hred τ, ← hred σ]
   by_cases hle : θ' ≤ Real.pi
-  · exact h θ' ⟨hmem.1, hle⟩ |>.trans_le' (by
-      rw [angleDeriv_betaBoost_of_mem d F j hτ ⟨hmem.1, hle⟩,
-        angleDeriv_betaBoost_of_mem d F j hσ ⟨hmem.1, hle⟩])
+  · have hτeq : angleDeriv j (betaBoost d τ F) θ' = betaBoostSlice d F j (τ, θ') :=
+      angleDeriv_betaBoost_of_mem d F j hτ ⟨hmem.1, hle⟩
+    have hσeq : angleDeriv j (betaBoost d σ F) θ' = betaBoostSlice d F j (σ, θ') :=
+      angleDeriv_betaBoost_of_mem d F j hσ ⟨hmem.1, hle⟩
+    calc
+      ‖angleDeriv j (betaBoost d τ F) θ' - angleDeriv j (betaBoost d σ F) θ'‖
+          = ‖betaBoostSlice d F j (τ, θ') - betaBoostSlice d F j (σ, θ')‖ := by
+            rw [hτeq, hσeq]
+      _ < ε := h θ' ⟨hmem.1, hle⟩
   · have hIoo : θ' ∈ Set.Ioo Real.pi (2 * Real.pi) := ⟨lt_of_not_ge hle, hmem.2⟩
     rw [angleDeriv_betaBoost_of_notMem d F j hτ hIoo,
       angleDeriv_betaBoost_of_notMem d F j hσ hIoo]
