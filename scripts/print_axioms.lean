@@ -1118,3 +1118,59 @@ import MobiusCPT
 #print axioms MobiusCPT.AnalyticTestFn.iteratedFDerivWithin_eq_zero_of_tendsto_iteratedDeriv
 #print axioms MobiusCPT.AnalyticTestFn.ofComplexFlat_toFun
 #print axioms MobiusCPT.AnalyticTestFn.exists_iff_complexFlat
+
+-- Issue #56: theorems declared on `main` before the axiom-coverage guard
+-- (scripts/check_axiom_coverage.lean) existed and were never pinned here. The guard's
+-- first run on `main` found these uncovered; appended in the same PR that adds the
+-- guard, per its own acceptance criterion. No Lean statement content changed by this
+-- append; see the PR body for the per-declaration provenance.
+-- MobiusCPT/TestFunctions/Basic.lean -- TestFn's additive-group coercion lemmas and toAngle's
+-- linearity.
+#print axioms MobiusCPT.TestFn.coe_add
+#print axioms MobiusCPT.TestFn.coe_neg
+#print axioms MobiusCPT.TestFn.coe_smul
+#print axioms MobiusCPT.TestFn.coe_sub
+#print axioms MobiusCPT.TestFn.coe_zero
+#print axioms MobiusCPT.toAngle_add
+#print axioms MobiusCPT.toAngle_smul
+#print axioms MobiusCPT.toAngle_zero
+-- MobiusCPT/TestFunctions/CNorm.lean -- the C^N seminorm family: angleDeriv/angleDerivB/
+-- angleDerivSupFamily evaluation and linearity, cnorm's algebraic and norm properties, and the
+-- periodic-function sup-norm existence lemma feeding the seminorm bound.
+#print axioms MobiusCPT.angleDerivB_apply
+#print axioms MobiusCPT.angleDerivSupFamily_apply
+#print axioms MobiusCPT.angleDeriv_add
+#print axioms MobiusCPT.angleDeriv_smul
+#print axioms MobiusCPT.angleDeriv_zero
+#print axioms MobiusCPT.cnormSeminorm_apply
+#print axioms MobiusCPT.cnorm_coe
+#print axioms MobiusCPT.cnorm_zero
+#print axioms MobiusCPT.contDiff_angleDeriv
+#print axioms MobiusCPT.exists_norm_le_of_periodic
+#print axioms MobiusCPT.norm_angleDeriv_le
+#print axioms MobiusCPT.periodic_angleDeriv
+-- MobiusCPT/TestFunctions/Inv.lean -- the involution `inv` (pointwise inversion on the circle):
+-- pointwise evaluation and its interaction with the zero function.
+#print axioms MobiusCPT.inv_apply
+#print axioms MobiusCPT.inv_supp'
+#print axioms MobiusCPT.inv_zero
+-- MobiusCPT/Analysis/ParamSlice.lean -- the parametrised-curve slice derivative at the base
+-- point.
+#print axioms MobiusCPT.sliceDeriv_zero
+-- MobiusCPT/TestFunctions/Support.lean -- the two semicircle arcs' openness and their
+-- `circleExp`-image membership criteria, and closure of SuppUpper/SuppLower under the vector
+-- space operations (add, neg, smul, sub, and the zero function).
+#print axioms MobiusCPT.isOpen_lowerArc
+#print axioms MobiusCPT.isOpen_upperArc
+#print axioms MobiusCPT.mem_lowerArc_circleExp
+#print axioms MobiusCPT.mem_upperArc_circleExp
+#print axioms MobiusCPT.suppLower_add
+#print axioms MobiusCPT.suppLower_neg
+#print axioms MobiusCPT.suppLower_smul
+#print axioms MobiusCPT.suppLower_sub
+#print axioms MobiusCPT.suppLower_zero
+#print axioms MobiusCPT.suppUpper_add
+#print axioms MobiusCPT.suppUpper_neg
+#print axioms MobiusCPT.suppUpper_smul
+#print axioms MobiusCPT.suppUpper_sub
+#print axioms MobiusCPT.suppUpper_zero
