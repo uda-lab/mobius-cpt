@@ -10,10 +10,14 @@ abstract: >-
   reflects each test function through z -> 1/z, and multiplies the result by (-1)^d, where d is
   the sum of the conformal dimensions. This repository contains a machine-checked formalisation
   of that theorem in Lean 4 with mathlib, covering Definition 3.1 and Lemmas 3.4, 3.6, 3.7, 3.8,
-  3.9 leading to Theorem 3.10, together with a mathematician-facing research note (Japanese body,
-  English title and abstract) that presents the proof architecture as ordinary mathematics,
-  records the formalisation status at a pinned revision, and sets out the points at which the
-  published proof compresses an argument that a complete proof must supply.
+  3.9 leading to Theorem 3.10, together with the Reeh-Schlieder property for the two reference
+  semicircles, which is what makes the continued operators densely defined. It also contains a
+  mathematician-facing research note (Japanese body, English title and abstract) that presents
+  the proof architecture as ordinary mathematics, records the formalisation status at a pinned
+  revision, and sets out the points at which the published proof compresses an argument that a
+  complete proof must supply. Theorem 3.10 is the analytic-continuation and order-reversal
+  statement on which the PCT involution and the Bisognano-Wichmann property are subsequently
+  built; those constructions are outside the scope of this formalisation.
 type: software
 authors:
   - family-names: Uda
@@ -25,7 +29,7 @@ date-released: "2026-08-31"
 license: Apache-2.0
 repository-code: "https://github.com/uda-lab/mobius-cpt"
 url: "https://github.com/uda-lab/mobius-cpt"
-commit: 9ae959bbb8ce9c6dc98f55636fddb53f3bcfbe00
+commit: 9664674d88e40ba0158d684d28e2153f4809f7f7
 keywords:
   - PCT theorem
   - conformal field theory

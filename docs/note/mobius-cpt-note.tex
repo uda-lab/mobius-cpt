@@ -15,6 +15,19 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,calc}
 \usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={Formalising the PCT Theorem for Möbius-Covariant Wightman Conformal Field Theories on the Circle},
+  pdfauthor={Tomoki Uda},
+  pdfsubject={Formalisation of Tener's PCT theorem for Möbius-covariant Wightman CFTs on the circle},
+  pdfkeywords={PCT theorem; conformal field theory; Wightman axioms; Möbius covariance;
+    analytic continuation; formal verification; Lean 4; mathlib}
+}
+
+\renewcommand{\figurename}{図}
+\renewcommand{\refname}{参考文献}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.8}
 
 \linespread{1.12}
 \AtBeginDocument{\settowidth{\parindent}{\CJKfamily{}あ}}
@@ -42,14 +55,18 @@
 % Japanese mathematical writing sets theorem statements upright, not italic;
 % amsthm's `definition' style gives a bold head with an upright body.
 \theoremstyle{definition}
-\newtheorem{theorem}{定理}[section]
+\newtheorem{theorem}{定理}
 \newtheorem{lemma}[theorem]{補題}
-\newtheorem{proposition}[theorem]{命題}
 \newtheorem{definition}[theorem]{定義}
 \newtheorem{convention}[theorem]{規約}
 \newtheorem{remark}[theorem]{注意}
 
-\title{\bfseries Formalising the PCT Theorem for M\"obius-Covariant\\ Wightman Conformal Field Theories on the Circle}
+% Numbered items carry the numbering of the source ([T26]), so that a cross-reference and
+% a citation of the same result read alike; \srcnum fixes the number of the next
+% environment. Items belonging to this note rather than to the source are lettered.
+\newcommand{\srcnum}[1]{\renewcommand{\thetheorem}{#1}}
+
+\title{\bfseries\Large Formalising the PCT Theorem for M\"obius-Covariant\\ Wightman Conformal Field Theories on the Circle}
 \author{Tomoki Uda}
 \date{\notedate}
 
@@ -142,7 +159,8 @@ Fourier モードの議論などである。これらはいずれも \cite{T26} 
 
 \paragraph{範囲と非目標。}
 本稿と、本稿が報告する形式化が扱うのは、\cite{T26} の第 3 節、すなわち定義 3.1 から
-定理 3.10 までである。次のものは扱わない。Haag--Kastler の意味での共形ネット、
+定理 3.10 までである。次のものは扱わない。Haag--Kastler の意味での共形ネットとその頂点作用素代数との
+対応（\cite{CKLW18}）、
 Tomita--Takesaki 理論、Bisognano--Wichmann 性（\cite{T26} 第 4 節）、不変 Hermite 形式と
 PCT 対合、および M\"obius 頂点代数との同値（\cite{CRTT25}）。これらは定理の動機を
 与えるが、以下のどの主張もそれらに依存しない。
@@ -153,7 +171,8 @@ PCT 対合、および M\"obius 頂点代数との同値（\cite{CRTT25}）。�
 PCT 公式（補題 3.4, 3.6, 3.7）、第 5 節は一般の試験関数への拡張（補題 3.8, 3.9 と
 定理 3.10）を扱う。第 4 節と第 5 節は原論文と同じ粒度で道筋を述べ、実質的な議論を要する
 箇所には第 6 節への前方参照を置く。第 6 節はその各点を独立に論じる。第 7 節で形式化の状態と
-検証の意味を述べ、第 8 節で限界と未着手の項目を挙げる。
+検証の意味を述べ、第 8 節で限界と未着手の項目を挙げる。定義・補題・定理の番号は
+\cite{T26} のものに合わせてあり、本稿独自の項目には英字を付す。
 
 \section{設定と記法}
 \label{sec:setting}
@@ -272,7 +291,8 @@ $U(\gamma)\varphi(f)U(\gamma)^{-1} = \varphi(\beta_d(\gamma) f)$ が成り立つ
 また $\Phi \in \Dom$ が\textbf{共形次元} $d$ をもつとは、すべての $\theta$ に対して
 $U(r_\theta)\Phi = e^{id\theta}\Phi$ が成り立つことをいう。
 
-\begin{definition}[\cite{T26} 定義 2.5, \cite{CRTT25} 定義 2.9]
+\srcnum{2.5}
+\begin{definition}[\cite{T26}; \cite{CRTT25} 定義 2.9]
 \label{def:wightman}
 \textbf{M\"obius 共変 Wightman 共形場理論}とは、$\Dom$ が複素ベクトル空間、
 $\Fields$ が $\Dom$ に正則に作用する作用素値超関数の集合、
@@ -302,7 +322,8 @@ $U$ の群変数についての連続性は公理ではなく、導かれる事�
 
 \subsection{台の規約}
 
-\begin{convention}
+\srcnum{A}
+\begin{convention}[本稿の規約]
 \label{conv:supp}
 $f \in C^\infty(\Circ)$ に対して $\operatorname{supp} f \subseteq I_\pm$ と書くとき、
 これは $f$ が反対側の\textbf{開}半円 $I_\mp$ 上で恒等的に $0$ になることを意味する。
@@ -338,7 +359,8 @@ $\Fields$-強位相だけであり、その上で $\tau \mapsto \Vt_\tau\Phi$ �
 要求する。$\Dstar$ は $\Fields$-強位相についての連続双対であり $\Dom$ の点を分離するから、
 この要求は情報を失わない。
 
-\begin{definition}[\cite{T26} 定義 3.1]
+\srcnum{3.1}
+\begin{definition}[\cite{T26}]
 \label{def:vtilde}
 $\tau \in \mathbb{C}$ とする。\textbf{部分的に定義された作用素} $\Vt_\tau$ の定義域
 $\Dom(\Vt_\tau)$ を、次を満たす連続関数の族
@@ -353,9 +375,10 @@ $\Phi \in \Dom$ の全体と定める。
 このとき $\Vt_\tau \Phi := \Psi$ と定める。
 \end{definition}
 
-($\Phi$2) の $\Psi$ は $\lambda$ の外側で束縛されている。すなわち一つの $\Psi$ が
+($\Phi$2) において $\Psi$ は $\lambda$ に依存しない。すなわち一つの $\Psi$ が
 すべての両立汎関数に対して同時に働く。この一様性が定義の内容である。
 
+\srcnum{B}
 \begin{remark}
 記号 $\Dom(\Vt_\tau)$ は $\Dom$ の部分集合を表すものであって、$\Dom$ の像ではない。
 原論文の記法に従う。
@@ -385,7 +408,8 @@ $\{\Phi : \Phi \in \Dom(X_2),\ X_2\Phi \in \Dom(X_1)\}$ とする。この規則
 
 主定理は次のとおりである。
 
-\begin{theorem}[\cite{T26} 定理 3.10]
+\srcnum{3.10}
+\begin{theorem}[\cite{T26}]
 \label{thm:main}
 $(\Dom, \Fields, U, \Omega)$ を定義 \ref{def:wightman} の意味での M\"obius 共変
 Wightman 共形場理論とする。
@@ -452,8 +476,8 @@ $\Vt_\tau$ の定義域に属することが構成的に確かめられ、$\tau 
 \draw[flow] (ax) -- (d31);
 \draw[flow] (x) -- (b);
 \draw[flow] (b) -- (l36);
-\draw[flow] (x.west) to[out=180,in=90] (l34.north);
-\draw[flow] (d31.south) to[out=270,in=180] (l37.west);
+\draw[flow] (x.west) to[out=225,in=75] (l34.north east);
+\draw[flow] (d31.west) to[out=180,in=180] (l37.west);
 \draw[flow] (l36) -- (l37);
 \draw[flow] (l37.east) to[out=0,in=0] (l39.east);
 \draw[flow] (ax.east) to[out=0,in=0] (l38.east);
@@ -476,7 +500,8 @@ $\Vt_\tau$ の定義域に属することが構成的に確かめられ、$\tau 
 $\Oex = \{z \in \mathbb{C} : \abs{z} \ge 1\} \cup \{\infty\}$ とおく。これは Riemann 球面の
 閉じた外部領域である。
 
-\begin{definition}[\cite{T26} 定義 3.2]
+\srcnum{3.2}
+\begin{definition}[\cite{T26}]
 \label{def:Xcl}
 $\Xcl$ を、$\Oex$ 上 $C^\infty$ 級でその内部において正則、$F(\infty) = 0$、かつすべての $i \ge 0$ に
 対して $F^{(i)}(1) = F^{(i)}(-1) = 0$ を満たす関数 $F : \Oex \to \mathbb{C}$ の全体とする。
@@ -505,7 +530,8 @@ $\Xcl$ が扱いやすいのは、その元が $\Circ$ を越えて外側へ正�
 $\beta_d(v_\tau)F$ は定義されない。一方で $\Xcl$ だけでは定理 3.10 の一般性に
 届かない。両者を繋ぐのが次の稠密性である。
 
-\begin{lemma}[\cite{T26} 補題 3.4]
+\srcnum{3.4}
+\begin{lemma}[\cite{T26}]
 \label{lem:34}
 $\{F|_{I_+} : F \in \Xcl\}$ は $C_0^\infty(I_+)$ の中で $C^\infty$ 位相について稠密である。
 $I_-$ についても同様である。
@@ -550,7 +576,8 @@ $\beta_d(v_t)\beta_d(v_\tau) F|_{I_+} = \beta_d(v_{\tau+t}) F|_{I_+}$ を満た�
 $\beta_d(v_\tau)$ は $\Xcl$ の元を受け取って $C_0^\infty(I_+)$ の元を返すから、
 この順序の合成のみが意味をもつ。
 
-\begin{lemma}[\cite{T26} 補題 3.6]
+\srcnum{3.6}
+\begin{lemma}[\cite{T26}]
 \label{lem:36}
 $F_1, \dots, F_k \in \Xcl$、$\varphi_1, \dots, \varphi_k \in \Fields$ を共形次元
 $d_1, \dots, d_k$ の場とする。$\tau \mapsto \beta_d(v_\tau)F|_{I_+}$ は $\Strip_{i\pi}$ 上
@@ -609,7 +636,8 @@ $k$ 回の適用から来ることは第 \ref{sec:sign} 小節で確認する。
 
 以上を合わせて次を得る。
 
-\begin{lemma}[\cite{T26} 補題 3.7]
+\srcnum{3.7}
+\begin{lemma}[\cite{T26}]
 \label{lem:37}
 $\varphi_j \in \Fields$ を共形次元 $d_j$ の場、$F_j \in \Xcl$ とし、
 $f_j := F_j|_{I_+} \in C_0^\infty(I_+)$、$\Phi = \varphi_1(f_1)\cdots\varphi_k(f_k)\Omega$
@@ -643,13 +671,14 @@ $(-1)^k$ を合わせたものである。指数は $\sum_j (d_j - 1) + k = \sum
 補題 \ref{lem:34} は $\{F|_{I_+}\}$ が $C_0^\infty(I_+)$ で稠密であることを与える。
 これと補題 \ref{lem:37} から定理 \ref{thm:main} を得るのは、単なる稠密性と連続性の
 議論ではない。$\Vt_\tau$ は連続作用素ではなく、定義域が試験関数の近似列とともに
-動くからである。示すべきことは、近似列に対応する族 $G_\lambda^{(n)}$ が
+動くからである。示すべきことは、近似列に対応する族 $G_{\lambda,n}$ が
 $\Strip_{i\pi}$ 上で収束し、極限が再び定義 \ref{def:vtilde} の ($\Phi$1), ($\Phi$2) を
 満たすことである。これには帯状領域上で一様な評価が必要であり、二つの補題がそれを与える。
 
 \subsection{実軸上の評価}
 
-\begin{lemma}[\cite{T26} 補題 3.8]
+\srcnum{3.8}
+\begin{lemma}[\cite{T26}]
 \label{lem:38}
 $\varphi_1, \dots, \varphi_k \in \Fields$ と $\lambda \in \Dstar$ に対して、正の整数 $N$ と
 高々指数増大の関数 $C : \mathbb{R} \to \mathbb{R}_{>0}$（すなわち
@@ -681,12 +710,13 @@ $\CN{\beta_d(v_t) f} \le C(t)\CN{f}$ であり、$C$ は高々指数増大であ
 （$N = 0$ での最良の定数は $e^{\abs{d-1}\abs{t}}$ であり、共形次元に依存する。
 第 \ref{sec:growth} 小節を見よ）。二つを合わせるには、
 二つの積の差を一つの成分ずつ差し替えて $k$ 項の和に分解する。
-第 \ref{sec:growth} 小節で、この二つの部分それぞれが完全な証明でどのような形をとるかを
-述べる。
+前者が完全な証明でどのような形をとるかは第 \ref{sec:lcs} 小節で、後者については
+第 \ref{sec:growth} 小節で述べる。
 
 \subsection{帯状領域上の一様評価}
 
-\begin{lemma}[\cite{T26} 補題 3.9]
+\srcnum{3.9}
+\begin{lemma}[\cite{T26}]
 \label{lem:39}
 $\varphi_1, \dots, \varphi_k \in \Fields$ と $\lambda \in \Dstar$ に対して、正の整数 $N$ と
 正の定数 $M$ が存在して、$f_j = F_j|_{I_+}$, $g_j = G_j|_{I_+}$ なるすべての
@@ -720,10 +750,10 @@ $\lvert e^{-\tau^2}\mathfrak{h}(\tau)\rvert$ は境界 $\partial\Strip_{i\pi}$ �
 \subsection{定理の証明}
 
 定理 \ref{thm:main} (ii) を示す。$\operatorname{supp} f_j \subseteq I_+$ とする。
-補題 \ref{lem:34} により $F_j^{(n)} \in \Xcl$ で
-$F_j^{(n)}|_{I_+} \to f_j$（$C^\infty$ 位相）なるものをとる。補題 \ref{lem:37} (i) により
-各 $n$ に対して族 $G^{(n)}_\lambda$ が定まり、補題 \ref{lem:39} により
-$(G^{(n)}_\lambda)_n$ は $\Strip_{i\pi}$ の任意のコンパクト部分集合上一様 Cauchy である。
+補題 \ref{lem:34} により $F_{j,n} \in \Xcl$ で
+$F_{j,n}|_{I_+} \to f_j$（$C^\infty$ 位相）なるものをとる。補題 \ref{lem:37} (i) により
+各 $n$ に対して族 $G_{\lambda,n}$ が定まり、補題 \ref{lem:39} により
+$(G_{\lambda,n})_n$ は $\Strip_{i\pi}$ の任意のコンパクト部分集合上一様 Cauchy である。
 $\mathbb{C}$ の完備性から各点収束極限 $G_\lambda$ が存在し、内部での正則性は局所一様収束から、
 閉帯上での連続性はコンパクト近傍上の一様収束から従う。境界の同定は二つある。
 実軸上では、極限が $\lambda(V_t \varphi_1(f_1)\cdots\varphi_k(f_k)\Omega)$ に一致することを
