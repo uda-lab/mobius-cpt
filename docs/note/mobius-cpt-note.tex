@@ -666,8 +666,9 @@ $F_j, G_j$ に依存してしまう。その依存を除くのが最大値原理
 主張の左辺、すなわち $\lambda$ の値の差を $\mathfrak{h}(\tau)$ と書き、$\tau = t + is$ とおく。高さ $s$ の水平線上の
 評価は、実平行移動則 \eqref{eq:translation} により $\Vt_{t+is} = V_t \Vt_{is}$ と
 分解して補題 \ref{lem:37} (i) と補題 \ref{lem:38} に帰着する。$\Strip_{i\pi}$ 上で
-$\lvert e^{-\tau^2}\rvert \le e^{\pi^2} e^{-(\operatorname{Re}\tau)^2}$ だから、
-$e^{-\tau^2}\mathfrak{h}(\tau)$ は有界で水平方向の無限遠で $0$ に収束する。したがって
+$\lvert e^{-\tau^2}\rvert \le e^{\pi^2} e^{-(\operatorname{Re}\tau)^2}$ であり、$\mathfrak{h}$ 自身は
+帯の上で高々指数増大だから、$e^{-\tau^2}\mathfrak{h}(\tau)$ は有界で水平方向の無限遠で
+$0$ に収束する。したがって
 $\lvert e^{-\tau^2}\mathfrak{h}(\tau)\rvert$ は境界 $\partial\Strip_{i\pi}$ で最大値をとる。
 下側の境界は補題 \ref{lem:38} が直接押さえ、上側の境界は補題 \ref{lem:37} (ii) で
 場を逆順にし試験関数を反転した積に書き換えたのち補題 \ref{lem:38} を適用して押さえる。後者では
@@ -782,8 +783,11 @@ $x = i\pi/2$、端点 $z = \pm 1$ は $\operatorname{Re} x \to \pm\infty$ に対
 この座標には二つの利点がある。第一に、\cite{T26} の「ブースト流に沿った Gauss 核との
 畳み込み」が、実直線上の通常の Gauss 畳み込みそのものになる。第二に、
 $\partial_\theta = -\cosh(x)\, \partial_x$ だから、$C^N(\Circ)$ の半ノルムは
-$e^{N\abs{x}}$ で重みづけした $C^N(\mathbb{R})$ の半ノルムと一致する。そして最も重要な点として、
-\textbf{端点 $\pm 1$ における全階平坦性は $\mp\infty$ における超指数減衰にほかならない}。
+$e^{N\abs{x}}$ で重みづけした $C^N(\mathbb{R})$ の半ノルムと\textbf{同値}である。
+一致ではない。$1$ 階でも重みはちょうど $\cosh x$ であり、この作用素を繰り返せば
+低階の導関数の項も出る。証明が使うのは、両者が互いに定数倍で押さえ合うことである。そして最も重要な点として、
+\textbf{端点 $\pm 1$ における全階平坦性は $\operatorname{Re} x \to \pm\infty$ における
+超指数減衰にほかならない}。
 補題 \ref{lem:34} の近似列が端点を越えて $C^\infty$ 級であることは、この言い換えのもとで
 証明できる主張になる。
 
@@ -937,14 +941,20 @@ $\cosh t + \cos\theta\sinh t \ge \cosh t - \abs{\sinh t} = e^{-\abs{t}} > 0$ が
 
 重み $e^{-\tau^2}$ がその役割を果たす。$\Strip_{i\pi}$ 上で
 $\lvert e^{-\tau^2}\rvert = e^{(\operatorname{Im}\tau)^2 - (\operatorname{Re}\tau)^2}
-\le e^{\pi^2} e^{-(\operatorname{Re}\tau)^2}$ だから、$\mathfrak{h}$ が帯の上で
-（$F_j, G_j$ に依存してよい定数で）有界でありさえすれば、$e^{-\tau^2}\mathfrak{h}(\tau)$ は
-$\operatorname{Re}\tau \to \pm\infty$ で $0$ に収束する。したがって水平帯に対する
+\le e^{\pi^2} e^{-(\operatorname{Re}\tau)^2}$ である。一方 $\mathfrak{h}$ は帯の上で有界ではない。
+補題 \ref{lem:38} の $C(t)$ が $\abs{t}$ について高々指数増大であることしか主張しないから、
+そこから得られるのは
+$\abs{\mathfrak{h}(\tau)} \le K e^{\kappa\abs{\operatorname{Re}\tau}}$
+という形の評価である（$K, \kappa$ は $F_j, G_j$ に依存してよい）。虚部の動く範囲 $[0,\pi]$ が
+コンパクトであることは、この評価の定数を $\operatorname{Im}\tau$ について一様にとるために
+使う。指数増大は Gauss 因子が打ち消す。すなわち
+$\abs{e^{-\tau^2}\mathfrak{h}(\tau)} \le e^{\pi^2} K e^{\kappa\abs{\operatorname{Re}\tau} - (\operatorname{Re}\tau)^2}$
+は有界であり、$\operatorname{Re}\tau \to \pm\infty$ で $0$ に収束する。したがって水平帯に対する
 Phragm\'en--Lindel\"of の定理が適用でき、最大値は境界で達成される。結論の
 $e^{(\operatorname{Re}\tau)^2}$ という因子は、この重みを外した残りである。
 
-必要な入力は三つある。閉帯上の連続性と内部での正則性、帯の上での有界性、そして
-二つの境界線上での評価である。第一のものは補題 \ref{lem:37} (i) と補題 \ref{lem:36} から、
+必要な入力は三つある。閉帯上の連続性と内部での正則性、帯の上での高々指数増大の評価、
+そして二つの境界線上での評価である。第一のものは補題 \ref{lem:37} (i) と補題 \ref{lem:36} から、
 第二のものは実平行移動則と補題 \ref{lem:38} からコンパクト性の議論を経て、
 第三のものは前述のとおり補題 \ref{lem:38} と補題 \ref{lem:37} (ii) から得られる。
 
