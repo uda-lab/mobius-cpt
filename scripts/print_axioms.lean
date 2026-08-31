@@ -1174,3 +1174,15 @@ import MobiusCPT
 #print axioms MobiusCPT.suppUpper_smul
 #print axioms MobiusCPT.suppUpper_sub
 #print axioms MobiusCPT.suppUpper_zero
+
+-- Issue #56 (review round 1, codex adversarial-review): the guard's `.ext`/`.ext_iff` suffix
+-- exclusion was a false-negative risk -- `MobiusCPT.TestFn.ext` (TestFunctions/Basic.lean) and
+-- `MobiusCPT.SU11.ext` (Mobius/Basic.lean, already pinned above) are hand-proved, `@[ext]`-tagged
+-- theorems, not auto-generated. Fixed by dropping `.ext`/`.ext_iff` from the guard's exclusion
+-- list entirely and pinning every theorem it now finds, including the `@[ext]` attribute's
+-- auto-derived `.ext_iff` companion lemmas (mechanical byproducts of `TestFn.ext`/`SU11.ext`,
+-- but genuinely printable/auditable content, so pinning them is simpler and safer than adding
+-- another name-suffix heuristic).
+#print axioms MobiusCPT.TestFn.ext
+#print axioms MobiusCPT.TestFn.ext_iff
+#print axioms MobiusCPT.SU11.ext_iff

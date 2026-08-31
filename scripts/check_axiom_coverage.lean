@@ -24,10 +24,16 @@ mathematical result a PR is claiming as a result:
   * auxiliary recursors (`recOn`/`casesOn`/`brecOn`-style
     helpers tagged by the elaborator, plus `Eq.ndrec` &c.)      — `isAuxRecursor`
   * `structure`/`inductive`-generated theorem suffixes the
-    two checks above do not catch: `.injEq`, `.ext`, `.ext_iff`,
-    `.sizeOf_spec`, `.noConfusion`, `.noConfusionType`, any
-    `.mk.*` accessor, or the auto-generated `simp`-congruence
-    lemma suffix `.congr_simp`                                   — `hasStructureGeneratedComponent`
+    two checks above do not catch: `.injEq`, `.noConfusion`,
+    `.noConfusionType`, any `.mk.*` accessor, or the
+    auto-generated `simp`-congruence lemma suffix `.congr_simp`
+    — `hasStructureGeneratedComponent`. NOT `.ext`/`.ext_iff`/
+    `.sizeOf_spec`: unlike the others, these collide with names a
+    human deliberately chooses (`MobiusCPT.TestFn.ext`,
+    `MobiusCPT.SU11.ext` here are hand-proved, `@[ext]`-tagged
+    theorems, not auto-generated) and this codebase generates none
+    of them automatically, so excluding by that suffix would be a
+    silent false negative rather than a safe exclusion.
   * `structure`/`class` field projections — a `Prop`-valued
     field of a `structure`/`class ... where` block elaborates as
     a `theorem`-kind projection function (e.g. `WightmanData.U_mul`,
@@ -47,8 +53,8 @@ open Lean
 `Name.isInternalDetail` does not catch (they don't start with `_` and aren't
 `eq_`/`match_`/`proof_`/`omega_`), but are never a claimed public result. -/
 private def isStructureGeneratedComponent (s : String) : Bool :=
-  s == "injEq" || s == "ext" || s == "ext_iff" || s == "sizeOf_spec" ||
-  s == "noConfusion" || s == "noConfusionType" || s == "mk" || s == Lean.Meta.congrSimpSuffix
+  s == "injEq" || s == "noConfusion" || s == "noConfusionType" || s == "mk" ||
+  s == Lean.Meta.congrSimpSuffix
 
 /-- Does any dotted component of `n` match a structure-generated suffix? -/
 private def hasStructureGeneratedComponent : Name → Bool
@@ -82,13 +88,23 @@ private def isPublicMobiusTheorem (env : Environment) (n : Name) (info : Constan
     return true
   | _ => return false
 
-/-- The declaration names pinned by `#print axioms <name>` lines in `path`. -/
+/-- The declaration names pinned by `#print axioms <name>` lines in `path`, under the exact
+same extraction rule `scripts/check-axioms.sh` uses (`awk '/^#print axioms /{print $3}'`):
+the line must start with the literal, unindented text `#print axioms ` — not merely contain it
+after trimming. A line inside a block comment, or indented, is never a real `#print axioms`
+command as far as Lean or that audit are concerned, so this walk must not treat it as pinned
+either; doing so would let the coverage guard pass while the live audit never actually checks
+the name. -/
 private def readPinnedNames (path : System.FilePath) : IO (Std.HashSet String) := do
   let contents ← IO.FS.readFile path
+  let prefix' := "#print axioms "
   let names := (contents.splitOn "\n").filterMap fun line =>
-    match line.trim.splitOn " " |>.filter (· ≠ "") with
-    | "#print" :: "axioms" :: name :: _ => some name
-    | _ => none
+    if line.startsWith prefix' then
+      match (line.drop prefix'.length).toString.splitOn " " |>.filter (· ≠ "") with
+      | name :: _ => some name
+      | [] => none
+    else
+      none
   return Std.HashSet.ofList names
 
 #eval show CoreM Unit from do
