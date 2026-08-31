@@ -133,6 +133,12 @@ discharged later by Issue #11 with byte-identical statement text.
 Issue #11 has landed: `lemma_3_9` is now the proved theorem
 `MobiusCPT.WightmanBundle.lemma_3_9` in `MobiusCPT.Wightman.Lemma39`, with byte-identical
 statement text, so it is gone from here.
+
+Issue #12 has landed: `thm_3_10_i`, `thm_3_10_ii` and `thm_3_10_iii` are now the proved theorems
+`MobiusCPT.WightmanBundle.thm_3_10_i`, `.thm_3_10_ii` and `.thm_3_10_iii` in
+`MobiusCPT.Wightman.Thm310`, with byte-identical statement text, so their statements are gone
+from here. This completes [T26] Theorem 3.10 and closes the charter's capstone: the contract now
+pins only the bundle hole `W` itself and its transparent projections.
 -/
 
 namespace MobiusCPT
@@ -227,38 +233,5 @@ def_wanted MemPUpperOmega : ❰Dom❱ → Prop :=
 real interface landed by Issue #4. -/
 def_wanted MemPLowerOmega : ❰Dom❱ → Prop :=
   fun Φ => (❰W❱).data.toWightmanStruct.MemPLowerOmega Φ
-
-/-- [T26], Theorem 3.10(i); upper and lower localized vectors lie in the corresponding domains
-of the partially defined imaginary boosts, owned by Issue #12. -/
-theorem_wanted thm_3_10_i :
-    ❰IsWightmanCFT❱ →
-      (∀ Φ : ❰Dom❱,
-        ❰MemPUpperOmega❱ Φ → ❰VtildeDom❱ (Complex.I * Real.pi) Φ) ∧
-        (∀ Φ : ❰Dom❱,
-          ❰MemPLowerOmega❱ Φ → ❰VtildeDom❱ (-(Complex.I * Real.pi)) Φ)
-
-/-- [T26], Theorem 3.10(i)+(ii); for upper-supported products, the imaginary boost
-is defined and reverses the product with the conformal-dimension sign, owned by Issue #12. -/
-theorem_wanted thm_3_10_ii :
-    ❰IsWightmanCFT❱ →
-      ∀ (l : List (❰Field❱ × TestFn)),
-        (∀ p ∈ l, SuppUpper p.2) →
-          ❰VtildeDom❱ (Complex.I * Real.pi) (❰smearedProduct❱ l) ∧
-            ❰VtildeMap❱ (Complex.I * Real.pi) (❰smearedProduct❱ l) =
-              (-1 : ℂ) ^ ((l.map (fun p => ❰dim❱ p.1)).sum) •
-                ❰smearedProduct❱
-                  (l.reverse.map (fun p => (p.1, inv p.2)))
-
-/-- [T26], Theorem 3.10(i)+(iii); for lower-supported products, the negative
-imaginary boost is defined and gives the mirrored reversed-product identity, owned by Issue #12. -/
-theorem_wanted thm_3_10_iii :
-    ❰IsWightmanCFT❱ →
-      ∀ (l : List (❰Field❱ × TestFn)),
-        (∀ p ∈ l, SuppLower p.2) →
-          ❰VtildeDom❱ (-(Complex.I * Real.pi)) (❰smearedProduct❱ l) ∧
-            ❰VtildeMap❱ (-(Complex.I * Real.pi)) (❰smearedProduct❱ l) =
-              (-1 : ℂ) ^ ((l.map (fun p => ❰dim❱ p.1)).sum) •
-                ❰smearedProduct❱
-                  (l.reverse.map (fun p => (p.1, inv p.2)))
 
 end MobiusCPT

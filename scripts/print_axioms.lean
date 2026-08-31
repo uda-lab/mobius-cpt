@@ -985,3 +985,81 @@ import MobiusCPT
 -- Issue #11, Block C final assembly: reconciles the two boundary estimates to common constants
 -- and applies the Gaussian-weighted strip maximum principle to prove [T26] Lemma 3.9.
 #print axioms MobiusCPT.WightmanBundle.lemma_3_9
+
+-- Issue #12, Block L1 ([T26] Theorem 3.10, WLOG transport): the rotation-by-pi symmetry used to
+-- derive part (iii) from part (ii). `Mob.rot_pi_conj_boost` conjugates the boost flow to its
+-- negation; `negTestFn` is pullback by that rotation, equal to `beta_d(r_pi)` for every
+-- conformal dimension, an involution, exchanges `SuppUpper`/`SuppLower`, commutes with
+-- test-function inversion, and preserves every `C^N` seminorm (hence is continuous).
+#print axioms MobiusCPT.Mob.rot_pi_conj_boost
+#print axioms MobiusCPT.Mob.rot_pi_sq
+#print axioms MobiusCPT.Mob.rot_pi_inv
+#print axioms MobiusCPT.negTestFn_apply
+#print axioms MobiusCPT.coe_smul_rot_pi
+#print axioms MobiusCPT.beta_rot_pi_eq_negTestFn
+#print axioms MobiusCPT.negTestFn_negTestFn
+#print axioms MobiusCPT.suppLower_iff_suppUpper_negTestFn
+#print axioms MobiusCPT.suppUpper_iff_suppLower_negTestFn
+#print axioms MobiusCPT.inv_negTestFn
+#print axioms MobiusCPT.toAngle_negTestFn
+#print axioms MobiusCPT.angleDeriv_negTestFn
+#print axioms MobiusCPT.norm_angleDerivB_negTestFn
+#print axioms MobiusCPT.cnorm_negTestFn
+#print axioms MobiusCPT.continuous_negTestFn
+
+-- Issue #12, Block L2 ([T26] Theorem 3.10, WLOG transport): Compat transport under U(r_pi),
+-- rotation intertwining a boost with its negation, and the resulting mirror lemma
+-- VtildeDom(-tau) Phi <-> VtildeDom tau (U(r_pi) Phi), with the matching companion-value law
+-- for vtildeMap.
+#print axioms MobiusCPT.neg_mem_interior_strip_iff
+#print axioms MobiusCPT.WightmanData.U_boost_rot_pi_comm
+#print axioms MobiusCPT.WightmanData.isBoostContinuation_mirror
+#print axioms MobiusCPT.WightmanData.vtildeDom_mirror_iff
+#print axioms MobiusCPT.WightmanData.vtildeMap_mirror
+
+-- Issue #12, Block U1 (part a) ([T26] Theorem 3.10, the limiting continuation family):
+-- Lemma 3.4 analytic approximants of an arbitrary upper-supported list are uniformly Cauchy on
+-- every compact subset of the closed strip via Lemma 3.9, giving a pointwise limit `limitG`
+-- that is holomorphic on the open strip.
+#print axioms MobiusCPT.WightmanData.approxList_length
+#print axioms MobiusCPT.WightmanData.limG_eq
+#print axioms MobiusCPT.WightmanData.continuousOn_limG
+#print axioms MobiusCPT.WightmanData.differentiableOn_limG
+#print axioms MobiusCPT.WightmanData.uniformCauchySeqOn_limG
+#print axioms MobiusCPT.WightmanData.tendsto_limG
+#print axioms MobiusCPT.WightmanData.tendstoLocallyUniformlyOn_limG
+#print axioms MobiusCPT.WightmanData.differentiableOn_limitG
+
+-- Issue #12, Block U1 (part b): closed-strip continuity of the limiting continuation family,
+-- via a direct TendstoLocallyUniformlyOn construction on the closed strip (a compact
+-- neighborhood strip ∩ closedBall at every point, since the strip is closed rather than open).
+#print axioms MobiusCPT.WightmanData.tendstoLocallyUniformlyOn_limG_strip
+#print axioms MobiusCPT.WightmanData.continuousOn_limitG
+
+-- Issue #12, Block U2 ([T26] Theorem 3.10(ii), boundary identification): the two boundary
+-- values of the limiting continuation family are identified with concrete vectors (the plain
+-- boost orbit on the real axis via the real-parameter case of Vtilde, and the reversed,
+-- inverted, sign-twisted product on the Im tau = pi line via Lemma 3.7(ii) and the real
+-- translation law), packaging IsBoostContinuation and discharging thm_3_10_ii's core content
+-- for smearedProduct l.
+#print axioms MobiusCPT.continuous_inv
+#print axioms MobiusCPT.WightmanData.tendsto_limG_ofReal
+#print axioms MobiusCPT.WightmanData.tendsto_limG_ipi_add_ofReal
+#print axioms MobiusCPT.WightmanData.limitG_ofReal
+#print axioms MobiusCPT.WightmanData.limitG_ipi_add_ofReal
+#print axioms MobiusCPT.WightmanData.isBoostContinuation_limitG
+#print axioms MobiusCPT.WightmanData.thm_3_10_ii_core
+
+-- Issue #12, Block A (assembly, [T26] Theorem 3.10 complete): part (iii) is derived from part
+-- (ii) by the rotation-by-pi transport at the level of Definition 3.1 -- the encoding of the
+-- source's "without loss of generality, we only consider I+" -- using U(r_pi) = negTestFn on
+-- test functions (Block L1) and the mirror lemma for VtildeDom/vtildeMap (Block L2); part (i)
+-- is derived from (ii)/(iii) by linearity of the continuation domain (a Submodule) applied to
+-- the finite-linear-combination characterization of P(I+)Omega/P(I-)Omega. This discharges
+-- MobiusCPT.Contract's `theorem_wanted thm_3_10_i/ii/iii`, byte-identical statement text,
+-- completing [T26] Theorem 3.10.
+#print axioms MobiusCPT.WightmanData.thm_3_10_iii_core
+#print axioms MobiusCPT.WightmanData.thm_3_10_i_core
+#print axioms MobiusCPT.WightmanBundle.thm_3_10_i
+#print axioms MobiusCPT.WightmanBundle.thm_3_10_ii
+#print axioms MobiusCPT.WightmanBundle.thm_3_10_iii
