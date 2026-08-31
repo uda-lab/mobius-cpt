@@ -5,7 +5,8 @@ import Mathlib.Data.Real.Basic
 
 Scaffold module. `placeholder_add_zero` exists only so that the live axiom audit
 (`scripts/print_axioms.lean` → `scripts/check-axioms.sh`) is exercised end to end
-from the first commit. Replace it through a charter-authorised Issue.
+from the first commit. It stays permanently as the audit's smoke test; its line in
+`scripts/print_axioms.lean` is not removed.
 -/
 
 namespace MobiusCPT
