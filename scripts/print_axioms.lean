@@ -1107,3 +1107,14 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanBundle.reehSchlieder_lower
 #print axioms MobiusCPT.WightmanBundle.analyticCore_dense_upper
 #print axioms MobiusCPT.WightmanBundle.analyticCore_dense_lower
+
+-- Issue #37 ([T26], Definition 3.2): the real-jet flatness fields of `AnalyticTestFn` are
+-- equivalent to the source-literal condition that every complex derivative vanishes at `±1`,
+-- exposed via the `ofComplexFlat` constructor and the `exists_iff_complexFlat` characterisation.
+#print axioms MobiusCPT.iteratedFDerivWithin_eq_smul_mkPiAlgebraFin_of_contDiffOn_of_differentiableOn
+#print axioms MobiusCPT.AnalyticTestFn.iteratedFDerivWithin_eq_smul_mkPiAlgebraFin
+#print axioms MobiusCPT.AnalyticTestFn.tendsto_iteratedDeriv_one
+#print axioms MobiusCPT.AnalyticTestFn.tendsto_iteratedDeriv_neg_one
+#print axioms MobiusCPT.AnalyticTestFn.iteratedFDerivWithin_eq_zero_of_tendsto_iteratedDeriv
+#print axioms MobiusCPT.AnalyticTestFn.ofComplexFlat_toFun
+#print axioms MobiusCPT.AnalyticTestFn.exists_iff_complexFlat
