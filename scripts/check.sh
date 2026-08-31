@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Canonical local/CI integrity gate, in this order:
-#   textual guards (sorry/admit, custom axioms, transient artefacts) → lake build → live axiom audit.
+#   textual guards (sorry/admit, custom axioms, transient artefacts) → lake build →
+#   live axiom audit → axiom-coverage guard (every public theorem is pinned in
+#   scripts/print_axioms.lean).
 # The whole run is serialised container-wide on /tmp/lean-build.lock: concurrent mathlib
 # builds in a shared container OOM each other. The lock is an fd-based flock(2) held by
 # this process (flock(1) on Linux; the same syscall via perl on macOS, which lacks flock(1)),
@@ -44,4 +46,5 @@ unset $(git rev-parse --local-env-vars)
 
 step "lake build";                     lake build
 step "live axiom audit";               bash scripts/check-axioms.sh
+step "axiom coverage";                 bash scripts/check-axiom-coverage.sh
 echo "CHECK OK"

@@ -27,7 +27,7 @@ scripts/check.sh       # full gate: guards, lake build, live #print axioms; seri
 - Accepted code has no `sorry`/`admit`; `-- ALLOW_SORRY: #<issue> …` is a same-line escape only for work an Issue explicitly authorises to land incomplete, and it never reaches a pinned theorem's closure.
 - No `axiom`/`constant`/`opaque`/`unsafe` declarations; an owner-authorised `-- ALLOW_AXIOM: #<issue> …` passes the textual guard but `scripts/check-axioms.sh` still rejects it (allowlist: propext, Classical.choice, Quot.sound; changing it is `needs-decision`).
 - Never weaken, specialise or trivialise a statement to close a proof; statement-changing PRs need a source-to-Lean semantic review by an agent distinct from the implementer.
-- Every public theorem a PR claims as a result is appended to `scripts/print_axioms.lean` (append-only) so the live audit covers it.
+- Every public theorem a PR claims as a result is appended to `scripts/print_axioms.lean` (append-only) so the live audit covers it (enforced by `scripts/check-axiom-coverage.sh`).
 - Proof experiments, build logs and scratch files stay untracked; `.gitignore` plus the transient-artefact guard are the contract.
 
 ## Architecture

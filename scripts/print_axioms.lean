@@ -1118,3 +1118,91 @@ import MobiusCPT
 #print axioms MobiusCPT.AnalyticTestFn.iteratedFDerivWithin_eq_zero_of_tendsto_iteratedDeriv
 #print axioms MobiusCPT.AnalyticTestFn.ofComplexFlat_toFun
 #print axioms MobiusCPT.AnalyticTestFn.exists_iff_complexFlat
+
+-- Issue #56: theorems declared on `main` before the axiom-coverage guard
+-- (scripts/check_axiom_coverage.lean) existed and were never pinned here. The guard's
+-- first run on `main` found these uncovered; appended in the same PR that adds the
+-- guard, per its own acceptance criterion. No Lean statement content changed by this
+-- append; see the PR body for the per-declaration provenance.
+-- MobiusCPT/TestFunctions/Basic.lean -- TestFn's additive-group coercion lemmas and toAngle's
+-- linearity.
+#print axioms MobiusCPT.TestFn.coe_add
+#print axioms MobiusCPT.TestFn.coe_neg
+#print axioms MobiusCPT.TestFn.coe_smul
+#print axioms MobiusCPT.TestFn.coe_sub
+#print axioms MobiusCPT.TestFn.coe_zero
+#print axioms MobiusCPT.toAngle_add
+#print axioms MobiusCPT.toAngle_smul
+#print axioms MobiusCPT.toAngle_zero
+-- MobiusCPT/TestFunctions/CNorm.lean -- the C^N seminorm family: angleDeriv/angleDerivB/
+-- angleDerivSupFamily evaluation and linearity, cnorm's algebraic and norm properties, and the
+-- periodic-function sup-norm existence lemma feeding the seminorm bound.
+#print axioms MobiusCPT.angleDerivB_apply
+#print axioms MobiusCPT.angleDerivSupFamily_apply
+#print axioms MobiusCPT.angleDeriv_add
+#print axioms MobiusCPT.angleDeriv_smul
+#print axioms MobiusCPT.angleDeriv_zero
+#print axioms MobiusCPT.cnormSeminorm_apply
+#print axioms MobiusCPT.cnorm_coe
+#print axioms MobiusCPT.cnorm_zero
+#print axioms MobiusCPT.contDiff_angleDeriv
+#print axioms MobiusCPT.exists_norm_le_of_periodic
+#print axioms MobiusCPT.norm_angleDeriv_le
+#print axioms MobiusCPT.periodic_angleDeriv
+-- MobiusCPT/TestFunctions/Inv.lean -- the involution `inv` (pointwise inversion on the circle):
+-- pointwise evaluation and its interaction with the zero function.
+#print axioms MobiusCPT.inv_apply
+#print axioms MobiusCPT.inv_supp'
+#print axioms MobiusCPT.inv_zero
+-- MobiusCPT/Analysis/ParamSlice.lean -- the parametrised-curve slice derivative at the base
+-- point.
+#print axioms MobiusCPT.sliceDeriv_zero
+-- MobiusCPT/TestFunctions/Support.lean -- the two semicircle arcs' openness and their
+-- `circleExp`-image membership criteria, and closure of SuppUpper/SuppLower under the vector
+-- space operations (add, neg, smul, sub, and the zero function).
+#print axioms MobiusCPT.isOpen_lowerArc
+#print axioms MobiusCPT.isOpen_upperArc
+#print axioms MobiusCPT.mem_lowerArc_circleExp
+#print axioms MobiusCPT.mem_upperArc_circleExp
+#print axioms MobiusCPT.suppLower_add
+#print axioms MobiusCPT.suppLower_neg
+#print axioms MobiusCPT.suppLower_smul
+#print axioms MobiusCPT.suppLower_sub
+#print axioms MobiusCPT.suppLower_zero
+#print axioms MobiusCPT.suppUpper_add
+#print axioms MobiusCPT.suppUpper_neg
+#print axioms MobiusCPT.suppUpper_smul
+#print axioms MobiusCPT.suppUpper_sub
+#print axioms MobiusCPT.suppUpper_zero
+
+-- Issue #56 (review round 1, codex adversarial-review): the guard's `.ext`/`.ext_iff` suffix
+-- exclusion was a false-negative risk -- `MobiusCPT.TestFn.ext` (TestFunctions/Basic.lean) and
+-- `MobiusCPT.SU11.ext` (Mobius/Basic.lean, already pinned above) are hand-proved, `@[ext]`-tagged
+-- theorems, not auto-generated. Fixed by dropping `.ext`/`.ext_iff` from the guard's exclusion
+-- list entirely and pinning every theorem it now finds, including the `@[ext]` attribute's
+-- auto-derived `.ext_iff` companion lemmas (mechanical byproducts of `TestFn.ext`/`SU11.ext`,
+-- but genuinely printable/auditable content, so pinning them is simpler and safer than adding
+-- another name-suffix heuristic).
+#print axioms MobiusCPT.TestFn.ext
+#print axioms MobiusCPT.TestFn.ext_iff
+#print axioms MobiusCPT.SU11.ext_iff
+
+-- Issue #56 (broker review round 2, codex): the guard's blanket `instance` exclusion
+-- (`Lean.Meta.isInstance`) was itself a false-negative risk of the same shape --
+-- `MobiusCPT.testFnBaireSpace`/`testFnBarrelledSpace` (above) and `MobiusCPT.signSubgroupNormal`
+-- are hand-proved, explicitly-named `instance`s already pinned as genuine claimed results, so
+-- excluding every instance would let a future one escape the audit. Dropped the exclusion
+-- entirely and pinned every instance it now finds: two more explicitly-named ones
+-- (`fact_pos_two_mul_pi`, `instRealComplexScalarTower`) and five anonymous `instance : X := ...`
+-- declarations Lean auto-names (`instContinuousSMulComplexTestFn`,
+-- `instFirstCountableTopologyTestFn`, `instIsTopologicalAddGroupTestFn`,
+-- `instLocallyConvexSpaceRealTestFn`, `instT1SpaceTestFn`, all in TestFunctions/CNorm.lean) --
+-- the same category of substantive, hand-proved topological fact about `TestFn` as the
+-- already-pinned `testFnBaireSpace`/`testFnBarrelledSpace`, just without an explicit name.
+#print axioms MobiusCPT.fact_pos_two_mul_pi
+#print axioms MobiusCPT.instRealComplexScalarTower
+#print axioms MobiusCPT.instIsTopologicalAddGroupTestFn
+#print axioms MobiusCPT.instContinuousSMulComplexTestFn
+#print axioms MobiusCPT.instLocallyConvexSpaceRealTestFn
+#print axioms MobiusCPT.instT1SpaceTestFn
+#print axioms MobiusCPT.instFirstCountableTopologyTestFn
