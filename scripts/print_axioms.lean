@@ -1186,3 +1186,23 @@ import MobiusCPT
 #print axioms MobiusCPT.TestFn.ext
 #print axioms MobiusCPT.TestFn.ext_iff
 #print axioms MobiusCPT.SU11.ext_iff
+
+-- Issue #56 (broker review round 2, codex): the guard's blanket `instance` exclusion
+-- (`Lean.Meta.isInstance`) was itself a false-negative risk of the same shape --
+-- `MobiusCPT.testFnBaireSpace`/`testFnBarrelledSpace` (above) and `MobiusCPT.signSubgroupNormal`
+-- are hand-proved, explicitly-named `instance`s already pinned as genuine claimed results, so
+-- excluding every instance would let a future one escape the audit. Dropped the exclusion
+-- entirely and pinned every instance it now finds: two more explicitly-named ones
+-- (`fact_pos_two_mul_pi`, `instRealComplexScalarTower`) and five anonymous `instance : X := ...`
+-- declarations Lean auto-names (`instContinuousSMulComplexTestFn`,
+-- `instFirstCountableTopologyTestFn`, `instIsTopologicalAddGroupTestFn`,
+-- `instLocallyConvexSpaceRealTestFn`, `instT1SpaceTestFn`, all in TestFunctions/CNorm.lean) --
+-- the same category of substantive, hand-proved topological fact about `TestFn` as the
+-- already-pinned `testFnBaireSpace`/`testFnBarrelledSpace`, just without an explicit name.
+#print axioms MobiusCPT.fact_pos_two_mul_pi
+#print axioms MobiusCPT.instRealComplexScalarTower
+#print axioms MobiusCPT.instIsTopologicalAddGroupTestFn
+#print axioms MobiusCPT.instContinuousSMulComplexTestFn
+#print axioms MobiusCPT.instLocallyConvexSpaceRealTestFn
+#print axioms MobiusCPT.instT1SpaceTestFn
+#print axioms MobiusCPT.instFirstCountableTopologyTestFn

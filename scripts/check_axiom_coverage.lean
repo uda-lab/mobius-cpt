@@ -43,8 +43,18 @@ mathematical result a PR is claiming as a result:
     independently claimed results, and Lean does not classify them as
     "auto-generated" in the sense above (the field itself is user-written) so
     this needs its own check                                  — `Environment.isProjectionFn`
-  * `instance` declarations, which elaborate as `theorem`s when Prop-valued
-                                                                 — `Lean.Meta.isInstance`
+
+That is the whole list. In particular this guard does NOT exclude `instance`
+declarations: a codex broker review on this PR found that blanket-excluding
+every `Prop`-valued `instance` was itself a false-negative risk of the same
+shape as the `.ext`/`mk` ones above — `MobiusCPT.testFnBaireSpace`,
+`MobiusCPT.testFnBarrelledSpace` and `MobiusCPT.signSubgroupNormal` are
+hand-proved `instance`s already pinned as genuine claimed results (a project
+`instance : SomePropClass ... := proof` line is always something a human
+wrote here — typeclass *resolution* uses existing instances at a call site,
+it never creates a new named declaration in this project's own modules — so
+there is no "mechanical, auto-derived instance" category to exclude in the
+first place). `Lean.Meta.isInstance` is deliberately unused now.
 
 Iterate this list, not the caller, if a false positive or false negative shows up:
 every excluded kind above must stay listed here.
@@ -72,7 +82,6 @@ private def isPublicMobiusTheorem (env : Environment) (n : Name) (info : Constan
     if (← isAutoDeclOrPrivate_Internal n) then return false
     if env.isProjectionFn n then return false
     if !isMobiusModule env n then return false
-    if (← Lean.Meta.isInstance n) then return false
     return true
   | _ => return false
 
