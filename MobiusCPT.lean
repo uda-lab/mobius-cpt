@@ -80,3 +80,4 @@ import MobiusCPT.Mobius.RotationPi
 import MobiusCPT.Wightman.VtildeMirror
 import MobiusCPT.Wightman.Thm310Limit
 import MobiusCPT.Wightman.Thm310LimitCont
+import MobiusCPT.Wightman.Thm310Upper

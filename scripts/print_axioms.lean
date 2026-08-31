@@ -1034,3 +1034,17 @@ import MobiusCPT
 -- neighborhood strip ∩ closedBall at every point, since the strip is closed rather than open).
 #print axioms MobiusCPT.WightmanData.tendstoLocallyUniformlyOn_limG_strip
 #print axioms MobiusCPT.WightmanData.continuousOn_limitG
+
+-- Issue #12, Block U2 ([T26] Theorem 3.10(ii), boundary identification): the two boundary
+-- values of the limiting continuation family are identified with concrete vectors (the plain
+-- boost orbit on the real axis via the real-parameter case of Vtilde, and the reversed,
+-- inverted, sign-twisted product on the Im tau = pi line via Lemma 3.7(ii) and the real
+-- translation law), packaging IsBoostContinuation and discharging thm_3_10_ii's core content
+-- for smearedProduct l.
+#print axioms MobiusCPT.continuous_inv
+#print axioms MobiusCPT.WightmanData.tendsto_limG_ofReal
+#print axioms MobiusCPT.WightmanData.tendsto_limG_ipi_add_ofReal
+#print axioms MobiusCPT.WightmanData.limitG_ofReal
+#print axioms MobiusCPT.WightmanData.limitG_ipi_add_ofReal
+#print axioms MobiusCPT.WightmanData.isBoostContinuation_limitG
+#print axioms MobiusCPT.WightmanData.thm_3_10_ii_core
