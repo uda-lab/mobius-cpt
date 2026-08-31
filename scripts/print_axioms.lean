@@ -1048,3 +1048,17 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanData.limitG_ipi_add_ofReal
 #print axioms MobiusCPT.WightmanData.isBoostContinuation_limitG
 #print axioms MobiusCPT.WightmanData.thm_3_10_ii_core
+
+-- Issue #12, Block A (assembly, [T26] Theorem 3.10 complete): part (iii) is derived from part
+-- (ii) by the rotation-by-pi transport at the level of Definition 3.1 -- the encoding of the
+-- source's "without loss of generality, we only consider I+" -- using U(r_pi) = negTestFn on
+-- test functions (Block L1) and the mirror lemma for VtildeDom/vtildeMap (Block L2); part (i)
+-- is derived from (ii)/(iii) by linearity of the continuation domain (a Submodule) applied to
+-- the finite-linear-combination characterization of P(I+)Omega/P(I-)Omega. This discharges
+-- MobiusCPT.Contract's `theorem_wanted thm_3_10_i/ii/iii`, byte-identical statement text,
+-- completing [T26] Theorem 3.10.
+#print axioms MobiusCPT.WightmanData.thm_3_10_iii_core
+#print axioms MobiusCPT.WightmanData.thm_3_10_i_core
+#print axioms MobiusCPT.WightmanBundle.thm_3_10_i
+#print axioms MobiusCPT.WightmanBundle.thm_3_10_ii
+#print axioms MobiusCPT.WightmanBundle.thm_3_10_iii
