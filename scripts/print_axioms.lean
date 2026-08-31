@@ -994,6 +994,7 @@ import MobiusCPT
 #print axioms MobiusCPT.Mob.rot_pi_conj_boost
 #print axioms MobiusCPT.Mob.rot_pi_sq
 #print axioms MobiusCPT.Mob.rot_pi_inv
+#print axioms MobiusCPT.negTestFn_apply
 #print axioms MobiusCPT.coe_smul_rot_pi
 #print axioms MobiusCPT.beta_rot_pi_eq_negTestFn
 #print axioms MobiusCPT.negTestFn_negTestFn
