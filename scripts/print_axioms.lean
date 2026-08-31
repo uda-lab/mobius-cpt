@@ -985,3 +985,21 @@ import MobiusCPT
 -- Issue #11, Block C final assembly: reconciles the two boundary estimates to common constants
 -- and applies the Gaussian-weighted strip maximum principle to prove [T26] Lemma 3.9.
 #print axioms MobiusCPT.WightmanBundle.lemma_3_9
+
+-- Issue #12, Block L1 ([T26] Theorem 3.10, WLOG transport): the rotation-by-pi symmetry used to
+-- derive part (iii) from part (ii). `Mob.rot_pi_conj_boost` conjugates the boost flow to its
+-- negation; `negTestFn` is pullback by that rotation, equal to `beta_d(r_pi)` for every
+-- conformal dimension, an involution, exchanges `SuppUpper`/`SuppLower`, commutes with
+-- test-function inversion, and preserves every `C^N` seminorm (hence is continuous).
+#print axioms MobiusCPT.Mob.rot_pi_conj_boost
+#print axioms MobiusCPT.coe_smul_rot_pi
+#print axioms MobiusCPT.beta_rot_pi_eq_negTestFn
+#print axioms MobiusCPT.negTestFn_negTestFn
+#print axioms MobiusCPT.suppLower_iff_suppUpper_negTestFn
+#print axioms MobiusCPT.suppUpper_iff_suppLower_negTestFn
+#print axioms MobiusCPT.inv_negTestFn
+#print axioms MobiusCPT.toAngle_negTestFn
+#print axioms MobiusCPT.angleDeriv_negTestFn
+#print axioms MobiusCPT.norm_angleDerivB_negTestFn
+#print axioms MobiusCPT.cnorm_negTestFn
+#print axioms MobiusCPT.continuous_negTestFn
