@@ -981,3 +981,7 @@ import MobiusCPT
 -- the unreversed ones.
 #print axioms MobiusCPT.WightmanBundle.lemma_3_9_lower_bound
 #print axioms MobiusCPT.WightmanBundle.lemma_3_9_upper_bound
+
+-- Issue #11, Block C final assembly: reconciles the two boundary estimates to common constants
+-- and applies the Gaussian-weighted strip maximum principle to prove [T26] Lemma 3.9.
+#print axioms MobiusCPT.WightmanBundle.lemma_3_9

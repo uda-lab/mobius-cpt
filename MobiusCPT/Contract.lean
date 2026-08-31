@@ -129,6 +129,10 @@ statement text, so it is gone from here.
 
 Issue #40 has landed: `lemma_3_9` below is [T26] Lemma 3.9, a statement-only placeholder
 discharged later by Issue #11 with byte-identical statement text.
+
+Issue #11 has landed: `lemma_3_9` is now the proved theorem
+`MobiusCPT.WightmanBundle.lemma_3_9` in `MobiusCPT.Wightman.Lemma39`, with byte-identical
+statement text, so it is gone from here.
 -/
 
 namespace MobiusCPT
@@ -223,32 +227,6 @@ def_wanted MemPUpperOmega : ❰Dom❱ → Prop :=
 real interface landed by Issue #4. -/
 def_wanted MemPLowerOmega : ❰Dom❱ → Prop :=
   fun Φ => (❰W❱).data.toWightmanStruct.MemPLowerOmega Φ
-
-/-- [T26], Lemma 3.9; for fixed fields and compatible functional, the strip-uniform difference
-estimate for analytic-core vectors has constants independent of the analytic data `F_j, G_j` and
-of `τ`. The vectors lie in `D(Ṽ_τ)` for every `τ` in the closed strip by Lemma 3.7(i)
-(`WightmanBundle.lemma_3_7`), so `VtildeMap` is `Ṽ_τ` on them and no domain clause is restated.
-The product and the `foldr max 0` follow `lemma_3_8` exactly: the entries are nonnegative by
-construction, and for `k = 0` the bound reads `0 ≤ 0`, where the source's maximum over an empty
-index set is undefined. A positive integer `N` and a positive real `M` are required, owned by
-Issue #11. -/
-theorem_wanted lemma_3_9 :
-    ❰IsWightmanCFT❱ →
-      ∀ (φs : List ❰Field❱) (lam : ❰Compat❱),
-        ∃ (N : ℕ) (M : ℝ),
-          0 < N ∧ 0 < M ∧
-            ∀ (Fs Gs : List AnalyticTestFn),
-              Fs.length = φs.length → Gs.length = φs.length →
-                ∀ τ ∈ strip (Complex.I * Real.pi),
-                  ‖❰compatApply❱ lam
-                      (❰VtildeMap❱ τ (❰smearedProduct❱ (φs.zip (Fs.map xRestrictUpper))) -
-                        ❰VtildeMap❱ τ (❰smearedProduct❱ (φs.zip (Gs.map xRestrictUpper))))‖ ≤
-                    M * Real.exp (τ.re ^ 2) *
-                        (((((Fs.map xRestrictUpper).zip (Gs.map xRestrictUpper)).map
-                          (fun p => 1 + cnorm N p.1 + cnorm N p.2)).prod : NNReal) : ℝ) *
-                      ((List.foldr max 0
-                        (((Fs.map xRestrictUpper).zip (Gs.map xRestrictUpper)).map
-                          (fun p => cnorm N (p.1 - p.2))) : NNReal) : ℝ)
 
 /-- [T26], Theorem 3.10(i); upper and lower localized vectors lie in the corresponding domains
 of the partially defined imaginary boosts, owned by Issue #12. -/
