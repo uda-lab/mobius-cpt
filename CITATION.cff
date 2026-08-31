@@ -1,0 +1,66 @@
+cff-version: 1.2.0
+message: "If you use this formalisation or the accompanying note, please cite it as below."
+title: "mobius-cpt: a Lean 4 formalisation of the PCT theorem for Möbius-covariant Wightman conformal field theories on the circle"
+abstract: >-
+  Tener (Comm. Math. Phys. 407 (2026), no. 6, paper no. 128) proves a PCT theorem for
+  Möbius-covariant Wightman conformal field theories on the circle in a setting that assumes
+  neither a Hilbert space nor unitarity: the boost flow of such a theory admits an analytic
+  continuation to the closed strip 0 <= Im tau <= pi, and at the far edge tau = i*pi that
+  continuation reverses the order of any product of fields smeared inside the upper semicircle,
+  reflects each test function through z -> 1/z, and multiplies the result by (-1)^d, where d is
+  the sum of the conformal dimensions. This repository contains a machine-checked formalisation
+  of that theorem in Lean 4 with mathlib, covering Definition 3.1 and Lemmas 3.4, 3.6, 3.7, 3.8,
+  3.9 leading to Theorem 3.10, together with a mathematician-facing research note (Japanese body,
+  English title and abstract) that presents the proof architecture as ordinary mathematics,
+  records the formalisation status at a pinned revision, and sets out the points at which the
+  published proof compresses an argument that a complete proof must supply.
+type: software
+authors:
+  - family-names: Uda
+    given-names: Tomoki
+    # orcid: "https://orcid.org/XXXX-XXXX-XXXX-XXXX"   # to be supplied by the author
+    # affiliation: ""                                   # to be supplied by the author
+version: "0.1.0"
+date-released: "2026-08-31"
+license: Apache-2.0
+repository-code: "https://github.com/uda-lab/mobius-cpt"
+url: "https://github.com/uda-lab/mobius-cpt"
+commit: 9ae959bbb8ce9c6dc98f55636fddb53f3bcfbe00
+keywords:
+  - PCT theorem
+  - conformal field theory
+  - Wightman axioms
+  - Möbius covariance
+  - non-unitary vertex algebras
+  - analytic continuation
+  - formal verification
+  - interactive theorem proving
+  - Lean 4
+  - mathlib
+references:
+  - type: article
+    title: "The Bisognano–Wichmann property for non-unitary Wightman conformal field theories"
+    authors:
+      - family-names: Tener
+        given-names: James E.
+    journal: "Communications in Mathematical Physics"
+    volume: 407
+    issue: 6
+    year: 2026
+    notes: "paper no. 128; preprint arXiv:2506.10625v2"
+  - type: article
+    title: "Non-unitary Wightman CFTs and non-unitary vertex algebras"
+    authors:
+      - family-names: Carpi
+        given-names: Sebastiano
+      - family-names: Raymond
+        given-names: Christopher
+      - family-names: Tanimoto
+        given-names: Yoh
+      - family-names: Tener
+        given-names: James E.
+    journal: "Selecta Mathematica (New Series)"
+    volume: 31
+    issue: 4
+    year: 2025
+    notes: "paper no. 66; preprint arXiv:2409.08454"
