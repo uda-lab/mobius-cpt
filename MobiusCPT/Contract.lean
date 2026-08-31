@@ -19,126 +19,30 @@ import MobiusCPT.Mobius.ComplexBetaLaws
 /-!
 # MobiusCPT.Contract
 
-This file is the Issue #2 statement contract for [T26], Theorem 3.10.  Its opaque
-placeholders are sound because they inhabit `ProofWanted T` or `DefWanted T`, never
-`T`, so no statement here is usable as a proof and no axiom is introduced.  A
-transparent `def_wanted` is a genuine `@[reducible] def` returning `DerivedWanted T`,
-never `T`; its body can be inlined through `❰…❱`, but it cannot itself inhabit `T`.
-Thus the only unfilled pieces remain opaque `DefWanted` or `ProofWanted` placeholders,
-with no `axiom` or `sorry`.
-This file pins the capstone target of [T26] Thm. 3.10 together with the semantic
-decisions Issue #2 settled; it is deliberately not the full interface — the general
-`β_d` action on `C^∞(S¹)`, the Def. 3.5 cocycle, the `C^N` covariance estimate,
-and Lemma 3.9 are owned by the corresponding child Issues.
+This file is the Issue #2 statement contract for [T26], Theorem 3.10, now fully discharged:
+every statement it once held as a placeholder is a proved theorem elsewhere in the tree, and
+`W` — the single Wightman-data hole — together with its transparent projections is all that
+remains here. It stands as the statement surface: the capstone target and the semantic
+decisions Issue #2 settled, read off directly in the source's vocabulary rather than navigated
+through the module tree.
 
-As each child Issue lands, its placeholders are deleted here and the remaining
-statements are re-expressed against the real definitions.  Issue #3 has landed:
-`TestFn`, `cnorm`, `inv`, `SuppUpper` and `SuppLower` below are the genuine
-definitions from `MobiusCPT.TestFunctions.*`, not holes, and the statements that
-Issue #3 owned (`tendsto_iff_cnorm`, `inv_add`, `inv_involutive`, `inv_supp`,
-`cnorm_inv`) are proved theorems in those modules.
+Its opaque placeholders are sound because they inhabit `ProofWanted T` or `DefWanted T`, never
+`T`, so no statement here is usable as a proof and no axiom is introduced. A transparent
+`def_wanted` is a genuine `@[reducible] def` returning `DerivedWanted T`, never `T`; its body
+can be inlined through `❰…❱`, but it cannot itself inhabit `T`. Thus the only unfilled piece
+remaining is the opaque `DefWanted` hole `W`, with no `axiom` or `sorry`.
 
-Issue #7 has landed as well: `AnalyticTestFn` ([T26], Definition 3.2), `xRestrictS1`,
-`xRestrictUpper` and `xRestrictLower` below are the genuine definitions from
-`MobiusCPT.TestFunctions.Analytic`, not holes, and the statements Issue #7 owned
-(`xRestrictUpper_supp`, `xRestrictLower_supp`, `xRestrict_split`) are proved theorems there.
-Lemma 3.4 is proved as
-`lemma_3_4_density_upper` in `MobiusCPT.TestFunctions.AnalyticDensity`, so its statement is gone
-from here too.
-
-Issue #4 has also landed.  `W` is now the single bundle hole for the Wightman data,
-and `Dom`, `Field`, `dim`, `smear`, `vac`, `Compat`, `compatApply`, `boost`,
-`ActsRegularly`, `W1`, `W3`, `W4`, `smearedProduct`, `MemPUpperOmega`, and
-`MemPLowerOmega` are transparent projections of it.  `domTopologicalSpace` is one
-too, projecting the `𝓕`-strong topology; it is a `def_wanted` rather than an
-`instance_wanted` because `instance_wanted` is always an opaque hole, and it is
-deliberately not a global instance.  The instance holes `domAddCommGroup` and
-`domModule` are gone: the bundle carries them. `W2` and `IsWightmanCFT` are
-transparent projections of `W`, so besides the bundle hole `W` itself the only
-remaining #4-adjacent hole was `w3_vacuum_annihilation`, discharged below by Issue #9. The
-capstone obligations taking `❰IsWightmanCFT❱` as a hypothesis are genuinely
-conditional on [T26], Definition 2.5.
-
-Issue #8 has landed.  `betaBoost` below is the genuine definition
-`MobiusCPT.betaBoost` from `MobiusCPT.Mobius.ComplexBetaDef` ([T26], Definition 3.5,
-eq. (3.4), with the `d = 0` removable singularity built in), not a hole, so it is referred to
-directly rather than through `❰…❱`; the statement of `lemma_3_7` is unchanged, since a
-transparent `def_wanted` inlines to exactly this definition.  The statement Issue #5 owned,
-`beta_boost_at_ipi`, is a proved theorem `MobiusCPT.betaBoost_I_mul_pi` in
-`MobiusCPT.Mobius.ComplexBetaLaws` with identical statement text, so it is gone from here.
-
-Issue #6 has landed.  `strip` below is the genuine definition from
-`MobiusCPT.Analysis.Strip`, not a hole, and `VtildeDom` and `VtildeMap` are transparent
-projections of the real `WightmanData.VtildeDom` and `WightmanData.vtildeMap` from
-`MobiusCPT.Wightman.Vtilde`.  The statements Issue #6 owned (`strip_eq`, `vtilde_spec`,
-`vtilde_translation`, `vtilde_vacuum`) are proved theorems in `MobiusCPT.Analysis.Strip`,
-`MobiusCPT.Wightman.Vtilde` and `MobiusCPT.Wightman.VtildeLaws`, so their statements are gone
-from here.
-
-Issue #38 has landed.  For real `τ` the strip degenerates to the real axis, so [T26] Def.
-3.1's `ContinuousOn` clause is exactly continuity of `t ↦ λ(V_t Φ)`, which [CRTT25], Lemma
-2.10(i) gives as a *consequence* of the source's axioms rather than a hypothesis of this
-repository's `IsWightmanCFT` — (W1) gives continuity in the vector, not in the group parameter.
-`MobiusCPT.Wightman.VtildeReal` names that input as `WightmanData.BoostOrbitContinuous` and
-proves the real-parameter statement from it, reducing it to continuity of `t ↦ β_d(v_t) f` on
-test functions; `MobiusCPT.Mobius.BoostContinuity` proves that continuity for the concrete
-conformal action.  Discharging `vtilde_real` from these needed `WightmanBundle` to fix the
-group and the action ([docs/adr/0001-fix-mobius-group-in-bundle.md]) rather than bundling an
-arbitrary group, since an abstract group's `MobiusAction` instance carries no continuity for
-`boostOrbitContinuous_of_beta_continuous` to consume.  The statement Issue #38 owned,
-`vtilde_real`, is a proved theorem `MobiusCPT.WightmanBundle.vtilde_real` in
-`MobiusCPT.Wightman.VtildeReal` with identical statement text, so it is gone from here.
-
-Issue #9 is landing in blocks. Its first block discharges `lemma_3_7`, [T26] Lemma 3.7(i): a
-proved theorem `MobiusCPT.WightmanBundle.lemma_3_7` in `MobiusCPT.Wightman.Lemma37Continuation`
-with identical statement text, so it is gone from here. The proof exhibits the `G_λ` family of
-[T26], Definition 3.1 built from `betaBoost` as an `IsBoostContinuation` witness, assembled from
-Issue #8/#38's already-landed Lemma 3.6 continuity/holomorphy
-(`continuousOn_compatApply_smearedProduct_betaBoost`,
-`differentiableOn_compatApply_smearedProduct_betaBoost`) and covariance
-(`WightmanData.boost_smearedProduct`) infrastructure together with the real-parameter and
-boost-translation identities for the concrete complex boost
-(`betaBoost_ofReal_mob`, `beta_boostMat_betaBoost`).
-
-Issue #9's second block discharges `w3_vacuum_annihilation`, the (W3) vacuum-annihilation
-bridge: a proved theorem `MobiusCPT.WightmanBundle.w3_vacuum_annihilation` in
-`MobiusCPT.TestFunctions.FourierCauchy` with identical statement text, so it is gone from
-here. The proof identifies the boundary values of `inv (xRestrictS1 F)` with `F.invExt`
-(#7's disc-holomorphic inversion), shows its Fourier coefficients vanish for every `n ≤ 0` by
-Cauchy's theorem (`n < 0`) and the Cauchy integral formula at the origin (`n = 0`, using
-`F.invExt 0 = 0`), and feeds that into the already-landed (#26)
-`smear_vac_eq_zero_of_fourierCoef_eq_zero'`.
-
-Issue #9's third block discharges `lemma_3_7_at_ipi`, [T26] Lemma 3.7(ii): a proved theorem
-`MobiusCPT.WightmanBundle.lemma_3_7_at_ipi` in `MobiusCPT.Wightman.Lemma37` with identical
-statement text, so it is gone from here — completing Issue #9. The proof combines Lemma 3.7(i)
-at `τ = iπ` with the conformal-factor sign `betaBoost_I_mul_pi` (`(-1)^{d+1}` per field) and a
-combinatorial sign-reversal identity (`MobiusCPT.Wightman.SignReversal`,
-`smearedProduct_invLower_eq_smearedProduct_invUpper_reverse`): moving each field's
-`inv (xRestrictUpper F)` piece from adjacent-to-vacuum to the front of the product picks up one
-`(-1)` from the vacuum-annihilation identity per field (`w3_vacuum_annihilation` applied to
-`inv (xRestrictUpper F) + inv (xRestrictLower F) = inv (xRestrictS1 F)`), with the reordering
-itself using (W2) through the endpoint-cutoff limit (`MobiusCPT.Wightman.LocalityLimit`,
-`MobiusCPT.TestFunctions.EndpointCutoff`) and carrying no sign of its own — the total
-`(-1)^{Σ(d_j+1)} · (-1)^k` collapsing to the contract's `(-1)^{Σ d_j}` since `Σ(d_j+1) = Σd_j +
-k` and `(-1)^{2k} = 1`.
-
-Issue #10 has landed: `lemma_3_8` is now the proved theorem
-`MobiusCPT.WightmanBundle.lemma_3_8` in `MobiusCPT.Wightman.Lemma38`, with byte-identical
-statement text, so it is gone from here.
-
-Issue #40 has landed: `lemma_3_9` below is [T26] Lemma 3.9, a statement-only placeholder
-discharged later by Issue #11 with byte-identical statement text.
-
-Issue #11 has landed: `lemma_3_9` is now the proved theorem
-`MobiusCPT.WightmanBundle.lemma_3_9` in `MobiusCPT.Wightman.Lemma39`, with byte-identical
-statement text, so it is gone from here.
-
-Issue #12 has landed: `thm_3_10_i`, `thm_3_10_ii` and `thm_3_10_iii` are now the proved theorems
-`MobiusCPT.WightmanBundle.thm_3_10_i`, `.thm_3_10_ii` and `.thm_3_10_iii` in
-`MobiusCPT.Wightman.Thm310`, with byte-identical statement text, so their statements are gone
-from here. This completes [T26] Theorem 3.10 and closes the charter's capstone: the contract now
-pins only the bundle hole `W` itself and its transparent projections.
+[T26], Theorem 3.10 is proved as `MobiusCPT.WightmanBundle.thm_3_10_i`, `.thm_3_10_ii` and
+`.thm_3_10_iii` in `MobiusCPT.Wightman.Thm310`, assembled from the lemma chain: Lemma 3.7 in
+`MobiusCPT.Wightman.Lemma37Continuation` and `MobiusCPT.Wightman.Lemma37`, Lemma 3.8 in
+`MobiusCPT.Wightman.Lemma38`, Lemma 3.9 in `MobiusCPT.Wightman.Lemma39` (with its interior and
+boundary cases in `MobiusCPT.Wightman.Lemma39Interior`, `.Lemma39Boundary` and
+`.Lemma39DiffContOnCl`), the mirror step in `MobiusCPT.Wightman.VtildeMirror`, the real-axis
+reduction of `Ṽ_τ` in `MobiusCPT.Wightman.VtildeReal`, the rotation-by-`π` identities in
+`MobiusCPT.Mobius.RotationPi`, and the strip maximum-principle infrastructure in
+`MobiusCPT.Analysis.StripMaxPrinciple`. `WightmanBundle` fixes the abstract group to `Mob` and
+the action to the concrete conformal action ([docs/adr/0001-fix-mobius-group-in-bundle.md]),
+which the boost-continuity and Lemma 3.6 holomorphy inputs to this chain depend on.
 -/
 
 namespace MobiusCPT
