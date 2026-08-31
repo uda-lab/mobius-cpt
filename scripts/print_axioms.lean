@@ -1083,3 +1083,20 @@ import MobiusCPT
 #print axioms MobiusCPT.cnorm_beta_rot
 #print axioms MobiusCPT.WightmanData.exists_isDiscBoundaryClass_rotationCurve_monomial
 #print axioms MobiusCPT.WightmanData.exists_isDiscBoundaryClass_rotationCurve
+
+-- Issue #13, Block R3, Part A ([CRTT25], Appendix A, Lemma A.2): the geometric prerequisites --
+-- rotation of topological support, stability of support under small rotations, multiplication
+-- by a smooth bump, and the finite rotated-cover partition-of-unity decomposition.
+#print axioms MobiusCPT.tsupport_rotPullback
+#print axioms MobiusCPT.exists_rotStable
+#print axioms MobiusCPT.bumpMul_apply
+#print axioms MobiusCPT.tsupport_bumpMul_subset
+#print axioms MobiusCPT.exists_finite_rotate_cover
+#print axioms MobiusCPT.exists_finite_bumpMul_decomposition
+
+-- Issue #13, Block R3, Part B ([CRTT25], Appendix A, Lemma A.2): the generic Reeh-Schlieder
+-- vanishing lemma, proved once over an arbitrary nonempty open arc and its support predicate,
+-- and specialised to the two semicircles I+/I-.
+#print axioms MobiusCPT.eq_zero_of_forall_smearedProduct_supp_eq_zero
+#print axioms MobiusCPT.eq_zero_of_forall_smearedProduct_suppUpper_eq_zero
+#print axioms MobiusCPT.eq_zero_of_forall_smearedProduct_suppLower_eq_zero
