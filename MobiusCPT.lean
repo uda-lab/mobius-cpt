@@ -68,6 +68,7 @@ import MobiusCPT.Wightman.Lemma37Continuation
 import MobiusCPT.TestFunctions.FourierCauchy
 import MobiusCPT.Wightman.LocalityLimit
 import MobiusCPT.Analysis.IntervalShrink
+import MobiusCPT.Analysis.DiscArcVanishing
 import MobiusCPT.TestFunctions.EndpointCutoff
 import MobiusCPT.Wightman.SignReversal
 import MobiusCPT.Wightman.Lemma37

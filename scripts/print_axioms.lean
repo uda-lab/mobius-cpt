@@ -1064,3 +1064,8 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanBundle.thm_3_10_ii
 #print axioms MobiusCPT.WightmanBundle.thm_3_10_iii
 #print axioms MobiusCPT.exists_sub_int_mul_mem_Ico
+
+-- Issue #13, Block R1 ([CRTT25], Appendix A): reflection-free vanishing on a boundary arc,
+-- and closure of the disc boundary class under uniform convergence on the closed disc.
+#print axioms MobiusCPT.IsDiscBoundaryClass.eq_zero_of_eqOn_arc
+#print axioms MobiusCPT.isDiscBoundaryClass_of_tendstoUniformlyOn
