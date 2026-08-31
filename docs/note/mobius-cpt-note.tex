@@ -88,7 +88,7 @@ structure and are not treated here. This note reports a
 machine-checked formalisation of that theorem in Lean~4 with mathlib, written for mathematicians
 with no knowledge of proof assistants. It presents the proof architecture --- Definition~3.1 and
 Lemmas 3.4, 3.6, 3.7, 3.8, 3.9 leading to Theorem~3.10 --- as ordinary mathematics; it records
-which results are proved at a pinned repository revision and which remain open; and it sets out,
+which results are proved at a pinned repository revision and which are not yet formalised; and it sets out,
 as mathematics rather than as implementation detail, the points at which the published proof
 compresses an argument that a complete proof must supply. Among these are the uniqueness of the
 continuation from its boundary values, a removable singularity in the complex boost at conformal
@@ -173,7 +173,8 @@ PCT 公式（補題 3.4, 3.6, 3.7）、第 5 節は一般の試験関数への�
 定理 3.10）を扱う。第 4 節と第 5 節は原論文と同じ粒度で道筋を述べ、実質的な議論を要する
 箇所には第 6 節への前方参照を置く。第 6 節はその各点を独立に論じる。第 7 節で形式化の状態と
 検証の意味を述べ、第 8 節で限界と未着手の項目を挙げる。定義・補題・定理の番号は
-\cite{T26} のものに合わせてあり、本稿独自の項目には英字を付す。
+\cite{T26} のものに合わせてあり、本稿独自の項目には英字を付す。番号は原論文のものだから
+連続せず、また原論文の項目のうち本稿が番号で引用するだけで改めて述べないものもある。
 
 \section{設定と記法}
 \label{sec:setting}
@@ -314,8 +315,8 @@ $(\Dom, \Fields, U, \Omega)$ である。
 \end{description}
 \end{definition}
 
-Hilbert 空間も内積もユニタリ性もこの定義には現れない。(W3) は $L_0$ のスペクトルの
-正値性を、内積を使わずに述べたものである。
+Hilbert 空間も内積もユニタリ性もこの定義には現れない。(W3) は、共形次元を回転の生成子 $L_0$ の
+固有値とみる立場で、$L_0$ のスペクトルの正値性を内積を使わずに述べたものである。
 
 $U$ の群変数についての連続性は公理ではなく、導かれる事実である。$U : \Mob \times \Dom \to \Dom$
 は $\Fields$-強位相について分離連続である（\cite{CRTT25} 補題 2.10 (i)）。この事実は
@@ -410,7 +411,8 @@ $\{\Phi : \Phi \in \Dom(X_2),\ X_2\Phi \in \Dom(X_1)\}$ とする。この規則
 補題 3.9 と定理 3.10 で帯の内点を水平な境界線へ移すために用いられるから、
 注意ではなく補題である。
 
-主定理は次のとおりである。
+主定理は次のとおりである。証明は本節の残りで構成を述べたのち、第 \ref{sec:core} 節と
+第 \ref{sec:general} 節で与える。
 
 \srcnum{3.10}
 \begin{theorem}[\cite{T26}]
@@ -561,19 +563,26 @@ $P_\Xcl(I_\pm)\Omega$ もまた $\Dom$ の中で稠密であることが従う�
 
 $0 \le \operatorname{Im}\tau \le \pi$ のとき $v_{-\tau}(I_+) \subseteq \Oex$ が成り立つ。
 したがって $F \in \Xcl$ に対して $F(v_{-\tau}\cdot z)$ は $z \in I_+$ で定義され、
-式 \eqref{eq:beta-boost} の右辺
+式 \eqref{eq:beta-boost} の右辺を複素パラメータに対する定義として採用できる。
+
+\srcnum{3.5}
+\begin{definition}[\cite{T26}]
+\label{def:complexboost}
+$\tau \in \Strip_{i\pi}$ と $F \in \Xcl$ に対して\textbf{複素ブースト}を
 \begin{equation}
   \label{eq:complex-boost}
   \bigl(\beta_d(v_\tau) F|_{I_+}\bigr)(z)
   = (\cosh\tau + \operatorname{Re}(z)\sinh\tau)^{\,d-1}\, F(v_{-\tau}\cdot z)
   \qquad (z \in I_+)
 \end{equation}
-を複素パラメータ $\tau \in \Strip_{i\pi}$ に対する\textbf{定義}として採用できる
-（\cite{T26} 定義 3.5）。ただし $d = 0$ のとき、この式は $\Strip_{i\pi} \times I_+$ の
+で定める。$d = 0$ のときは、下に述べる可除特異点を除去した連続延長をとる。
+\end{definition}
+
+\noindent
+除去が必要な理由は次のとおりである。$d = 0$ のとき、\eqref{eq:complex-boost} の右辺は $\Strip_{i\pi} \times I_+$ の
 すべての点で定義されるわけではない。$(\cosh\tau + \operatorname{Re}(z)\sinh\tau)^{-1}$ は
 $v_{-\tau}\cdot z = \infty$ となる点でちょうど一位の極をもつ（たとえば $\tau = i\pi/2$,
-$z = i$）。この極は可除であり、正しい定義はその除去を経たものである。
-詳しくは第 \ref{sec:d0} 小節で述べる。
+$z = i$）。この極は可除であり、除去の仕方は第 \ref{sec:d0} 小節で述べる。
 
 こうして得られる関数は $C_0^\infty(I_+)$ に属し、$t \in \mathbb{R}$ に対して半群則
 $\beta_d(v_t)\beta_d(v_\tau) F|_{I_+} = \beta_d(v_{\tau+t}) F|_{I_+}$ を満たす。
@@ -813,8 +822,8 @@ $\operatorname{Im}\tau < 0$ の場合は $z \mapsto -z$ で帰着する。
 \subsection{\texorpdfstring{共形次元 $0$ における可除特異点}{共形次元 0 における可除特異点}}
 \label{sec:d0}
 
-\cite{T26} 定義 3.5 は $\beta_d(v_\tau)F|_{I_+} \in C_0^\infty(I_+)$ を、共形次元 $d$ の
-値で場合を分けずに主張する。$d \ge 1$ のとき式 \eqref{eq:complex-boost} の右辺は
+定義 \ref{def:complexboost}（\cite{T26} 定義 3.5）は $\beta_d(v_\tau)F|_{I_+} \in C_0^\infty(I_+)$ を、
+共形次元 $d$ の値で場合を分けずに主張する。$d \ge 1$ のとき式 \eqref{eq:complex-boost} の右辺は
 各点で定義される。$d = 0$ のときは因子 $(\cosh\tau + \operatorname{Re}(z)\sinh\tau)^{-1}$ が
 現れ、これは $v_{-\tau}\cdot z = \infty$ となる点でちょうど一位の極をもつ。
 
@@ -1227,8 +1236,8 @@ $(\Dom, \Fields, U, \Omega)$ とその公理を仮定として受け取り、結
 
 第二に、証明が依拠する論理的な仮定が明示されている。Lean のカーネルは、ある定理の証明が
 どの公理に（推移的に）依存するかを機械的に列挙できる。固定した版において、
-上表の結果を含む \auditcount\ 個の宣言すべてについてこの列挙を実行し、
-現れる公理が
+上表の結果を含む \auditcount\ 個の命題、すなわち定義・補題・定理として
+書き下されたもののすべてについてこの列挙を実行し、現れる公理が
 \[
   \{\,\text{propext},\ \text{Classical.choice},\ \text{Quot.sound}\,\}
 \]
