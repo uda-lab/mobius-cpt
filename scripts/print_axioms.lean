@@ -957,3 +957,31 @@ import MobiusCPT
 #print axioms MobiusCPT.List.zip_eq_ofFn_get_of_length_eq
 #print axioms MobiusCPT.WightmanData.lemma_3_8
 #print axioms MobiusCPT.WightmanBundle.lemma_3_8
+
+-- Issue #11, Block A: a Gaussian-weighted Phragmén–Lindelöf maximum principle on the closed
+-- strip {0 ≤ Im τ ≤ π}, pure complex analysis independent of the Wightman/Möbius layers, used
+-- to assemble [T26] Lemma 3.9's interior-to-boundary estimate in Block C.
+#print axioms MobiusCPT.strip_max_principle
+
+-- Issue #11, Block B: [T26] Lemma 3.9's interior growth estimate. Compactness of [0,π] gives a
+-- uniform C^N bound for the complex boost, then the translation law for vtildeMap and Lemma 3.8
+-- combine to give exponential growth of the continued-boost difference on the closed strip.
+#print axioms MobiusCPT.WightmanData.lemma_3_9_interior_growth
+
+-- Issue #11, Block B (part 2): the continued-boost difference is DiffContOnCl on the open
+-- horizontal strip {0 < Im τ < π} — differentiable there, continuous on its closure. Follows
+-- directly from Lemma 3.7(i) identifying the vectors with the complex-boost curves on the
+-- whole closed strip, where Lemma 3.6 already gives continuity and interior holomorphy.
+#print axioms MobiusCPT.WightmanData.lemma_3_9_diffContOnCl
+
+-- Issue #11, Block C boundary estimates: [T26] Lemma 3.9's two boundary bounds. The lower
+-- boundary reduces to Lemma 3.8 via the unconditional WightmanBundle.vtilde_real; the upper
+-- boundary reduces to Lemma 3.8 applied to the reversed field list via Lemma 3.7(ii)'s sign
+-- and reversal identity, with the reversed/inverted product and max controls shown equal to
+-- the unreversed ones.
+#print axioms MobiusCPT.WightmanBundle.lemma_3_9_lower_bound
+#print axioms MobiusCPT.WightmanBundle.lemma_3_9_upper_bound
+
+-- Issue #11, Block C final assembly: reconciles the two boundary estimates to common constants
+-- and applies the Gaussian-weighted strip maximum principle to prove [T26] Lemma 3.9.
+#print axioms MobiusCPT.WightmanBundle.lemma_3_9

@@ -14,6 +14,7 @@ import MobiusCPT.Analysis.FlatGluing
 import MobiusCPT.Analysis.SeparateJoint
 import MobiusCPT.Analysis.MultilinearBound
 import MobiusCPT.Analysis.Strip
+import MobiusCPT.Analysis.StripMaxPrinciple
 import MobiusCPT.Analysis.FlatCalculus
 import MobiusCPT.Analysis.GaussianConv
 import MobiusCPT.Analysis.BoostChart
@@ -71,3 +72,7 @@ import MobiusCPT.TestFunctions.EndpointCutoff
 import MobiusCPT.Wightman.SignReversal
 import MobiusCPT.Wightman.Lemma37
 import MobiusCPT.Wightman.Lemma38
+import MobiusCPT.Wightman.Lemma39Interior
+import MobiusCPT.Wightman.Lemma39DiffContOnCl
+import MobiusCPT.Wightman.Lemma39Boundary
+import MobiusCPT.Wightman.Lemma39
