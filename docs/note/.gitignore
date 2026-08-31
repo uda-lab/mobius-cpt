@@ -1,0 +1,10 @@
+# Build artefacts: the PDF is produced from the tracked sources, never committed.
+*.pdf
+*.xdv
+*.aux
+*.log
+*.out
+*.toc
+
+# Japanese fonts are fetched by the reader; see README.md.
+fonts/
