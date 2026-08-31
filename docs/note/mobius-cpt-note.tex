@@ -638,7 +638,8 @@ $\lvert\lambda(\varphi_1(h_1)\cdots\varphi_k(h_k)\Omega)\rvert \le \CN{h_1}\cdot
 （\cite{Treves} 第 41 章）による。もう一つは共変性の評価
 $\CN{\beta_d(v_t) f} \le C(t)\CN{f}$ であり、$C$ は高々指数増大である。
 これは \eqref{eq:beta-boost} の閉じた形を角変数で微分することから得られる
-（$N = 0$ のとき定数はちょうど $e^{\abs{t}}$ である）。二つを合わせるには、
+（$N = 0$ での最良の定数は $e^{\abs{d-1}\abs{t}}$ であり、共形次元に依存する。
+第 \ref{sec:growth} 小節を見よ）。二つを合わせるには、
 二つの積の差を一つの成分ずつ差し替えて $k$ 項の和に分解する。
 第 \ref{sec:growth} 小節で、この二つの部分それぞれが完全な証明でどのような形をとるかを
 述べる。
@@ -929,6 +930,18 @@ $\theta \mapsto \Theta(t,\theta)$ を、逆共形因子 $(\cosh t + \cos\theta \
 常微分方程式の一意性から従う。$\theta \mapsto v_{-t}\cdot e^{i\theta}$ と
 $\theta \mapsto e^{i\Theta(t,\theta)}$ はいずれも $y' = iy/(\cosh t + \cos\theta\sinh t)$ を
 満たし、$\theta = 0$ で値 $1$ をとる。よって両者の比は導関数が恒等的に $0$ であり、$1$ に等しい。
+
+$N = 0$ の場合の最良の定数は明示的に求まる。$\abs{z} = 1$ のとき
+$\cosh t + \operatorname{Re}(z)\sinh t$ はちょうど区間 $[e^{-\abs{t}}, e^{\abs{t}}]$ を動くから、
+共形因子のべき $(\,\cdot\,)^{d-1}$ の上限は $e^{\abs{d-1}\abs{t}}$ であり、$f \equiv 1$ と
+とればこの値が達成される。すなわち
+\[
+  \sup_{f \ne 0} \frac{\norm{\beta_d(v_t)f}_\infty}{\norm{f}_\infty} = e^{\abs{d-1}\abs{t}} .
+\]
+$d = 0, 1, 2$ ではこれは順に $e^{\abs{t}}$、$1$、$e^{\abs{t}}$ になるが、$d \ge 3$ では
+真に大きい。定数が共形次元に依存することは補題 \ref{lem:38} の主張に影響しない。
+そこで要求されるのは $C$ が高々指数増大であることだけであり、$N$ と $C$ は
+$\varphi_1, \dots, \varphi_k$ を選んだ時点で確定するからである。
 
 そのあとの $C^N$ 評価は、積の Leibniz 則と合成の Fa\`a di Bruno の公式による。
 $\cosh t + \cos\theta\sinh t \ge \cosh t - \abs{\sinh t} = e^{-\abs{t}} > 0$ が
