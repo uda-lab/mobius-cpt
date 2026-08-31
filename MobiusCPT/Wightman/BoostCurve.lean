@@ -14,9 +14,9 @@ noncomputable section
 
 variable {𝓓 𝓕 : Type*} [AddCommGroup 𝓓] [Module ℂ 𝓓]
 
-/-- [T26], Lemma 3.6; the scalar functions of [T26], Definition 3.1 built from the complex boost
-are continuous on the closed strip.  This is the first clause `IsBoostContinuation` asks of its
-family. -/
+/-- Scalarised consequence of [T26], Lemma 3.6(ii); the scalar functions of [T26], Definition 3.1
+built from the complex boost are continuous on the closed strip.  This is the first clause
+`IsBoostContinuation` asks of its family. -/
 theorem continuousOn_compatApply_multiSmear_betaBoost (W : WightmanStruct TestFn 𝓓 𝓕)
     (lam : W.Compat) {k : ℕ} (φs : Fin k → 𝓕) (F : Fin k → AnalyticTestFn) :
     ContinuousOn
@@ -37,9 +37,9 @@ theorem continuousOn_compatApply_multiSmear_betaBoost (W : WightmanStruct TestFn
   simpa only [M, WightmanStruct.compatApply, Function.comp_def] using
     hM.comp_continuousOn hcurve
 
-/-- [T26], Lemma 3.6; the scalar functions of [T26], Definition 3.1 built from the complex boost
-are holomorphic in the interior of the strip.  The proof uses the multilinear chain rule for the
-smeared product. -/
+/-- Scalarised consequence of [T26], Lemma 3.6(ii); the scalar functions of [T26], Definition 3.1
+built from the complex boost are holomorphic in the interior of the strip.  The proof uses the
+multilinear chain rule for the smeared product. -/
 theorem differentiableOn_compatApply_multiSmear_betaBoost (W : WightmanStruct TestFn 𝓓 𝓕)
     (lam : W.Compat) {k : ℕ} (φs : Fin k → 𝓕) (F : Fin k → AnalyticTestFn) :
     DifferentiableOn ℂ
@@ -90,7 +90,8 @@ theorem differentiableOn_compatApply_multiSmear_betaBoost (W : WightmanStruct Te
     hA.differentiableAt.differentiableWithinAt
   simpa only [M, WightmanStruct.compatApply] using hwithin
 
-/-- [T26], Lemma 3.6, in the list shape used by the continuation contract. -/
+/-- Scalarised consequence of [T26], Lemma 3.6(ii), in the list shape used by the continuation
+contract. -/
 theorem continuousOn_compatApply_smearedProduct_betaBoost (W : WightmanStruct TestFn 𝓓 𝓕)
     (lam : W.Compat) (l : List (𝓕 × AnalyticTestFn)) :
     ContinuousOn
@@ -130,8 +131,8 @@ theorem continuousOn_compatApply_smearedProduct_betaBoost (W : WightmanStruct Te
   rw [hfun]
   exact continuousOn_compatApply_multiSmear_betaBoost W lam φs F
 
-/-- [T26], Lemma 3.6, in the list shape used by the continuation contract; the function is
-holomorphic in the interior of the strip. -/
+/-- Scalarised consequence of [T26], Lemma 3.6(ii), in the list shape used by the continuation
+contract; the function is holomorphic in the interior of the strip. -/
 theorem differentiableOn_compatApply_smearedProduct_betaBoost (W : WightmanStruct TestFn 𝓓 𝓕)
     (lam : W.Compat) (l : List (𝓕 × AnalyticTestFn)) :
     DifferentiableOn ℂ
