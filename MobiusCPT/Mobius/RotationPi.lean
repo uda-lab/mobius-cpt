@@ -59,6 +59,15 @@ theorem rot_pi_conj_boost (t : ℝ) :
   rw [rot, boost, boost, ← mk_inv, ← mk_mul, ← mk_mul]
   exact congrArg mk (rotMat_pi_conj_boostMat t)
 
+/-- Rotation by `pi` squares to the identity: a full `2*pi` rotation. Used repeatedly in Block L2
+to identify `(Mob.rot Real.pi)⁻¹` with `Mob.rot Real.pi` itself. -/
+theorem rot_pi_sq : rot Real.pi * rot Real.pi = 1 := by
+  rw [← rot_add, show Real.pi + Real.pi = 2 * Real.pi by ring, rot_two_pi]
+
+/-- Rotation by `pi` is its own inverse. -/
+theorem rot_pi_inv : (rot Real.pi)⁻¹ = rot Real.pi :=
+  (eq_inv_of_mul_eq_one_left rot_pi_sq).symm
+
 end Mob
 
 /-- Pullback of a test function by the rotation through `pi`, equivalently by `z ↦ -z`. -/

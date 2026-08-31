@@ -992,6 +992,8 @@ import MobiusCPT
 -- conformal dimension, an involution, exchanges `SuppUpper`/`SuppLower`, commutes with
 -- test-function inversion, and preserves every `C^N` seminorm (hence is continuous).
 #print axioms MobiusCPT.Mob.rot_pi_conj_boost
+#print axioms MobiusCPT.Mob.rot_pi_sq
+#print axioms MobiusCPT.Mob.rot_pi_inv
 #print axioms MobiusCPT.coe_smul_rot_pi
 #print axioms MobiusCPT.beta_rot_pi_eq_negTestFn
 #print axioms MobiusCPT.negTestFn_negTestFn
