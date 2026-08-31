@@ -1028,3 +1028,9 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanData.tendsto_limG
 #print axioms MobiusCPT.WightmanData.tendstoLocallyUniformlyOn_limG
 #print axioms MobiusCPT.WightmanData.differentiableOn_limitG
+
+-- Issue #12, Block U1 (part b): closed-strip continuity of the limiting continuation family,
+-- via a direct TendstoLocallyUniformlyOn construction on the closed strip (a compact
+-- neighborhood strip ∩ closedBall at every point, since the strip is closed rather than open).
+#print axioms MobiusCPT.WightmanData.tendstoLocallyUniformlyOn_limG_strip
+#print axioms MobiusCPT.WightmanData.continuousOn_limitG
