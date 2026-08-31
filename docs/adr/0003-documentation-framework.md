@@ -17,7 +17,7 @@ an acceptance criterion for #49, and this decision must not block #48.
 
 ## Decision
 
-**Use only for reference docs.**
+Verdict: **use only for reference docs**.
 
 - Adopt `doc-gen4` for Lean/library reference documentation. It renders the
   existing 969 doc-comment blocks across the codebase with no content

@@ -57,9 +57,10 @@ Source: [github.com/PatrickMassot/leanblueprint](https://github.com/PatrickMasso
   `pushed_at` on the GitHub API, checked 2026-08-31) — about eight months
   stale relative to today. No sign of abandonment (issues are still
   triaged), but the cadence is markedly slower than `verso-blueprint`'s
-  (below). In production use by more than 40 projects, including Fermat's
-  Last Theorem and the Prime Number Theorem formalisations — the track
-  record for a large, long-running formalisation is real.
+  (below). Per the tool's own README (checked 2026-08-31), it is in
+  production use by more than 40 projects, including the Fermat's Last
+  Theorem and Prime Number Theorem formalisations — the track record for a
+  large, long-running formalisation is real.
 - **Fit for this repository.** Strong on exactly the two things Issue #49
   asks about — dependency graphs and status exposure — and it is the
   battle-tested choice for a large existing codebase. The cost is a second
