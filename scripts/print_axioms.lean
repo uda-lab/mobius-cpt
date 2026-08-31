@@ -967,3 +967,9 @@ import MobiusCPT
 -- uniform C^N bound for the complex boost, then the translation law for vtildeMap and Lemma 3.8
 -- combine to give exponential growth of the continued-boost difference on the closed strip.
 #print axioms MobiusCPT.WightmanData.lemma_3_9_interior_growth
+
+-- Issue #11, Block B (part 2): the continued-boost difference is DiffContOnCl on the open
+-- horizontal strip {0 < Im τ < π} — differentiable there, continuous on its closure. Follows
+-- directly from Lemma 3.7(i) identifying the vectors with the complex-boost curves on the
+-- whole closed strip, where Lemma 3.6 already gives continuity and interior holomorphy.
+#print axioms MobiusCPT.WightmanData.lemma_3_9_diffContOnCl
