@@ -1005,3 +1005,13 @@ import MobiusCPT
 #print axioms MobiusCPT.norm_angleDerivB_negTestFn
 #print axioms MobiusCPT.cnorm_negTestFn
 #print axioms MobiusCPT.continuous_negTestFn
+
+-- Issue #12, Block L2 ([T26] Theorem 3.10, WLOG transport): Compat transport under U(r_pi),
+-- rotation intertwining a boost with its negation, and the resulting mirror lemma
+-- VtildeDom(-tau) Phi <-> VtildeDom tau (U(r_pi) Phi), with the matching companion-value law
+-- for vtildeMap.
+#print axioms MobiusCPT.neg_mem_interior_strip_iff
+#print axioms MobiusCPT.WightmanData.U_boost_rot_pi_comm
+#print axioms MobiusCPT.WightmanData.isBoostContinuation_mirror
+#print axioms MobiusCPT.WightmanData.vtildeDom_mirror_iff
+#print axioms MobiusCPT.WightmanData.vtildeMap_mirror
