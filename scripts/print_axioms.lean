@@ -1221,3 +1221,4 @@ import MobiusCPT
 -- TestFunctions/AnalyticTopology.lean.
 #print axioms MobiusCPT.isInducing_xRestrictS1
 #print axioms MobiusCPT.continuous_xRestrictS1
+#print axioms MobiusCPT.xRestrictS1_eq_iff
