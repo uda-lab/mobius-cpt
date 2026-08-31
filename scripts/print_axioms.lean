@@ -1069,3 +1069,17 @@ import MobiusCPT
 -- and closure of the disc boundary class under uniform convergence on the closed disc.
 #print axioms MobiusCPT.IsDiscBoundaryClass.eq_zero_of_eqOn_arc
 #print axioms MobiusCPT.isDiscBoundaryClass_of_tendstoUniformlyOn
+
+-- Issue #13, Block R2 ([CRTT25], Appendix A, Lemma A.1): general-angle rotation invariance of
+-- the C^N seminorms (`rotPullback` is the θ-generalisation of RotationPi.lean's `negTestFn`),
+-- the pure-monomial closed form for a rotation curve (via (W3)), and the general rotation-curve
+-- theorem (via Fourier approximation, uniform convergence, and R1(b)'s closure property).
+#print axioms MobiusCPT.rotPullback_apply
+#print axioms MobiusCPT.beta_rot_eq_rotPullback
+#print axioms MobiusCPT.toAngle_rotPullback
+#print axioms MobiusCPT.angleDeriv_rotPullback
+#print axioms MobiusCPT.norm_angleDerivB_rotPullback
+#print axioms MobiusCPT.cnorm_rotPullback
+#print axioms MobiusCPT.cnorm_beta_rot
+#print axioms MobiusCPT.WightmanData.exists_isDiscBoundaryClass_rotationCurve_monomial
+#print axioms MobiusCPT.WightmanData.exists_isDiscBoundaryClass_rotationCurve

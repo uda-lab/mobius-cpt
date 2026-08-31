@@ -34,6 +34,7 @@ import MobiusCPT.Mobius.Factor
 import MobiusCPT.Mobius.Covariance
 import MobiusCPT.Mobius.Beta
 import MobiusCPT.Wightman.Modes
+import MobiusCPT.Wightman.RotationCurve
 import MobiusCPT.Wightman.W3Bridge
 import MobiusCPT.TestFunctions.Split
 import MobiusCPT.TestFunctions.Analytic
