@@ -957,3 +957,8 @@ import MobiusCPT
 #print axioms MobiusCPT.List.zip_eq_ofFn_get_of_length_eq
 #print axioms MobiusCPT.WightmanData.lemma_3_8
 #print axioms MobiusCPT.WightmanBundle.lemma_3_8
+
+-- Issue #11, Block A: a Gaussian-weighted Phragmén–Lindelöf maximum principle on the closed
+-- strip {0 ≤ Im τ ≤ π}, pure complex analysis independent of the Wightman/Möbius layers, used
+-- to assemble [T26] Lemma 3.9's interior-to-boundary estimate in Block C.
+#print axioms MobiusCPT.strip_max_principle

@@ -14,6 +14,7 @@ import MobiusCPT.Analysis.FlatGluing
 import MobiusCPT.Analysis.SeparateJoint
 import MobiusCPT.Analysis.MultilinearBound
 import MobiusCPT.Analysis.Strip
+import MobiusCPT.Analysis.StripMaxPrinciple
 import MobiusCPT.Analysis.FlatCalculus
 import MobiusCPT.Analysis.GaussianConv
 import MobiusCPT.Analysis.BoostChart
