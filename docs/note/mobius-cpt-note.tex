@@ -432,14 +432,15 @@ $\Vt_\tau$ の定義域に属することが構成的に確かめられ、$\tau 
 \draw[flow] (x.west) to[out=180,in=90] (l34.north);
 \draw[flow] (d31.south) to[out=270,in=180] (l37.west);
 \draw[flow] (l36) -- (l37);
-\draw[flow] (l37) -- (l38);
-\draw[flow] (l38) -- (l39);
 \draw[flow] (l37.east) to[out=0,in=0] (l39.east);
+\draw[flow] (ax.east) to[out=0,in=0] (l38.east);
+\draw[flow] (l38) -- (l39);
 \draw[flow] (l39) -- (thm);
 \draw[flow] (l34.west) to[out=180,in=180] (thm.west);
 \end{tikzpicture}
-\caption{証明の依存関係。補題 3.7 は補題 3.9 の上側境界の評価にも直接用いられる
-（第 \ref{sec:l39} 小節）。補題 3.4 は補題 3.7 の適用範囲を定めると同時に、
+\caption{証明の依存関係。補題 3.8 は解析的核を経由せず、公理から直接得られる。
+補題 3.9 は補題 3.8 と、補題 3.7 の両方の主張（下側境界に (i)、上側境界に (ii)）を
+使う。補題 3.4 は、補題 3.7 が扱う試験関数の族が稠密であることを保証し、
 定理 3.10 の極限操作の出発点になる。}
 \label{fig:flow}
 \end{figure}
