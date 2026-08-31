@@ -962,3 +962,8 @@ import MobiusCPT
 -- strip {0 ≤ Im τ ≤ π}, pure complex analysis independent of the Wightman/Möbius layers, used
 -- to assemble [T26] Lemma 3.9's interior-to-boundary estimate in Block C.
 #print axioms MobiusCPT.strip_max_principle
+
+-- Issue #11, Block B: [T26] Lemma 3.9's interior growth estimate. Compactness of [0,π] gives a
+-- uniform C^N bound for the complex boost, then the translation law for vtildeMap and Lemma 3.8
+-- combine to give exponential growth of the continued-boost difference on the closed strip.
+#print axioms MobiusCPT.WightmanData.lemma_3_9_interior_growth
