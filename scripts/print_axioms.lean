@@ -1206,3 +1206,9 @@ import MobiusCPT
 #print axioms MobiusCPT.instLocallyConvexSpaceRealTestFn
 #print axioms MobiusCPT.instT1SpaceTestFn
 #print axioms MobiusCPT.instFirstCountableTopologyTestFn
+
+-- Issue #54: Circle-carrier sup norm for the j-th angle derivative, transported from
+-- `angleDerivCircle` along `AddCircle.homeomorphCircle' : AddCircle (2 * π) ≃ₜ Circle`.
+#print axioms MobiusCPT.angleDerivS1_apply_exp
+#print axioms MobiusCPT.norm_angleDerivS1_eq_norm_angleDerivCircle
+#print axioms MobiusCPT.norm_angleDerivB_eq_norm_angleDerivS1

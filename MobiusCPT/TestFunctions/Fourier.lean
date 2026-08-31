@@ -60,7 +60,9 @@ theorem angleDerivCircle_zero (f : TestFn) :
   intro θ
   simp [angleDeriv, iteratedDeriv_zero]
 
-/-- [T26], §3; the real-angle and additive-circle uniform norms agree. -/
+/-- [T26], §3; the real-angle and additive-circle uniform norms agree. See also
+`norm_angleDerivB_eq_norm_angleDerivS1` for the literal `Circle`-carrier version of this
+statement, i.e. the sup norm over the space's own carrier `Circle` used by `TestFn`. -/
 theorem norm_angleDerivB_eq (j : ℕ) (f : TestFn) :
     ‖angleDerivB j f‖ = ‖angleDerivCircle j f‖ := by
   apply le_antisymm
@@ -75,6 +77,45 @@ theorem norm_angleDerivB_eq (j : ℕ) (f : TestFn) :
     intro θ
     rw [angleDerivCircle_coe]
     exact norm_angleDeriv_le j f θ
+
+/-- [T26], §2–§3; the `j`-th angle derivative as a continuous function on the `Circle` carrier
+that `TestFn` is built over, transported from `angleDerivCircle` along the standard
+homeomorphism `AddCircle (2 * π) ≃ₜ Circle`. -/
+def angleDerivS1 (j : ℕ) (f : TestFn) : C(Circle, ℂ) :=
+  (angleDerivCircle j f).comp
+    (AddCircle.homeomorphCircle'.symm : C(Circle, AddCircle (2 * Real.pi)))
+
+/-- Evaluation of the `Circle`-carrier angle derivative at `Circle.exp θ` agrees with the
+real-angle derivative at `θ`. -/
+@[simp] theorem angleDerivS1_apply_exp (j : ℕ) (f : TestFn) (θ : ℝ) :
+    angleDerivS1 j f (Circle.exp θ) = angleDeriv j f θ := by
+  have hpt : AddCircle.homeomorphCircle'.symm (Circle.exp θ) = (θ : AddCircle (2 * Real.pi)) :=
+    AddCircle.homeomorphCircle'.symm_apply_eq.2 (AddCircle.homeomorphCircle'_apply_mk θ).symm
+  simp only [angleDerivS1, ContinuousMap.comp_apply, ContinuousMap.coe_coe, hpt,
+    angleDerivCircle_coe]
+
+/-- Pre-composition with the homeomorphism `AddCircle (2 * π) ≃ₜ Circle` preserves the uniform
+norm: the `Circle`-carrier and additive-circle sup norms agree. -/
+theorem norm_angleDerivS1_eq_norm_angleDerivCircle (j : ℕ) (f : TestFn) :
+    ‖angleDerivS1 j f‖ = ‖angleDerivCircle j f‖ := by
+  apply le_antisymm
+  · apply (ContinuousMap.norm_le _ (norm_nonneg _)).2
+    intro x
+    simp only [angleDerivS1, ContinuousMap.comp_apply, ContinuousMap.coe_coe]
+    exact ContinuousMap.norm_coe_le_norm (angleDerivCircle j f) _
+  · apply (ContinuousMap.norm_le _ (norm_nonneg _)).2
+    intro y
+    have hx : angleDerivS1 j f (AddCircle.homeomorphCircle' y) = angleDerivCircle j f y := by
+      simp only [angleDerivS1, ContinuousMap.comp_apply, ContinuousMap.coe_coe,
+        Homeomorph.symm_apply_apply]
+    rw [← hx]
+    exact ContinuousMap.norm_coe_le_norm (angleDerivS1 j f) _
+
+/-- [T26], §2–§3; the filed item: the bounded real-angle sup norm agrees with the uniform norm
+of the `j`-th angle derivative on the literal `Circle` carrier used by `TestFn`. -/
+theorem norm_angleDerivB_eq_norm_angleDerivS1 (j : ℕ) (f : TestFn) :
+    ‖angleDerivB j f‖ = ‖angleDerivS1 j f‖ := by
+  rw [norm_angleDerivB_eq, norm_angleDerivS1_eq_norm_angleDerivCircle]
 
 /-- [T26], §3; the `n`-th Fourier coefficient of a smooth test function, defined through
 mathlib's normalized-Haar `fourierCoeff` on `AddCircle (2 * Real.pi)`. -/
