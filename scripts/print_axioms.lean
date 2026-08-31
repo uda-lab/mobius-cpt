@@ -973,3 +973,11 @@ import MobiusCPT
 -- directly from Lemma 3.7(i) identifying the vectors with the complex-boost curves on the
 -- whole closed strip, where Lemma 3.6 already gives continuity and interior holomorphy.
 #print axioms MobiusCPT.WightmanData.lemma_3_9_diffContOnCl
+
+-- Issue #11, Block C boundary estimates: [T26] Lemma 3.9's two boundary bounds. The lower
+-- boundary reduces to Lemma 3.8 via the unconditional WightmanBundle.vtilde_real; the upper
+-- boundary reduces to Lemma 3.8 applied to the reversed field list via Lemma 3.7(ii)'s sign
+-- and reversal identity, with the reversed/inverted product and max controls shown equal to
+-- the unreversed ones.
+#print axioms MobiusCPT.WightmanBundle.lemma_3_9_lower_bound
+#print axioms MobiusCPT.WightmanBundle.lemma_3_9_upper_bound

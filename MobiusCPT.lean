@@ -74,3 +74,4 @@ import MobiusCPT.Wightman.Lemma37
 import MobiusCPT.Wightman.Lemma38
 import MobiusCPT.Wightman.Lemma39Interior
 import MobiusCPT.Wightman.Lemma39DiffContOnCl
+import MobiusCPT.Wightman.Lemma39Boundary
