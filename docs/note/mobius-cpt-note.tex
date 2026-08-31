@@ -152,7 +152,7 @@ $(\Fields, \mathcal{D}, U, \Omega)$ と数学的な差はない。
 \subsection{円周上の試験関数}
 
 $\Circ = \{z \in \mathbb{C} : \abs{z} = 1\}$ とし、$C^\infty(\Circ)$ で $\Circ$ 上の
-複素数値可微分関数の空間を表す。$z = e^{i\theta}$ による角変数 $\theta$ に関する導関数を
+複素数値 $C^\infty$ 級関数の空間を表す。$z = e^{i\theta}$ による角変数 $\theta$ に関する導関数を
 用いて
 \[
   \CN{f} = \sum_{j=0}^{N} \Bigl\lVert \frac{d^{j} f}{d\theta^{j}} \Bigr\rVert_{\infty}
@@ -295,7 +295,7 @@ $\operatorname{supp} f$ が開半円に含まれることは要求しない。
 \end{convention}
 
 この読み方は \cite{T26} 自身の記述が要求するものであり、第 \ref{sec:supp-reading} 小節で
-その理由を述べる。$C_0^\infty(I_\pm)$ で、$I_\pm$ 上可微分で端点 $\pm 1$ において
+その理由を述べる。$C_0^\infty(I_\pm)$ で、$I_\pm$ 上 $C^\infty$ 級で端点 $\pm 1$ において
 \textbf{すべての階の導関数が $0$ に収束する}関数の全体を表す。以下、この性質を
 \textbf{端点で全階平坦}であるという。零拡張により
 $C_0^\infty(I_\pm)$ は $\{f \in C^\infty(\Circ) : \operatorname{supp} f \subseteq \overline{I_\pm}\}$
@@ -368,7 +368,8 @@ $\{\Phi : \Phi \in \Dom(X_2),\ X_2\Phi \in \Dom(X_1)\}$ とする。この規則
 
 \begin{theorem}[\cite{T26} 定理 3.10]
 \label{thm:main}
-$(\Dom, \Fields, U, \Omega)$ を M\"obius 共変 Wightman 共形場理論とする。
+$(\Dom, \Fields, U, \Omega)$ を定義 \ref{def:wightman} の意味での M\"obius 共変
+Wightman 共形場理論とする。
 \begin{enumerate}
   \item[(i)] $P(I_+)\Omega \subseteq \Dom(\Vt_{i\pi})$ かつ
     $P(I_-)\Omega \subseteq \Dom(\Vt_{-i\pi})$ である。
@@ -451,8 +452,11 @@ $\Oex = \{z \in \mathbb{C} : \abs{z} \ge 1\} \cup \{\infty\}$ とおく。これ
 
 \begin{definition}[\cite{T26} 定義 3.2]
 \label{def:Xcl}
-$\Xcl$ を、$\Oex$ 上可微分でその内部において正則、$F(\infty) = 0$、かつすべての $i \ge 0$ に
+$\Xcl$ を、$\Oex$ 上 $C^\infty$ 級でその内部において正則、$F(\infty) = 0$、かつすべての $i \ge 0$ に
 対して $F^{(i)}(1) = F^{(i)}(-1) = 0$ を満たす関数 $F : \Oex \to \mathbb{C}$ の全体とする。
+ここで閉集合 $\Oex$ 上 $C^\infty$ 級とは、$\Oex$ の内部で $C^\infty$ 級であり、
+そのすべての階の導関数が $\Oex$ 上の連続関数に延びることをいう。$\infty$ における条件は、
+$w \mapsto F(w^{-1})$ が原点まで正則に延びることとして理解する。
 \end{definition}
 
 制限写像 $\Xcl \to C^\infty(\Circ)$, $F \mapsto F|_{\Circ}$ は単射である。実際、
@@ -558,7 +562,7 @@ $F_j \circ z^{-1}|_{\Circ} = g_j + h_j$ だから、\eqref{eq:w3} は
 全階平坦であるものの、その閉包としての台はいずれも $\pm 1$ を含みうるから、
 両者の台は交わりうる。(W2) をそのまま適用することはできない。この点は
 第 \ref{sec:locality} 小節で扱う。符号 $(-1)^k$ が局所性ではなく \eqref{eq:gh} の
-$k$ 回の適用から来ることも、そこで確認する。
+$k$ 回の適用から来ることは第 \ref{sec:sign} 小節で確認する。
 
 以上を合わせて次を得る。
 
@@ -737,7 +741,7 @@ $\operatorname{Im}\tau < 0$ の場合は $z \mapsto -z$ で帰着する。
 各点で定義される。$d = 0$ のときは因子 $(\cosh\tau + \operatorname{Re}(z)\sinh\tau)^{-1}$ が
 現れ、これは $v_{-\tau}\cdot z = \infty$ となる点でちょうど一位の極をもつ。
 
-極は可除である。$F$ は $\infty$ で可微分で $F(\infty) = 0$ だから $w \mapsto w F(w)$ は
+極は可除である。$F$ は $\infty$ で $C^\infty$ 級で $F(\infty) = 0$ だから $w \mapsto w F(w)$ は
 $\infty$ の近くで有界であり、この有界性が極を打ち消す。したがって $d = 0$ における
 $\beta_0(v_\tau)F|_{I_+}$ は、この一意な連続延長として理解しなければならない。
 生の商として定義したのでは、定義域が $\Strip_{i\pi} \times I_+$ 全体にならない。
@@ -778,14 +782,14 @@ $x = i\pi/2$、端点 $z = \pm 1$ は $\operatorname{Re} x \to \pm\infty$ に対
 $\partial_\theta = -\cosh(x)\, \partial_x$ だから、$C^N(\Circ)$ の半ノルムは
 $e^{N\abs{x}}$ で重みづけした $C^N(\mathbb{R})$ の半ノルムと一致する。そして最も重要な点として、
 \textbf{端点 $\pm 1$ における全階平坦性は $\mp\infty$ における超指数減衰にほかならない}。
-補題 \ref{lem:34} の近似列が端点を越えて可微分であることは、この言い換えのもとで
+補題 \ref{lem:34} の近似列が端点を越えて $C^\infty$ 級であることは、この言い換えのもとで
 証明できる主張になる。
 
 分岐の取り方は結果を左右する。対数を $\log(-\zeta)$ ととると、その切断は実区間
 $[-1, 1]$ になり、これは閉円板の内側にあって $\Oex$ とは除外された二つの端点でしか
 交わらない。素朴な $\log(-i\zeta)$ では切断が下半円周上に来てしまい、そこで近似列が
 正則でなくなる。$\Oex \setminus \{\pm 1\}$ のすべての点（境界点を含む）における
-正則性は、平坦性から可微分性への延長の議論が消費するものだから、この選択は
+正則性は、平坦性から $C^\infty$ 級への延長の議論が消費するものだから、この選択は
 本質的である。
 
 構成そのものは次のようになる。$f$ を上半円に台をもつ元とし、$a$ を $zf$ のこの座標での
@@ -810,7 +814,7 @@ $F_s(z) = H_s(\chi(z))/z$、$F_s(\pm 1) = 0$ と定める。$1/z$ は $F_s(\inft
 台が交わらないことは従わない。したがって (W2) をこの組にそのまま適用することはできない。
 
 補うべき議論は切断と極限である。$\varepsilon > 0$ に対して、$\pm 1$ の $\varepsilon$ 近傍の
-外で $1$、$\varepsilon/2$ 近傍の内で $0$ となる可微分な切断関数 $\chi_\varepsilon \in C^\infty(\Circ)$ を
+外で $1$、$\varepsilon/2$ 近傍の内で $0$ となる $C^\infty$ 級の切断関数 $\chi_\varepsilon \in C^\infty(\Circ)$ を
 とる。$\operatorname{supp}(\chi_\varepsilon h_k)$ は開半円 $I_-$ に含まれるから、
 $g_i$ の台とは交わらない。よって (W2) から
 $[\varphi_i(g_i), \varphi_k(\chi_\varepsilon h_k)] = 0$ であり、
@@ -978,7 +982,7 @@ $\tau$ と $-\tau$ について対称ではないから、この対称性を使�
 パラメータを反転する。すなわち $r_\pi v_t r_\pi^{-1} = v_{-t}$ が符号の不定性なく
 成り立つ。この行列としての等式から、$U(r_\pi)(V_t \Phi) = V_{-t}(U(r_\pi)\Phi)$ が従う。
 また $r_\pi$ による試験関数の引き戻しは、すべての共形次元 $d$ に対して
-$\beta_d(r_\pi)$ に一致する（回転の共形因子が $1$ だからである）。この引き戻しは
+$\beta_d(r_\pi)$ に一致する（\eqref{eq:beta} で回転の共形因子が $1$ だからである）。この引き戻しは
 対合であり、$I_+$ に台をもつ関数と $I_-$ に台をもつ関数を交換し、反転 $z \mapsto z^{-1}$ と
 可換である。
 
@@ -1128,7 +1132,7 @@ $P(I_+)\Omega$ が $\Dom$ で $\Fields$-強位相について稠密であるこ�
 
 \paragraph{\texorpdfstring{$\Xcl$ の平坦性の符号化。}{解析的試験関数の族の平坦性の符号化。}}
 定義 \ref{def:Xcl} の端点条件 $F^{(i)}(\pm 1) = 0$ を、形式化では実の意味での
-全階の偏導関数が消えることとして表している。$\Oex$ 上可微分で内部で正則な $F$ に
+全階の偏導関数が消えることとして表している。$\Oex$ 上 $C^\infty$ 級で内部で正則な $F$ に
 対して、この条件と原論文の複素微分による条件は同値である。複素微分は境界まで
 連続に延び、正則関数の実偏導関数はそれらの多項式で書けるからである。この同値性
 自体は形式化されていない。$\Xcl$ を\textbf{構成する}側では、近似列が実の意味での
