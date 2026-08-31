@@ -1064,3 +1064,46 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanBundle.thm_3_10_ii
 #print axioms MobiusCPT.WightmanBundle.thm_3_10_iii
 #print axioms MobiusCPT.exists_sub_int_mul_mem_Ico
+
+-- Issue #13, Block R1 ([CRTT25], Appendix A): reflection-free vanishing on a boundary arc,
+-- and closure of the disc boundary class under uniform convergence on the closed disc.
+#print axioms MobiusCPT.IsDiscBoundaryClass.eq_zero_of_eqOn_arc
+#print axioms MobiusCPT.isDiscBoundaryClass_of_tendstoUniformlyOn
+
+-- Issue #13, Block R2 ([CRTT25], Appendix A, Lemma A.1): general-angle rotation invariance of
+-- the C^N seminorms (`rotPullback` is the θ-generalisation of RotationPi.lean's `negTestFn`),
+-- the pure-monomial closed form for a rotation curve (via (W3)), and the general rotation-curve
+-- theorem (via Fourier approximation, uniform convergence, and R1(b)'s closure property).
+#print axioms MobiusCPT.rotPullback_apply
+#print axioms MobiusCPT.beta_rot_eq_rotPullback
+#print axioms MobiusCPT.toAngle_rotPullback
+#print axioms MobiusCPT.angleDeriv_rotPullback
+#print axioms MobiusCPT.norm_angleDerivB_rotPullback
+#print axioms MobiusCPT.cnorm_rotPullback
+#print axioms MobiusCPT.cnorm_beta_rot
+#print axioms MobiusCPT.WightmanData.exists_isDiscBoundaryClass_rotationCurve_monomial
+#print axioms MobiusCPT.WightmanData.exists_isDiscBoundaryClass_rotationCurve
+
+-- Issue #13, Block R3, Part A ([CRTT25], Appendix A, Lemma A.2): the geometric prerequisites --
+-- rotation of topological support, stability of support under small rotations, multiplication
+-- by a smooth bump, and the finite rotated-cover partition-of-unity decomposition.
+#print axioms MobiusCPT.tsupport_rotPullback
+#print axioms MobiusCPT.exists_rotStable
+#print axioms MobiusCPT.bumpMul_apply
+#print axioms MobiusCPT.tsupport_bumpMul_subset
+#print axioms MobiusCPT.exists_finite_rotate_cover
+#print axioms MobiusCPT.exists_finite_bumpMul_decomposition
+
+-- Issue #13, Block R3, Part B ([CRTT25], Appendix A, Lemma A.2): the generic Reeh-Schlieder
+-- vanishing lemma, proved once over an arbitrary nonempty open arc and its support predicate,
+-- and specialised to the two semicircles I+/I-.
+#print axioms MobiusCPT.eq_zero_of_forall_smearedProduct_supp_eq_zero
+#print axioms MobiusCPT.eq_zero_of_forall_smearedProduct_suppUpper_eq_zero
+#print axioms MobiusCPT.eq_zero_of_forall_smearedProduct_suppLower_eq_zero
+
+-- Issue #13, Block R4 ([CRTT25], Appendix A, Corollary A.3(i)): Reeh--Schlieder density for
+-- P(I+)Omega and P(I-)Omega in the F-strong topology, and density of their analytic cores.
+#print axioms MobiusCPT.WightmanBundle.reehSchlieder_upper
+#print axioms MobiusCPT.WightmanBundle.reehSchlieder_lower
+#print axioms MobiusCPT.WightmanBundle.analyticCore_dense_upper
+#print axioms MobiusCPT.WightmanBundle.analyticCore_dense_lower
