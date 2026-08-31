@@ -6,5 +6,7 @@
 *.out
 *.toc
 
-# Japanese fonts are fetched by the reader; see README.md.
-fonts/
+# Japanese fonts are fetched by the reader; see README.md. The pattern has no trailing
+# slash so that it also ignores a `fonts` symlink pointing at a local font directory,
+# which `fonts/` would not match.
+fonts

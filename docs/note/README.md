@@ -12,8 +12,8 @@ The PDF is a build artefact and is not tracked; build it as below.
 | Underlying TeX engine | XeTeX (Tectonic's engine; packages fetched on demand) | Tectonic's bundle |
 | Japanese fonts | Noto Serif CJK JP, Noto Sans CJK JP — Regular and Bold, OTF | <https://github.com/notofonts/noto-cjk> |
 
-LaTeX packages (`fontspec`, `xeCJK`, `amsmath`, `amssymb`, `amsthm`, `mathrsfs`, `geometry`,
-`tikz`, `hyperref`) are fetched by Tectonic on first run and need no separate installation.
+LaTeX packages (`fontspec`, `xeCJK`, `amsmath`, `amssymb`, `amsthm`, `geometry`, `tikz`,
+`hyperref`) are fetched by Tectonic on first run and need no separate installation.
 A working network connection is required for that first run.
 
 Any XeLaTeX installation with the same packages also works; Tectonic is not required.
@@ -54,7 +54,7 @@ cd docs/note
 tectonic -X compile mobius-cpt-note.tex
 ```
 
-Produces `mobius-cpt-note.pdf` (20 pages). The build is single-pass from the caller's point
+Produces `mobius-cpt-note.pdf` (21 pages). The build is single-pass from the caller's point
 of view; Tectonic reruns TeX internally until references settle. It takes a few seconds and
 a few hundred megabytes of memory.
 
@@ -76,4 +76,12 @@ Those three values are defined once, as `\pinnedcommit`, `\pinneddate` and `\aud
 the top of the `.tex`. When the note is revised against a newer revision, update them there
 and re-check the claims in Sections 7 and 8 against that revision — in particular
 `grep -c '^#print axioms' scripts/print_axioms.lean` for the count, and the CI `check` run on
-that commit for the audit result.
+that commit for the audit result. `CITATION.cff` (`commit:`) and the release bundle's
+`zenodo-metadata.json` and `MANIFEST.md` quote the same revision and must be updated with it.
+
+## Numbering
+
+Definitions, lemmas and theorems carry [T26]'s own numbers rather than sequential ones, so that
+a cross-reference and a citation of the same result read alike. `\srcnum{<number>}` fixes the
+number of the environment that follows it; every such environment is preceded by one. Items
+belonging to this note rather than to the source are lettered (`\srcnum{A}`, `\srcnum{B}`).
