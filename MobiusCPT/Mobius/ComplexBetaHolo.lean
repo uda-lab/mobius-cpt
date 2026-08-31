@@ -138,28 +138,6 @@ theorem eventually_forall_norm_slice_diff_quotient_sub_lt (d : ℕ) (F : Analyti
     _ ≤ ε / 2 := hintegral
     _ < ε := by linarith
 
-/-- Every real number is congruent modulo `2π` to a point of `[0, 2π)`. -/
-private theorem exists_sub_int_mul_mem_Ico (θ : ℝ) :
-    ∃ n : ℤ, θ - n * (2 * Real.pi) ∈ Set.Ico 0 (2 * Real.pi) := by
-  refine ⟨⌊θ / (2 * Real.pi)⌋, ⟨?_, ?_⟩⟩
-  · have h := Int.floor_le (θ / (2 * Real.pi))
-    have hpos := Real.two_pi_pos
-    have hmul : (⌊θ / (2 * Real.pi)⌋ : ℝ) * (2 * Real.pi) ≤ θ := by
-      calc
-        (⌊θ / (2 * Real.pi)⌋ : ℝ) * (2 * Real.pi) ≤
-            (θ / (2 * Real.pi)) * (2 * Real.pi) :=
-          mul_le_mul_of_nonneg_right h hpos.le
-        _ = θ := by field_simp
-    linarith
-  · have h := Int.lt_floor_add_one (θ / (2 * Real.pi))
-    have hpos := Real.two_pi_pos
-    have hmul : θ < ((⌊θ / (2 * Real.pi)⌋ : ℝ) + 1) * (2 * Real.pi) := by
-      calc
-        θ = (θ / (2 * Real.pi)) * (2 * Real.pi) := by field_simp
-        _ < ((⌊θ / (2 * Real.pi)⌋ : ℝ) + 1) * (2 * Real.pi) :=
-          mul_lt_mul_of_pos_right h hpos
-    nlinarith [hmul]
-
 /-- [T26], Lemma 3.6; the same estimate on the whole circle, by periodicity and support. -/
 theorem eventually_forall_norm_angleDeriv_diff_quotient_sub_lt (d : ℕ) (F : AnalyticTestFn)
     (j : ℕ) {τ : ℂ} (hτ : τ ∈ interior (strip (Complex.I * Real.pi))) {ε : ℝ} (hε : 0 < ε) :

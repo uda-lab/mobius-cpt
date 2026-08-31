@@ -1063,3 +1063,4 @@ import MobiusCPT
 #print axioms MobiusCPT.WightmanBundle.thm_3_10_i
 #print axioms MobiusCPT.WightmanBundle.thm_3_10_ii
 #print axioms MobiusCPT.WightmanBundle.thm_3_10_iii
+#print axioms MobiusCPT.exists_sub_int_mul_mem_Ico
