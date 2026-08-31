@@ -290,7 +290,9 @@ A faithful Lean proof must formalise these two estimates; their statements are:
   a finite product of generating seminorms ([Trè67] §41); and the covariance estimate
   `‖β_d(v_t)f‖_{C^N} ≤ C(t)‖f‖_{C^N}` with `C` of at most exponential growth, proved from the
   closed form of `β_d(v_t)` by differentiating `cosh t + Re(z) sinh t` and `v_{−t}(z)` in `θ`
-  (for `N = 0` the constant is exactly `e^{|t|}`).
+  (for `N = 0` the sharp `C^0` constant is `e^{|d−1| |t|}`, the supremum over `|z| = 1` of
+  `|cosh t + Re(z) sinh t|^{d−1}`, attained at `f ≡ 1`: `1` for `d = 1`, `e^{|t|}` for `d ∈ {0, 2}`,
+  larger for `d ≥ 3` when `t ≠ 0`).
 - **Lemma 3.9 ([T26]).** For `φ_1,…,φ_k ∈ 𝓕` and `λ ∈ D*_𝓕` there are a positive integer `N` and a
   constant `M > 0` such that for all `F_j, G_j ∈ 𝓧` with `f_j = F_j|_{I_+}`, `g_j = G_j|_{I_+}`, and
   all `τ ∈ 𝕊_{iπ}`,
