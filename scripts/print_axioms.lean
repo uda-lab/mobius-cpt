@@ -1100,3 +1100,10 @@ import MobiusCPT
 #print axioms MobiusCPT.eq_zero_of_forall_smearedProduct_supp_eq_zero
 #print axioms MobiusCPT.eq_zero_of_forall_smearedProduct_suppUpper_eq_zero
 #print axioms MobiusCPT.eq_zero_of_forall_smearedProduct_suppLower_eq_zero
+
+-- Issue #13, Block R4 ([CRTT25], Appendix A, Corollary A.3(i)): Reeh--Schlieder density for
+-- P(I+)Omega and P(I-)Omega in the F-strong topology, and density of their analytic cores.
+#print axioms MobiusCPT.WightmanBundle.reehSchlieder_upper
+#print axioms MobiusCPT.WightmanBundle.reehSchlieder_lower
+#print axioms MobiusCPT.WightmanBundle.analyticCore_dense_upper
+#print axioms MobiusCPT.WightmanBundle.analyticCore_dense_lower
