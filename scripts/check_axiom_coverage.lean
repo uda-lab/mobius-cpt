@@ -58,10 +58,20 @@ first place). `Lean.Meta.isInstance` is deliberately unused now.
 
 Iterate this list, not the caller, if a false positive or false negative shows up:
 every excluded kind above must stay listed here.
+
+A prerequisite this whole walk depends on: `import MobiusCPT` must actually load every
+`MobiusCPT/**/*.lean` file, directly or transitively, or that file's declarations never reach
+`(← getEnv).constants` and every check above passes vacuously for its content — a codex broker
+review on this PR raised exactly this (a new file the root aggregator `MobiusCPT.lean` forgets
+to import would silently escape the whole audit). So this file also independently discovers
+every `.lean` file on disk under `MobiusCPT/` and fails if any of them is not among
+`env.header.moduleNames` — the actual set this run's `import MobiusCPT` loaded, not merely a
+static read of `MobiusCPT.lean`'s own import list (so it also catches a file reachable from a
+future *nested* aggregator, not just a direct one).
 -/
 import MobiusCPT
 
-open Lean
+open Lean System
 
 /-- `n` was declared in a module named `MobiusCPT`, or a submodule of it
 (`MobiusCPT.Wightman.Basic`, the root aggregator `MobiusCPT`, etc). -/
@@ -85,6 +95,32 @@ private def isPublicMobiusTheorem (env : Environment) (n : Name) (info : Constan
     return true
   | _ => return false
 
+/-- Every `.lean` file under `dir`, recursively. -/
+private partial def collectLeanFiles (dir : System.FilePath) : IO (Array System.FilePath) := do
+  let mut result := #[]
+  for entry in (← dir.readDir) do
+    let p := entry.path
+    if (← p.isDir) then
+      result := result ++ (← collectLeanFiles p)
+    else if p.extension == some "lean" then
+      result := result.push p
+  return result
+
+/-- `MobiusCPT/Wightman/Basic.lean` -> `"MobiusCPT.Wightman.Basic"`, the same string
+`Name.toString` produces for the module Lean loads from that file. -/
+private def moduleStringOfPath (path : System.FilePath) : String :=
+  match path.components.reverse with
+  | [] => ""
+  | last :: rest => String.intercalate "." (rest.reverse ++ [(last.dropSuffix ".lean").toString])
+
+/-- Every `.lean` file under `MobiusCPT/` whose module is not among `loadedModules` — i.e. a
+file `import MobiusCPT` never reached, directly or transitively, so its declarations are
+invisible to every check above. -/
+private def findUnloadedFiles (loadedModules : Std.HashSet String) :
+    IO (Array System.FilePath) := do
+  let files ← collectLeanFiles "MobiusCPT"
+  return files.filter fun f => !loadedModules.contains (moduleStringOfPath f)
+
 /-- The declaration names pinned by `#print axioms <name>` lines in `path`, under the exact
 same extraction rule `scripts/check-axioms.sh` uses (`awk '/^#print axioms /{print $3}'`):
 the line must start with the literal, unindented text `#print axioms ` — not merely contain it
@@ -106,6 +142,8 @@ private def readPinnedNames (path : System.FilePath) : IO (Std.HashSet String) :
 
 #eval show CoreM Unit from do
   let env ← getEnv
+  let loadedModules : Std.HashSet String := Std.HashSet.ofList (env.header.moduleNames.toList.map (·.toString))
+  let unloaded ← findUnloadedFiles loadedModules
   let pinned ← readPinnedNames "scripts/print_axioms.lean"
   let mut total : Nat := 0
   let mut missing : Array String := #[]
@@ -115,16 +153,18 @@ private def readPinnedNames (path : System.FilePath) : IO (Std.HashSet String) :
       let name := n.toString
       unless pinned.contains name do
         missing := missing.push name
-  if missing.isEmpty then
+  for f in unloaded do
+    IO.println s!"UNLOADED: {f} (module {moduleStringOfPath f} is not reachable from 'import MobiusCPT' — its declarations were never checked)"
+  for name in missing.qsort (· < ·) do
+    IO.println s!"MISSING: {name}"
+  if unloaded.isEmpty && missing.isEmpty then
     IO.println s!"COVERAGE OK — {total} public theorems, all pinned"
   else
-    for name in missing.qsort (· < ·) do
-      IO.println s!"MISSING: {name}"
     -- `throwError`, not `IO.Process.exit`: the latter terminates the process
-    -- immediately and was observed (in review) to discard the `MISSING:` lines
-    -- printed just above when stdout is not a terminal (as under `lake env lean`
+    -- immediately and was observed (in review) to discard the `MISSING:`/`UNLOADED:`
+    -- lines printed just above when stdout is not a terminal (as under `lake env lean`
     -- here). `throwError` reports through Lean's own elaboration-error channel,
     -- which both prints reliably and gives `lean`/`lake env lean` a nonzero exit
     -- code, the same mechanism `scripts/check-axioms.sh` already relies on when
     -- `lake env lean scripts/print_axioms.lean` fails.
-    throwError s!"{missing.size} public theorem(s) declared in a MobiusCPT module are not pinned in scripts/print_axioms.lean (see MISSING: lines above)"
+    throwError s!"{unloaded.size} MobiusCPT file(s) not reachable from 'import MobiusCPT' and {missing.size} public theorem(s) not pinned in scripts/print_axioms.lean (see lines above)"
