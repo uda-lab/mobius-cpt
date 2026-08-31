@@ -17,10 +17,10 @@ and this file does not claim `Topology.IsEmbedding xRestrictS1` or that the indu
 `T0` on `AnalyticTestFn`. What *is* true, and is the faithful encoding of the source's "identify
 `F` with `F|_{S¹}`", is that the restriction map is injective precisely on `𝕆`-data:
 `xRestrictS1_eq_iff` below. A quotient or partial-function redesign of `AnalyticTestFn` that
-would recover literal injectivity is out of scope for this file (Issue #53 ruling, 2026-09-01):
-it would change every landed statement about `AnalyticTestFn` for a property nothing downstream
-uses; a future consumer that needs genuine injectivity should build a quotient type on top of
-`AnalyticTestFn` using `xRestrictS1_eq_iff`, leaving this structure unchanged.
+would recover literal injectivity is deliberately out of scope here: it would change every
+landed statement about `AnalyticTestFn` for a property nothing downstream uses; a future
+consumer that needs genuine injectivity should build a quotient type on top of `AnalyticTestFn`
+using `xRestrictS1_eq_iff`, leaving this structure unchanged.
 -/
 
 namespace MobiusCPT
