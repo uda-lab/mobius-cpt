@@ -13,8 +13,8 @@ abstract: >-
   of that theorem in Lean 4 with mathlib, covering Definition 3.1, Lemma 3.4, Lemma 3.6(i)
   together with the scalarised consequence of Lemma 3.6(ii) that Definition 3.1 requires, and
   Lemmas 3.7, 3.8, 3.9 leading to Theorem 3.10, together with the Reeh-Schlieder property for
-  the two reference semicircles, which is what supports calling the continued operators densely
-  defined. It also contains a
+  the two reference semicircles, which together with Lemma 3.4 is what supports calling the
+  continued operators densely defined. It also contains a
   mathematician-facing research note (Japanese body, English title and abstract) that presents
   the proof architecture as ordinary mathematics, records the formalisation status at a pinned
   revision, and sets out the points at which the published proof compresses an argument that a

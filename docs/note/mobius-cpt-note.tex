@@ -126,8 +126,8 @@ continuation from its boundary values, a removable singularity in the complex bo
 dimension zero, the appeal to locality for test functions whose closed supports touch at the
 endpoints of the semicircle, the passage from the spectrum condition to the annihilation of the
 vacuum by positive Fourier modes, and the maximum-principle step underlying the strip-uniform
-estimate. The Reeh--Schlieder property for the two reference semicircles, which is what makes the
-continued operators densely defined, is proved as well. A statement of what the verification does
+estimate. The Reeh--Schlieder property for the two reference semicircles, which together with Lemma~3.4
+is what supports calling the continued operators densely defined, is proved as well. A statement of what the verification does
 and does not establish is included. The main text is in Japanese.
 \end{abstract}
 
@@ -163,6 +163,11 @@ $0 \le \operatorname{Im}\tau \le \pi$ を満たす $\tau$ に対して定まる�
 $z \mapsto z^{-1}$ で引き戻されている。この順序の逆転と円周の反転、そして符号 $(-1)^d$ が、ユニタリな場合の
 PCT 作用素の作用に対応する。
 
+\paragraph{番号の付け方。}
+以下、定義・補題・定理の番号は \cite{T26} のものに合わせ、本稿独自の項目には英字を付す。
+番号は原論文のものだから連続せず、また原論文の項目のうち本稿が番号で引用するだけで
+改めて述べないものもある。
+
 \paragraph{「PCT 定理」という呼び方について。}
 定理 \ref{thm:main} が与えるのは、いま述べた解析接続と順序逆転の等式であって、非ユニタリな
 枠組みにおける PCT 作用素そのものの構成ではない。PCT 対合と Bisognano--Wichmann 性は、
@@ -189,11 +194,6 @@ Lean の構文にも宣言名にも依存せずに読めるように書かれて
 閉包が端点で接する台に対する局所性の適用、スペクトル条件から真空の消滅を導く
 Fourier モードの議論などである。これらはいずれも \cite{T26} の証明が正しいことを
 前提としたうえで、その省略された部分を補うものであって、誤りの指摘ではない。
-
-\paragraph{番号の付け方。}
-以下、定義・補題・定理の番号は \cite{T26} のものに合わせ、本稿独自の項目には英字を付す。
-番号は原論文のものだから連続せず、また原論文の項目のうち本稿が番号で引用するだけで
-改めて述べないものもある。
 
 \paragraph{範囲と非目標。}
 本稿と、本稿が報告する形式化の主たる対象は、\cite{T26} の第 3 節、すなわち定義 3.1 から
@@ -801,7 +801,7 @@ $\lvert\lambda(\varphi_1(h_1)\cdots\varphi_k(h_k)\Omega)\rvert \le C_0\, \CN{h_1
 （\cite{Treves} 第 41 章）による。もう一つは共変性の評価
 $\CN{\beta_d(v_t) f} \le C(t)\CN{f}$ であり、$C$ は高々指数増大である。
 これは \eqref{eq:beta-boost} の明示式を角変数で微分することから得られる
-（$N = 0$ での最良の定数は $e^{\abs{d-1}\abs{t}}$ であり、共形次元に依存する。
+（$N = 0$ での最良の定数は $e^{\abs{d-1}\,\abs{t}}$ であり、共形次元に依存する。
 第 \ref{sec:growth} 小節を見よ）。二つを合わせるには、
 二つの積の差を一つの成分ずつ差し替えて $k$ 項の和に分解する。
 前者が完全な証明でどのような形をとるかは第 \ref{sec:lcs} 小節で、後者については
@@ -1109,10 +1109,10 @@ $\theta \mapsto e^{i\Theta(t,\theta)}$ はいずれも $y' = iy/(\cosh t + \cos\
 
 $N = 0$ の場合の最良の定数は明示的に求まる。$\abs{z} = 1$ のとき
 $\cosh t + \operatorname{Re}(z)\sinh t$ はちょうど区間 $[e^{-\abs{t}}, e^{\abs{t}}]$ を動くから、
-共形因子のべき $(\,\cdot\,)^{d-1}$ の上限は $e^{\abs{d-1}\abs{t}}$ であり、$f \equiv 1$ と
+共形因子のべき $(\,\cdot\,)^{d-1}$ の上限は $e^{\abs{d-1}\,\abs{t}}$ であり、$f \equiv 1$ と
 とればこの値が達成される。すなわち
 \[
-  \sup_{f \ne 0} \frac{\norm{\beta_d(v_t)f}_\infty}{\norm{f}_\infty} = e^{\abs{d-1}\abs{t}} .
+  \sup_{f \ne 0} \frac{\norm{\beta_d(v_t)f}_\infty}{\norm{f}_\infty} = e^{\abs{d-1}\,\abs{t}} .
 \]
 $d = 0, 1, 2$ ではこれは順に $e^{\abs{t}}$、$1$、$e^{\abs{t}}$ になる。$d \ge 3$ では
 $\abs{d-1} \ge 2$ だから、$t \ne 0$ に対して $e^{\abs{t}}$ より真に大きく、$t = 0$ では
@@ -1258,12 +1258,13 @@ $P(I_+)\Omega$ への移行を「$f \in C_0^\infty(I_+)$ を近似する」と�
 この版で確立されていることと、まだ確立されていないことを分けて述べる。形式化は
 継続中であり、この版より後の状態については何も述べない。
 
-本稿の保存版には、上のコミットにおける形式化のソースの書庫が本稿とともに収められる。
-本節と第 \ref{sec:limits} 節の主張は、したがってその書庫に対して確かめられる。
+本稿の保存版には、上のコミットにおける形式化のソース一式が本稿とともに収められる。
+本節と第 \ref{sec:limits} 節の主張は、したがってそのソースに対して確かめられる。
 開発リポジトリそのものへのアクセスは前提としない。上のコミット識別子は版を一意に
-指定するから、書庫の内容と以下の記述との対応は一意に定まる。
+指定するから、そのソースと以下の記述との対応は一意に定まる。
 
 \subsection{証明済みの結果}
+\label{sec:proved}
 
 第 \ref{sec:setting} 節から第 \ref{sec:general} 節までに述べた道筋のうち、
 次のものはすべて機械的に検証された証明をもつ。
@@ -1300,8 +1301,10 @@ $P(I_+)\Omega$ への移行を「$f \in C_0^\infty(I_+)$ を近似する」と�
 \end{tabular}
 \end{center}
 
-出典欄が括弧書きの行は、その主張が原論文の番号つき結果そのものではなく、その証明が用いる
-事実、または本稿の開発で導いた帰結であることを示す。
+出典欄が括弧書きの行は、その主張が原論文の番号つき結果そのものではないことを示す。
+三つの場合がある。番号つき結果の証明が用いる事実であるか、本稿の開発で導いた帰結であるか、
+あるいは番号つき結果を両立汎関数でスカラー化した形であって、原論文の主張よりは弱いが、
+定義 \ref{def:vtilde} と定理 \ref{thm:main} に至る道筋が実際に用いるものである。
 
 \paragraph{制限による同一視について。}
 \cite{T26} 定義 3.2 は、$\Xcl$ の元 $F$ をその円周への制限 $F|_{\Circ}$ と同一視して
@@ -1341,20 +1344,21 @@ $(\Dom, \Fields, U, \Omega)$ とその公理を仮定として受け取り、結
 
 形式化された証明について、機械的に確認されているのは次のことである。
 
-第一に、上表のすべての結果について、証明に未完成の箇所がない。証明支援系には、証明の
+第一に、第 \ref{sec:proved} 小節の表にあるすべての結果について、証明に未完成の箇所がない。証明支援系には、証明の
 一部を「後で埋める」と宣言したまま先へ進む機能があるが、この開発ではその宣言は一つも
 使われていない。自動的な検査がその不在を開発全体にわたって確認している。
 
 これとは別に、開発には定理 3.10 とそこに至る主張を原論文の語彙のまま書き並べた一覧が
 ある。そこに並ぶ主張はいずれも別の場所で証明されており、この一覧に残っている未充足の
 項目は一つだけである。すなわち、公理系を満たす理論そのものが、まだ与えられていない
-対象として置かれている。置かれているのは「その対象が与えられていない」ことを型の上で表明する項であって、対象
-そのものではないから、それを使って何かを証明することはできない。上表のどの結果もそれに
+対象として置かれている。置かれているのは「この対象はまだ与えられていない」ということ自体を
+表す別種の対象であって、求める対象そのものではない。したがってそれを使って何かを証明する
+ことはできない。上の表のどの結果もそれに
 依存しておらず、いずれも公理系を満たす理論を任意に与えたときの主張として証明されている。
 第 \ref{sec:limits} 節の「具体的なモデルは構成していない」という項目が、この点にあたる。
 
 第二に、証明が依拠する論理的な仮定が明示されている。Lean のカーネルは、ある定理の証明が
-どの公理に（推移的に）依存するかを機械的に列挙できる。固定した版では、上表の結果を含む
+どの公理に（推移的に）依存するかを機械的に列挙できる。固定した版では、上の表の結果を含む
 \auditcount\ 件の宣言についてこの列挙を実行し、現れる公理が
 \[
   \{\,\text{propext},\ \text{Classical.choice},\ \text{Quot.sound}\,\}
@@ -1369,7 +1373,7 @@ $(\Dom, \Fields, U, \Omega)$ とその公理を仮定として受け取り、結
 ではない。
 
 ここで\textbf{宣言}とは、形式化の中で名前を与えて書き下したもの一つ一つ、すなわち定理
-だけでなく定義や、型クラスの具体化として与えたものも含む。列挙の対象がこの \auditcount\ 件で
+だけでなく定義も含む。列挙の対象がこの \auditcount\ 件で
 尽きていること、いいかえて検査から漏れた定理がないことは、別の機械的な検査が確かめて
 いる。この検査は、形式化のすべてのファイルが全体の入口となる一つのモジュールから
 到達可能であること、および、そこで公開されている定理がすべて上の列挙の対象一覧に
@@ -1377,7 +1381,7 @@ $(\Dom, \Fields, U, \Omega)$ とその公理を仮定として受け取り、結
 ある。
 
 二つの数は数える単位が違う。\auditcount\ は公理の列挙を実行した宣言の件数であり、
-定理のほかに定義や型クラスの具体化を含む。\coveragecount\ はそのうち、公開された定理
+定理のほかに定義とそれに準じるものを含む。\coveragecount\ はそのうち、公開された定理
 として宣言されているものだけを数えたものである。したがって \coveragecount\ 件の定理は
 いずれも \auditcount\ 件の中に含まれており、差はもっぱら定理でない宣言に対応する。
 定理でない宣言についても公理の列挙は意味をもつ。定義がどの公理に依存するかは、
@@ -1395,7 +1399,8 @@ $(\Dom, \Fields, U, \Omega)$ とその公理を仮定として受け取り、結
 問題であって、証明の正しさの問題ではない。定理を弱めたり、特別な場合に限定したり、
 都合のよい仮定を追加で置いたりすることも、これらの検査では捉えられない。それを防ぐのは
 検査ではなく、原論文の主張と Lean の主張を照合する人間の作業である。本稿の
-第 \ref{sec:gaps} 節と第 \ref{sec:status} 節の対応表は、その照合の出発点として書かれている。
+第 \ref{sec:gaps} 節と、第 \ref{sec:proved} 小節の対応表は、その照合の出発点として
+書かれている。
 
 \section{限界と未着手の項目}
 \label{sec:limits}
