@@ -52,6 +52,11 @@ declaration listed in `scripts/print_axioms.lean`, and no project axioms are adm
 Agent guidance is in `AGENTS.md`. GitHub Issues and pull requests are the only work queue and
 evidence record: Issue → branch → PR → independent review → CI → squash merge.
 
+## Citation
+
+The v0.1.0 release is archived on Zenodo: https://zenodo.org/records/22222446 (DOI
+`10.5281/zenodo.22222446`). See `CITATION.cff` for the full citation metadata.
+
 ## License
 
 Apache-2.0, see `LICENSE`.
