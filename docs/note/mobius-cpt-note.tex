@@ -109,15 +109,16 @@ M\"obius-covariant Wightman conformal field theories on the circle in a setting 
 neither a Hilbert space nor unitarity: the boost flow of such a theory admits an analytic
 continuation, as a family of \emph{partially defined} operators, to the closed strip
 $0 \le \operatorname{Im}\tau \le \pi$; at the far edge $\tau = i\pi$ that continuation is
-defined on every product of fields smeared inside the upper semicircle, and there it reverses
-the order of the product, reflects each test function through $z \mapsto z^{-1}$, and multiplies the
+defined on every vector obtained by applying to the vacuum a product of fields smeared in the
+closed upper semicircle, and there it reverses the order of the product, reflects each test function through $z \mapsto z^{-1}$, and multiplies the
 result by $(-1)^{d}$, where $d$ is the sum of the conformal dimensions. This is the
 analytic-continuation and order-reversal statement on which the PCT involution and the
 Bisognano--Wichmann property are subsequently built; those constructions require further
 structure and are not treated here. This note reports a
 machine-checked formalisation of that theorem in Lean~4 with mathlib, written for mathematicians
 with no knowledge of proof assistants. It presents the proof architecture --- Definition~3.1 and
-Lemmas 3.4, 3.6, 3.7, 3.8, 3.9 leading to Theorem~3.10 --- as ordinary mathematics; it records
+Lemmas 3.4, 3.6, 3.7, 3.8, 3.9 leading to Theorem~3.10, whose numbering, here and throughout,
+is Tener's own --- as ordinary mathematics; it records
 which results are proved at a pinned repository revision and which are not yet formalised; and it sets out,
 as mathematics rather than as implementation detail, the points at which the published proof
 compresses an argument that a complete proof must supply. Among these are the uniqueness of the
@@ -189,6 +190,11 @@ Lean の構文にも宣言名にも依存せずに読めるように書かれて
 Fourier モードの議論などである。これらはいずれも \cite{T26} の証明が正しいことを
 前提としたうえで、その省略された部分を補うものであって、誤りの指摘ではない。
 
+\paragraph{番号の付け方。}
+以下、定義・補題・定理の番号は \cite{T26} のものに合わせ、本稿独自の項目には英字を付す。
+番号は原論文のものだから連続せず、また原論文の項目のうち本稿が番号で引用するだけで
+改めて述べないものもある。
+
 \paragraph{範囲と非目標。}
 本稿と、本稿が報告する形式化の主たる対象は、\cite{T26} の第 3 節、すなわち定義 3.1 から
 定理 3.10 までである。これに加えて、基準となる半円 $I_\pm$ に対する Reeh--Schlieder 性、
@@ -208,9 +214,7 @@ PCT 対合、および M\"obius 頂点代数との同値（\cite{CRTT25}）。�
 PCT 公式（補題 3.4, 3.6, 3.7）、第 5 節は一般の試験関数への拡張（補題 3.8, 3.9 と
 定理 3.10）を扱う。第 4 節と第 5 節は原論文と同じ詳しさで道筋を述べ、実質的な議論を要する
 箇所には第 6 節への前方参照を置く。第 6 節はその各点を独立に論じる。第 7 節で形式化の状態と
-検証の意味を述べ、第 8 節で限界と未着手の項目を挙げる。定義・補題・定理の番号は
-\cite{T26} のものに合わせてあり、本稿独自の項目には英字を付す。番号は原論文のものだから
-連続せず、また原論文の項目のうち本稿が番号で引用するだけで改めて述べないものもある。
+検証の意味を述べ、第 8 節で限界と未着手の項目を挙げる。
 
 \section{設定と記法}
 \label{sec:setting}
@@ -492,11 +496,10 @@ $\Vt_\tau$ の定義域に属することが構成的に確かめられ、$\tau 
 局所性とスペクトル条件から計算できる。第二段階では、この特別な族が一般の
 台条件付き試験関数の中で稠密であることを用い、極限へ移る（第 \ref{sec:general} 節）。
 極限が定義 \ref{def:vtilde} の条件 ($\Phi$1), ($\Phi$2) を保つことを示すには、
-閉帯上で一様な評価が必要であり、それが補題 3.8 と補題 3.9 である。
+閉帯上で一様な評価が必要であり、それが補題 3.8 と補題 3.9 である。依存関係は
+図 \ref{fig:flow} のとおりである。
 
-図 \ref{fig:flow} に依存関係を示す。
-
-\begin{figure}[htbp]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[
   font=\small,
@@ -509,7 +512,7 @@ $\Vt_\tau$ の定義域に属することが構成的に確かめられ、$\tau 
 \node[box, right=14mm of ax] (x) {解析的試験関数の族 $\Xcl$\\ (\cite{T26} 定義 3.2)};
 
 \node[box, below=7mm of ax] (d31) {定義 3.1\\ $\Vt_\tau$ と一意性};
-\node[box, below=7mm of x] (b) {複素ブースト $\beta_d(v_\tau)$\\ (定義 3.5)};
+\node[box, below=7mm of x] (b) {複素ブースト $\beta_d(v_\tau)$\\ (\cite{T26} 定義 3.5)};
 
 \node[box, below=7mm of b] (l36) {補題 3.6\\ 帯上の連続性・正則性};
 \node[box, left=9mm of l36] (l34) {補題 3.4\\ $\Xcl$ の稠密性};
@@ -525,16 +528,22 @@ $\Vt_\tau$ の定義域に属することが構成的に確かめられ、$\tau 
 \draw[flow] (x.west) to[out=225,in=75] (l34.north east);
 \draw[flow] (d31.west) to[out=180,in=180] (l37.west);
 \draw[flow] (l36) -- (l37);
-\draw[flow] (l37.east) to[out=0,in=0] (l39.east);
-\draw[flow] (ax.east) to[out=0,in=0] (l38.east);
+\draw[flow] (l37.east) to[out=0,in=0,looseness=0.8] (l39.east);
+% The axioms feed Lemma 3.8 directly, bypassing the right-hand column; the edge is
+% routed outside every box rather than curved through them.
+\path let \p1 = (l37.east), \p2 = (l39.east), \n1 = {max(\x1,\x2) + 12mm} in
+  coordinate (rmargin) at (\n1, 0);
+\coordinate (above) at ([yshift=6mm]ax.north);
+\draw[flow, rounded corners=3pt]
+  (ax.north) -- (above) -- (rmargin |- above) -- (rmargin |- l38) -- (l38.east);
 \draw[flow] (l38) -- (l39);
 \draw[flow] (l39) -- (thm);
 \draw[flow] (l34.west) to[out=180,in=180] (thm.west);
 \end{tikzpicture}
 \caption{証明の依存関係。補題 3.8 は $\Xcl$ から作られるベクトルを経由せず、公理から
 直接得られる。
-補題 3.9 は補題 3.8 と、補題 3.7 の両方の主張（下側境界に (i)、上側境界に (ii)）を
-使う。補題 3.4 は、補題 3.7 が扱う試験関数の族が稠密であることを保証し、
+補題 3.9 は補題 3.8 と補題 3.7 の両方の主張を使う（閉帯上の連続性と正則性に (i)、
+上側境界の評価に (ii)）。下側境界は補題 3.8 が直接押さえる。補題 3.4 は、補題 3.7 が扱う試験関数の族が稠密であることを保証し、
 定理 3.10 の極限操作の出発点になる。}
 \label{fig:flow}
 \end{figure}
@@ -1217,7 +1226,8 @@ $f_+$ と $f_-$ のいずれかが端点で $0$ にならず、規約 \ref{conv:
 \subsection{台の規約の読み方}
 \label{sec:supp-reading}
 
-\cite{T26} は一貫して $\operatorname{supp} f \subset I_\pm$ と書く。規約 \ref{conv:supp} が
+\cite{T26} は一貫して $\operatorname{supp} f \subset I_\pm$ と書く（記号は原論文のまま
+であり、真の包含を意味しない）。規約 \ref{conv:supp} が
 述べるとおり、これを閉包の意味に読むのが正しい。理由は \cite{T26} 自身の記述にある。
 \cite{T26} 定義 3.3 は $P_{\Xcl}(I_+) \subseteq P(I_+)$ を主張する。ここで
 $P_{\Xcl}(I_+)$ は $F \in \Xcl$ に対する $\varphi(F|_{I_+})$ が生成する部分代数である。
@@ -1279,8 +1289,8 @@ $P(I_+)\Omega$ への移行を「$f \in C_0^\infty(I_+)$ を近似する」と�
 \cite{T26} 定義 3.5 & 複素ブースト $\beta_d(v_\tau)$（$d = 0$ の可除特異点を込めて）、半群則 \\
 \cite{T26} 補題 3.6 (i) & $\tau \mapsto \beta_d(v_\tau)F|_{I_+}$ の $\Strip_{i\pi}$ 上の連続性と \\
  & 内部での正則性 \\
-(補題 3.6 (ii) の & 各 $G_\lambda$、すなわち \eqref{eq:Glambda} の $\Strip_{i\pi}$ 上の \\
-\ スカラー化した帰結) & 連続性と内部での正則性 \\
+（補題 3.6 (ii) を & 各 $G_\lambda$、すなわち \eqref{eq:Glambda} の $\Strip_{i\pi}$ 上の \\
+\ スカラー化した形） & 連続性と内部での正則性 \\
 （(W3) から導いた帰結） & 正モードのみをもつ試験関数に対する $\varphi(f)\Omega = 0$ \\
 \cite{T26} 補題 3.7 & (i) $P_\Xcl(I_+)\Omega$ 上の $\Vt_\tau$ の値、(ii) $\tau = i\pi$ における符号 \\
 \cite{T26} 補題 3.8 & 実軸上の $C^N$ 増大度評価 \\
