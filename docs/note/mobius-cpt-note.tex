@@ -13,48 +13,65 @@
 %   1. \jafontdir/NotoSerifCJKjp-*.otf, \jafontdir/NotoSansCJKjp-*.otf, by file name;
 %   2. Harano Aji Mincho / Gothic, by file name — part of every TeX Live since 2020;
 %   3. the Noto CJK JP families, by family name, which needs fontconfig.
-% If none is available in full the build stops and names all three.  See README.md.
+% If no route is available in full the build stops and names all three.  See README.md.
 %
-% Each route is taken only when EVERY face it needs is present.  A half-installed route --
-% an interrupted download into \jafontdir, a partial manual font installation -- must fall
-% through to the next route, not be selected and then fail on the missing face.  Each route
-% therefore has its own flag, set false by any failing probe.
-\newif\ifjafontA \jafontAtrue
+% Two properties are wanted at once.  (a) A route is taken only when EVERY face it needs is
+% present, so that a half-installed route -- an interrupted download into \jafontdir, a
+% partial manual font installation -- falls through to the next route instead of being
+% selected and then failing on the missing face.  Hence one probe per face, any failing
+% probe dropping the whole route.  (b) A later route is probed only if the earlier ones did
+% not succeed, so that the reference build touches no font outside \jafontdir; probing by
+% family name reaches into system font directories, which makes the build environment
+% dependent and is reported as such.  Hence the probes are guarded, not run up front.
+\newif\ifjafontA \newif\ifjafontB \newif\ifjafontC \newif\ifjafontset
+\jafontsetfalse
+
+\jafontAtrue
 \IfFileExists{\jafontdir/NotoSerifCJKjp-Regular.otf}{}{\jafontAfalse}
 \IfFileExists{\jafontdir/NotoSerifCJKjp-Bold.otf}{}{\jafontAfalse}
 \IfFileExists{\jafontdir/NotoSansCJKjp-Regular.otf}{}{\jafontAfalse}
 \IfFileExists{\jafontdir/NotoSansCJKjp-Bold.otf}{}{\jafontAfalse}
-
-\newif\ifjafontB \jafontBtrue
-\IfFontExistsTF{HaranoAjiMincho-Regular.otf}{}{\jafontBfalse}
-\IfFontExistsTF{HaranoAjiMincho-Bold.otf}{}{\jafontBfalse}
-\IfFontExistsTF{HaranoAjiGothic-Regular.otf}{}{\jafontBfalse}
-\IfFontExistsTF{HaranoAjiGothic-Bold.otf}{}{\jafontBfalse}
-
-\newif\ifjafontC \jafontCtrue
-\IfFontExistsTF{Noto Serif CJK JP}{}{\jafontCfalse}
-\IfFontExistsTF{Noto Sans CJK JP}{}{\jafontCfalse}
-
 \ifjafontA
   \setCJKmainfont[Path=\jafontdir/,BoldFont=NotoSerifCJKjp-Bold.otf]{NotoSerifCJKjp-Regular.otf}
   \setCJKsansfont[Path=\jafontdir/,BoldFont=NotoSansCJKjp-Bold.otf]{NotoSansCJKjp-Regular.otf}
   \setCJKmonofont[Path=\jafontdir/,BoldFont=NotoSansCJKjp-Bold.otf]{NotoSansCJKjp-Regular.otf}
-\else\ifjafontB
-  \setCJKmainfont[BoldFont=HaranoAjiMincho-Bold.otf]{HaranoAjiMincho-Regular.otf}
-  \setCJKsansfont[BoldFont=HaranoAjiGothic-Bold.otf]{HaranoAjiGothic-Regular.otf}
-  \setCJKmonofont[BoldFont=HaranoAjiGothic-Bold.otf]{HaranoAjiGothic-Regular.otf}
-\else\ifjafontC
-  \setCJKmainfont{Noto Serif CJK JP}
-  \setCJKsansfont{Noto Sans CJK JP}
-  \setCJKmonofont{Noto Sans CJK JP}
-\else
+  \jafontsettrue
+\fi
+
+\ifjafontset\else
+  \jafontBtrue
+  \IfFontExistsTF{HaranoAjiMincho-Regular.otf}{}{\jafontBfalse}
+  \IfFontExistsTF{HaranoAjiMincho-Bold.otf}{}{\jafontBfalse}
+  \IfFontExistsTF{HaranoAjiGothic-Regular.otf}{}{\jafontBfalse}
+  \IfFontExistsTF{HaranoAjiGothic-Bold.otf}{}{\jafontBfalse}
+  \ifjafontB
+    \setCJKmainfont[BoldFont=HaranoAjiMincho-Bold.otf]{HaranoAjiMincho-Regular.otf}
+    \setCJKsansfont[BoldFont=HaranoAjiGothic-Bold.otf]{HaranoAjiGothic-Regular.otf}
+    \setCJKmonofont[BoldFont=HaranoAjiGothic-Bold.otf]{HaranoAjiGothic-Regular.otf}
+    \jafontsettrue
+  \fi
+\fi
+
+\ifjafontset\else
+  \jafontCtrue
+  \IfFontExistsTF{Noto Serif CJK JP}{}{\jafontCfalse}
+  \IfFontExistsTF{Noto Sans CJK JP}{}{\jafontCfalse}
+  \ifjafontC
+    \setCJKmainfont{Noto Serif CJK JP}
+    \setCJKsansfont{Noto Sans CJK JP}
+    \setCJKmonofont{Noto Sans CJK JP}
+    \jafontsettrue
+  \fi
+\fi
+
+\ifjafontset\else
   \PackageError{mobius-cpt-note}{No complete Japanese font set available}{%
     This document needs one of, complete: (1) NotoSerifCJKjp-Regular/Bold.otf and
     NotoSansCJKjp-Regular/Bold.otf in the directory \jafontdir/ (see docs/note/README.md);
     (2) HaranoAjiMincho-Regular/Bold.otf and HaranoAjiGothic-Regular/Bold.otf, part of
     TeX Live 2020 and later; (3) the Noto Serif CJK JP and Noto Sans CJK JP families
     installed system-wide and visible to fontconfig.}
-\fi\fi\fi
+\fi
 
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage[a4paper,margin=27mm]{geometry}
