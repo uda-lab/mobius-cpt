@@ -25,11 +25,11 @@ authors:
     # orcid: "https://orcid.org/XXXX-XXXX-XXXX-XXXX"   # to be supplied by the author
     # affiliation: ""                                   # to be supplied by the author
 version: "0.1.0"
-date-released: "2026-08-31"
+date-released: "2026-09-01"
 license: Apache-2.0
 repository-code: "https://github.com/uda-lab/mobius-cpt"
 url: "https://github.com/uda-lab/mobius-cpt"
-commit: 9664674d88e40ba0158d684d28e2153f4809f7f7
+commit: fad7a6224ae608a56be5f212ece8837d209199bd
 keywords:
   - PCT theorem
   - conformal field theory
