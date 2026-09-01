@@ -10,9 +10,11 @@ abstract: >-
   fields smeared inside the upper semicircle, and there it reverses the order of the product,
   reflects each test function through z -> 1/z, and multiplies the result by (-1)^d, where d is
   the sum of the conformal dimensions. This repository contains a machine-checked formalisation
-  of that theorem in Lean 4 with mathlib, covering Definition 3.1 and Lemmas 3.4, 3.6, 3.7, 3.8,
-  3.9 leading to Theorem 3.10, together with the Reeh-Schlieder property for the two reference
-  semicircles, which is what makes the continued operators densely defined. It also contains a
+  of that theorem in Lean 4 with mathlib, covering Definition 3.1, Lemma 3.4, Lemma 3.6(i)
+  together with the scalarised consequence of Lemma 3.6(ii) that Definition 3.1 requires, and
+  Lemmas 3.7, 3.8, 3.9 leading to Theorem 3.10, together with the Reeh-Schlieder property for
+  the two reference semicircles, which is what supports calling the continued operators densely
+  defined. It also contains a
   mathematician-facing research note (Japanese body, English title and abstract) that presents
   the proof architecture as ordinary mathematics, records the formalisation status at a pinned
   revision, and sets out the points at which the published proof compresses an argument that a
