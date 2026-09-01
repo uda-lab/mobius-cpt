@@ -40,7 +40,8 @@ in the reference environment and on a stock TeX Live without being edited:
 
 1. **`\jafontdir/NotoSerifCJKjp-*.otf`, `\jafontdir/NotoSansCJKjp-*.otf`, by file name.**
    `\jafontdir` defaults to `fonts/` relative to the `.tex` file. This is the reference route and
-   the one the archival PDF uses.
+   the one the archival PDF uses. It is taken only if **all four** files are present, so a
+   partially populated `fonts/` falls through to the routes below instead of failing.
 2. **Harano Aji Mincho / Gothic, by file name.** Part of every TeX Live since 2020 (the
    `haranoaji` package, in `texlive-lang-japanese` on Debian), so this route needs no download.
 3. **The `Noto Serif CJK JP` / `Noto Sans CJK JP` families, by family name.** This one goes
@@ -91,7 +92,7 @@ cd docs/note
 latexmk -xelatex mobius-cpt-note.tex     # latexmk -C cleans up
 ```
 
-Either produces `mobius-cpt-note.pdf`, 22 pages. Both are single-pass from the caller's point of
+Either produces `mobius-cpt-note.pdf`, 23 pages. Both are single-pass from the caller's point of
 view — Tectonic reruns TeX internally until references settle, and `latexmk` does the same — and
 each takes a few seconds and a few hundred megabytes of memory. A clean build emits no warning,
 no missing character and no overfull or underfull box; treat any of those as a defect.

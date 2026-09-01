@@ -14,11 +14,20 @@
 %   2. Harano Aji Mincho / Gothic, by file name — part of every TeX Live since 2020;
 %   3. the Noto CJK JP families, by family name, which needs fontconfig.
 % If none is present the build stops and names all three. See README.md.
-\IfFileExists{\jafontdir/NotoSerifCJKjp-Regular.otf}{%
+% Route 1 is taken only if all four files are present: a partial \jafontdir (an interrupted
+% download, say) must fall through to the later routes rather than fail on a missing file.
+\newif\ifnotocjkcomplete
+\notocjkcompletetrue
+\IfFileExists{\jafontdir/NotoSerifCJKjp-Regular.otf}{}{\notocjkcompletefalse}
+\IfFileExists{\jafontdir/NotoSerifCJKjp-Bold.otf}{}{\notocjkcompletefalse}
+\IfFileExists{\jafontdir/NotoSansCJKjp-Regular.otf}{}{\notocjkcompletefalse}
+\IfFileExists{\jafontdir/NotoSansCJKjp-Bold.otf}{}{\notocjkcompletefalse}
+
+\ifnotocjkcomplete
   \setCJKmainfont[Path=\jafontdir/,BoldFont=NotoSerifCJKjp-Bold.otf]{NotoSerifCJKjp-Regular.otf}%
   \setCJKsansfont[Path=\jafontdir/,BoldFont=NotoSansCJKjp-Bold.otf]{NotoSansCJKjp-Regular.otf}%
   \setCJKmonofont[Path=\jafontdir/,BoldFont=NotoSansCJKjp-Bold.otf]{NotoSansCJKjp-Regular.otf}%
-}{%
+\else
   \IfFontExistsTF{HaranoAjiMincho-Regular.otf}{%
     \setCJKmainfont[BoldFont=HaranoAjiMincho-Bold.otf]{HaranoAjiMincho-Regular.otf}%
     \setCJKsansfont[BoldFont=HaranoAjiGothic-Bold.otf]{HaranoAjiGothic-Regular.otf}%
@@ -36,7 +45,7 @@
         visible to fontconfig.}%
     }%
   }%
-}
+\fi
 
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage[a4paper,margin=27mm]{geometry}
