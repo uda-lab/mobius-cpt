@@ -6,9 +6,76 @@
 
 \usepackage{fontspec}
 \usepackage{xeCJK}
-\setCJKmainfont[Path=\jafontdir/,BoldFont=NotoSerifCJKjp-Bold.otf]{NotoSerifCJKjp-Regular.otf}
-\setCJKsansfont[Path=\jafontdir/,BoldFont=NotoSansCJKjp-Bold.otf]{NotoSansCJKjp-Regular.otf}
-\setCJKmonofont[Path=\jafontdir/,BoldFont=NotoSansCJKjp-Bold.otf]{NotoSansCJKjp-Regular.otf}
+
+% Japanese fonts. Three routes are tried in order, so that the file builds both in the
+% reference environment (Tectonic with the four OTFs in \jafontdir) and on an ordinary
+% TeX Live installation, without editing the document:
+%   1. \jafontdir/NotoSerifCJKjp-*.otf, \jafontdir/NotoSansCJKjp-*.otf, by file name;
+%   2. Harano Aji Mincho / Gothic, by file name — part of every TeX Live since 2020;
+%   3. the Noto CJK JP families, by family name, which needs fontconfig.
+% If no route is available in full the build stops and names all three.  See README.md.
+%
+% Two properties are wanted at once.  (a) A route is taken only when EVERY face it needs is
+% present, so that a half-installed route -- an interrupted download into \jafontdir, a
+% partial manual font installation -- falls through to the next route instead of being
+% selected and then failing on the missing face.  Hence one probe per face, any failing
+% probe dropping the whole route -- the document sets Japanese in bold as well as in the
+% regular weight, so a route offering only the regular faces is incomplete.  (b) A later
+% route is probed only if the earlier ones did
+% not succeed, so that the reference build touches no font outside \jafontdir; probing by
+% family name reaches into system font directories, which makes the build environment
+% dependent and is reported as such.  Hence the probes are guarded, not run up front.
+\newif\ifjafontA \newif\ifjafontB \newif\ifjafontC \newif\ifjafontset
+\jafontsetfalse
+
+\jafontAtrue
+\IfFileExists{\jafontdir/NotoSerifCJKjp-Regular.otf}{}{\jafontAfalse}
+\IfFileExists{\jafontdir/NotoSerifCJKjp-Bold.otf}{}{\jafontAfalse}
+\IfFileExists{\jafontdir/NotoSansCJKjp-Regular.otf}{}{\jafontAfalse}
+\IfFileExists{\jafontdir/NotoSansCJKjp-Bold.otf}{}{\jafontAfalse}
+\ifjafontA
+  \setCJKmainfont[Path=\jafontdir/,BoldFont=NotoSerifCJKjp-Bold.otf]{NotoSerifCJKjp-Regular.otf}
+  \setCJKsansfont[Path=\jafontdir/,BoldFont=NotoSansCJKjp-Bold.otf]{NotoSansCJKjp-Regular.otf}
+  \setCJKmonofont[Path=\jafontdir/,BoldFont=NotoSansCJKjp-Bold.otf]{NotoSansCJKjp-Regular.otf}
+  \jafontsettrue
+\fi
+
+\ifjafontset\else
+  \jafontBtrue
+  \IfFontExistsTF{HaranoAjiMincho-Regular.otf}{}{\jafontBfalse}
+  \IfFontExistsTF{HaranoAjiMincho-Bold.otf}{}{\jafontBfalse}
+  \IfFontExistsTF{HaranoAjiGothic-Regular.otf}{}{\jafontBfalse}
+  \IfFontExistsTF{HaranoAjiGothic-Bold.otf}{}{\jafontBfalse}
+  \ifjafontB
+    \setCJKmainfont[BoldFont=HaranoAjiMincho-Bold.otf]{HaranoAjiMincho-Regular.otf}
+    \setCJKsansfont[BoldFont=HaranoAjiGothic-Bold.otf]{HaranoAjiGothic-Regular.otf}
+    \setCJKmonofont[BoldFont=HaranoAjiGothic-Bold.otf]{HaranoAjiGothic-Regular.otf}
+    \jafontsettrue
+  \fi
+\fi
+
+\ifjafontset\else
+  \jafontCtrue
+  \IfFontExistsTF{Noto Serif CJK JP}{}{\jafontCfalse}
+  \IfFontExistsTF{Noto Serif CJK JP Bold}{}{\jafontCfalse}
+  \IfFontExistsTF{Noto Sans CJK JP}{}{\jafontCfalse}
+  \IfFontExistsTF{Noto Sans CJK JP Bold}{}{\jafontCfalse}
+  \ifjafontC
+    \setCJKmainfont[BoldFont={Noto Serif CJK JP Bold}]{Noto Serif CJK JP}
+    \setCJKsansfont[BoldFont={Noto Sans CJK JP Bold}]{Noto Sans CJK JP}
+    \setCJKmonofont[BoldFont={Noto Sans CJK JP Bold}]{Noto Sans CJK JP}
+    \jafontsettrue
+  \fi
+\fi
+
+\ifjafontset\else
+  \PackageError{mobius-cpt-note}{No complete Japanese font set available}{%
+    This document needs one of, complete: (1) NotoSerifCJKjp-Regular/Bold.otf and
+    NotoSansCJKjp-Regular/Bold.otf in the directory \jafontdir/ (see docs/note/README.md);
+    (2) HaranoAjiMincho-Regular/Bold.otf and HaranoAjiGothic-Regular/Bold.otf, part of
+    TeX Live 2020 and later; (3) the Noto Serif CJK JP and Noto Sans CJK JP families,
+    Regular and Bold, installed system-wide and visible to fontconfig.}
+\fi
 
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage[a4paper,margin=27mm]{geometry}
@@ -33,10 +100,11 @@
 \AtBeginDocument{\settowidth{\parindent}{\CJKfamily{}あ}}
 
 % ---- pinned status data (single source; see §7) -------------------------------
-\newcommand{\pinnedcommit}{9664674d88e40ba0158d684d28e2153f4809f7f7}
-\newcommand{\pinneddate}{2026年8月31日}
-\newcommand{\auditcount}{820}
-\newcommand{\notedate}{2026年8月31日}
+\newcommand{\pinnedcommit}{fad7a6224ae608a56be5f212ece8837d209199bd}
+\newcommand{\pinneddate}{2026年9月1日}
+\newcommand{\auditcount}{874}
+\newcommand{\coveragecount}{815}
+\newcommand{\notedate}{2026年9月1日}
 % ------------------------------------------------------------------------------
 
 \newcommand{\Mob}{\mathrm{M\text{ö}b}}
@@ -78,16 +146,18 @@
 Tener (Comm.\ Math.\ Phys.\ \textbf{407} (2026), no.~6, paper no.~128) proves a PCT theorem for
 M\"obius-covariant Wightman conformal field theories on the circle in a setting that assumes
 neither a Hilbert space nor unitarity: the boost flow of such a theory admits an analytic
-continuation to the closed strip $0 \le \operatorname{Im}\tau \le \pi$, and at the far edge
-$\tau = i\pi$ that continuation reverses the order of any product of fields smeared inside the
-upper semicircle, reflects each test function through $z \mapsto z^{-1}$, and multiplies the
+continuation, as a family of \emph{partially defined} operators, to the closed strip
+$0 \le \operatorname{Im}\tau \le \pi$; at the far edge $\tau = i\pi$ that continuation is
+defined on every vector obtained by applying to the vacuum a product of fields smeared in the
+closed upper semicircle, and there it reverses the order of the product, reflects each test function through $z \mapsto z^{-1}$, and multiplies the
 result by $(-1)^{d}$, where $d$ is the sum of the conformal dimensions. This is the
 analytic-continuation and order-reversal statement on which the PCT involution and the
 Bisognano--Wichmann property are subsequently built; those constructions require further
 structure and are not treated here. This note reports a
 machine-checked formalisation of that theorem in Lean~4 with mathlib, written for mathematicians
 with no knowledge of proof assistants. It presents the proof architecture --- Definition~3.1 and
-Lemmas 3.4, 3.6, 3.7, 3.8, 3.9 leading to Theorem~3.10 --- as ordinary mathematics; it records
+Lemmas 3.4, 3.6, 3.7, 3.8, 3.9 leading to Theorem~3.10, whose numbering, here and throughout,
+is Tener's own --- as ordinary mathematics; it records
 which results are proved at a pinned repository revision and which are not yet formalised; and it sets out,
 as mathematics rather than as implementation detail, the points at which the published proof
 compresses an argument that a complete proof must supply. Among these are the uniqueness of the
@@ -95,8 +165,8 @@ continuation from its boundary values, a removable singularity in the complex bo
 dimension zero, the appeal to locality for test functions whose closed supports touch at the
 endpoints of the semicircle, the passage from the spectrum condition to the annihilation of the
 vacuum by positive Fourier modes, and the maximum-principle step underlying the strip-uniform
-estimate. The Reeh--Schlieder property for the two reference semicircles, which is what makes the
-continued operators densely defined, is proved as well. A statement of what the verification does
+estimate. The Reeh--Schlieder property for the two reference semicircles, which together with Lemma~3.4
+is what supports calling the continued operators densely defined, is proved as well. A statement of what the verification does
 and does not establish is included. The main text is in Japanese.
 \end{abstract}
 
@@ -111,8 +181,9 @@ and does not establish is included. The main text is in Japanese.
 
 円周上の共形場理論に対する PCT 定理は、時空の向きを反転させる幾何学的操作が場の理論の代数に
 どのように作用するかを述べるものである。Tener \cite{T26} は、この定理を Hilbert 空間も
-内積もユニタリ性も仮定しない枠組みで証明した。従来の PCT 定理が ユニタリ性と正定値性を
-本質的に用いていたのに対し、\cite{T26} が扱うのは非ユニタリな Wightman 型の公理系であり、
+内積もユニタリ性も仮定しない枠組みで証明した。Hilbert 空間の上で述べられる標準的な
+定式化では、内積とその正定値性、およびそこから定まるノルムと完備性が使える。
+\cite{T26} が扱うのはそれらを仮定しない非ユニタリな Wightman 型の公理系であり、
 そこでは PCT 作用素そのものが与えられていない。定理が主張するのは、代わりに、ブースト流の
 解析接続が幾何学的反転を実現するという事実である。
 
@@ -130,6 +201,11 @@ $0 \le \operatorname{Im}\tau \le \pi$ を満たす $\tau$ に対して定まる�
 が成り立つ（\cite{T26} 定理 3.10）。右辺では場の順序が逆転し、各試験関数が円周の反転
 $z \mapsto z^{-1}$ で引き戻されている。この順序の逆転と円周の反転、そして符号 $(-1)^d$ が、ユニタリな場合の
 PCT 作用素の作用に対応する。
+
+\paragraph{番号の付け方。}
+以下、定義・補題・定理の番号は \cite{T26} のものに合わせ、本稿独自の項目には英字を付す。
+番号は原論文のものだから連続せず、また原論文の項目のうち本稿が番号で引用するだけで
+改めて述べないものもある。
 
 \paragraph{「PCT 定理」という呼び方について。}
 定理 \ref{thm:main} が与えるのは、いま述べた解析接続と順序逆転の等式であって、非ユニタリな
@@ -159,8 +235,13 @@ Fourier モードの議論などである。これらはいずれも \cite{T26} 
 前提としたうえで、その省略された部分を補うものであって、誤りの指摘ではない。
 
 \paragraph{範囲と非目標。}
-本稿と、本稿が報告する形式化が扱うのは、\cite{T26} の第 3 節、すなわち定義 3.1 から
-定理 3.10 までである。次のものは扱わない。Haag--Kastler の意味での共形ネットとその頂点作用素代数との
+本稿と、本稿が報告する形式化の主たる対象は、\cite{T26} の第 3 節、すなわち定義 3.1 から
+定理 3.10 までである。これに加えて、基準となる半円 $I_\pm$ に対する Reeh--Schlieder 性、
+すなわち $P(I_\pm)\Omega$ の $\Dom$ における稠密性も形式化した（\cite{CRTT25} 付録 A の
+系 A.3 (i) は一般の真の開区間について述べており、その $I = I_\pm$ の場合にあたる）。
+\cite{T26} が $\Vt_\tau$ を「稠密に定義された」作用素と呼ぶとき、その語を支えているのは
+$P_\Xcl(I_\pm)\Omega$ が $\Dom$ の中で稠密であることであり、これは上の Reeh--Schlieder 性と
+補題 3.4 から従う。定理 3.10 の (i)--(iii) 自身はこの稠密性を用いない。次のものは扱わない。Haag--Kastler の意味での共形ネットとその頂点作用素代数との
 対応（\cite{CKLW18}）、
 Tomita--Takesaki 理論、Bisognano--Wichmann 性（\cite{T26} 第 4 節）、不変 Hermite 形式と
 PCT 対合、および M\"obius 頂点代数との同値（\cite{CRTT25}）。これらは定理の動機を
@@ -168,13 +249,11 @@ PCT 対合、および M\"obius 頂点代数との同値（\cite{CRTT25}）。�
 
 \paragraph{本稿の構成。}
 第 2 節で設定と記法を定める。第 3 節でブースト流の解析接続（\cite{T26} 定義 3.1）を
-述べ、主定理を正確に述べたうえで、証明の依存関係を図示する。第 4 節は解析的な芯の上での
+述べ、主定理を正確に述べたうえで、証明の依存関係を図示する。第 4 節は $\Xcl$ から作られるベクトルに対する
 PCT 公式（補題 3.4, 3.6, 3.7）、第 5 節は一般の試験関数への拡張（補題 3.8, 3.9 と
-定理 3.10）を扱う。第 4 節と第 5 節は原論文と同じ粒度で道筋を述べ、実質的な議論を要する
+定理 3.10）を扱う。第 4 節と第 5 節は原論文と同じ詳しさで道筋を述べ、実質的な議論を要する
 箇所には第 6 節への前方参照を置く。第 6 節はその各点を独立に論じる。第 7 節で形式化の状態と
-検証の意味を述べ、第 8 節で限界と未着手の項目を挙げる。定義・補題・定理の番号は
-\cite{T26} のものに合わせてあり、本稿独自の項目には英字を付す。番号は原論文のものだから
-連続せず、また原論文の項目のうち本稿が番号で引用するだけで改めて述べないものもある。
+検証の意味を述べ、第 8 節で限界と未着手の項目を挙げる。
 
 \section{設定と記法}
 \label{sec:setting}
@@ -193,7 +272,7 @@ $\Circ = \{z \in \mathbb{C} : \abs{z} = 1\}$ とし、$C^\infty(\Circ)$ で $\Ci
   \qquad (N \ge 0)
 \]
 と定めると、$C^\infty(\Circ)$ はこの可算族に関して Fr\'echet 空間になる。この定義には
-以下で本質的に用いられる特徴が二つある。第一に、和が $j = 0$ から始まるので
+以下の議論が依拠する特徴が二つある。第一に、和が $j = 0$ から始まるので
 $\CN{\cdot}$ は $\norm{\cdot}_\infty$ を支配し、半ノルムではなくノルムになる。第二に、
 導関数を角変数でとるので、$(f \circ z^{-1})(e^{i\theta}) = f(e^{-i\theta})$ の
 $j$ 階角導関数が $(-1)^j$ 倍しか変わらず、
@@ -240,13 +319,13 @@ $I_\pm = \{z \in \Circ : \pm\operatorname{Im} z > 0\}$ とおく。$(I_\pm)' = I
 
 $\gamma \in \Mob$ の共形因子 $X_\gamma \in C^\infty(\Circ)$ を
 $X_\gamma(e^{i\theta}) = -i\, (d/d\theta) \log \gamma(e^{i\theta})$ で定める。これは
-実数値の正関数であり、対数微分は分岐の選択なしに定まる。$d \in \mathbb{Z}_{\ge 0}$ に対する
+正の値をとる実数値関数であり、対数微分は分岐の選択なしに定まる。$d \in \mathbb{Z}_{\ge 0}$ に対する
 試験関数への\textbf{共形作用}を
 \begin{equation}
   \label{eq:beta}
   \bigl(\beta_d(\gamma) f\bigr)(z) = X_\gamma(\gamma^{-1}(z))^{\,d-1}\, f(\gamma^{-1}(z))
 \end{equation}
-で定める（\cite{T26} 定義 2.4, 式 (2.2)）。ブーストについてはこれが閉じた形に書ける。
+で定める（\cite{T26} 定義 2.4, 式 (2.2)）。ブーストについてはこれを明示的に書き下せる。
 $\abs{z} = 1$ ならば $t \in \mathbb{R}$ に対して
 \begin{equation}
   \label{eq:beta-boost}
@@ -272,8 +351,10 @@ $\Phi \in \Dom$ に対して多重線形写像
 \]
 を定める。代数的双対の元 $\lambda \in \Dom^*$ が $\Fields$ と\textbf{両立する}とは、
 すべてのそのような組に対して $\lambda \circ S_{\varphi_1,\dots,\varphi_k,\Phi}$ が
-分離連続であることをいう（$C^\infty(\Circ)$ が Fr\'echet 空間だから同時連続と同値である）。
-両立する汎関数の全体を $\Dstar$ と書く。前小節の Fourier に関する注意から、両立する
+同時連続であることをいう。これは \cite{T26} 定義 2.4 の語法である。\cite{CRTT25} 定義 2.5 は
+同じものを分離連続で述べるが、$C^\infty(\Circ)$ が Fr\'echet 空間だから両者は同値であり
+（第 \ref{sec:lcs} 小節）、以下どちらで読んでも違いはない。
+両立する汎関数の全体を $\Dstar$ と書き、以下ではこれを両立汎関数ともいう。前小節の Fourier に関する注意から、両立する
 $\lambda$ は単項式の組における値で決まる。
 
 $\Fields$ が $\Dom$ に\textbf{正則に作用する}（acts regularly）とは、$0$ でない任意の
@@ -298,7 +379,8 @@ $U(r_\theta)\Phi = e^{id\theta}\Phi$ が成り立つことをいう。
 \label{def:wightman}
 \textbf{M\"obius 共変 Wightman 共形場理論}とは、$\Dom$ が複素ベクトル空間、
 $\Fields$ が $\Dom$ に正則に作用する作用素値超関数の集合、
-$U : \Mob \to GL_{\Fields}(\Dom)$ が $\Fields$-強連続な自己同型による表現、
+$U : \Mob \to GL_{\Fields}(\Dom)$（$\Dom$ の $\Fields$-強連続な線形自己同型の
+なす群）が表現、
 $\Omega \in \Dom \setminus \{0\}$（\textbf{真空}）であって、次を満たす組
 $(\Dom, \Fields, U, \Omega)$ である。
 \begin{description}
@@ -316,7 +398,7 @@ $(\Dom, \Fields, U, \Omega)$ である。
 \end{definition}
 
 Hilbert 空間も内積もユニタリ性もこの定義には現れない。(W3) は、共形次元を回転の生成子 $L_0$ の
-固有値とみる立場で、$L_0$ のスペクトルの正値性を内積を使わずに述べたものである。
+固有値とみる立場で、$L_0$ のスペクトルが非負であることを内積を使わずに述べたものである。
 
 $U$ の群変数についての連続性は公理ではなく、導かれる事実である。$U : \Mob \times \Dom \to \Dom$
 は $\Fields$-強位相について分離連続である（\cite{CRTT25} 補題 2.10 (i)）。この事実は
@@ -339,7 +421,7 @@ $\operatorname{supp} f$ が開半円に含まれることは要求しない。
 \textbf{端点で全階平坦}であるという。零拡張により
 $C_0^\infty(I_\pm)$ は $\{f \in C^\infty(\Circ) : \operatorname{supp} f \subseteq \overline{I_\pm}\}$
 と同一視される。実際、$f$ が開半円 $I_\mp$ 上で $0$ ならばその導関数もそこで $0$ であり、
-連続性から $\pm 1$ における全階の導関数が $0$ になる。
+連続性から $\pm 1$ におけるすべての階の導関数が $0$ になる。
 
 最後に $P(I_\pm)$ で $\{\varphi(f) : \varphi \in \Fields,\ \operatorname{supp} f \subseteq I_\pm\}$
 が生成する $\operatorname{End}(\Dom)$ の単位的部分代数を表す。
@@ -389,15 +471,16 @@ $\Phi \in \Dom$ の全体と定める。
 原論文の記法に従う。
 \end{remark}
 
-この定義が意味をもつためには二つの一意性が必要である。$\Psi$ の一意性は $\Fields$ の正則性から従う。
-$\lambda(V_t\Psi) = \lambda(V_t\Psi')$ がすべての両立 $\lambda$ について成り立てば
+この定義が意味をもつためには二つの一意性が必要である。$\Psi$ の一意性は、$\Dstar$ が $\Dom$ の点を分離することから従う。
+$\lambda(V_t\Psi) = \lambda(V_t\Psi')$ が両立するすべての $\lambda$ について成り立てば
 $V_t\Psi = V_t\Psi'$ であり、したがって $\Psi = \Psi'$ である。族 $(G_\lambda)$ の
 一意性は \cite{T26} が「必然的に一意である」と述べるにとどめている点であり、
 証明を要する。第 \ref{sec:uniqueness} 小節で扱う。
 
 定義から直ちに従う性質を挙げる。$\tau \in \mathbb{R}$ ならば $\Dom(\Vt_\tau) = \Dom$ かつ
 $\Vt_\tau = V_\tau$ である（$G_\lambda(t) = \lambda(V_t\Phi)$, $\Psi = V_\tau\Phi$ と
-とればよい。ただし $G_\lambda$ の連続性には上に述べた \cite{CRTT25} 補題 2.10 (i) が要る）。
+とればよい。ただし $G_\lambda$ の連続性には、上に述べた \cite{CRTT25} 補題 2.10 (i) の、
+ブーストについてスカラー化した形が要る）。
 また (W4) から、すべての $\tau$ に対して $\Omega \in \Dom(\Vt_\tau)$ かつ
 $\Vt_\tau\Omega = \Omega$ である（定数族 $G_\lambda \equiv \lambda(\Omega)$ をとる）。
 さらに次の\textbf{実平行移動則}が成り立つ。$\tau \in \mathbb{C}$ と $t \in \mathbb{R}$ に対して
@@ -434,29 +517,28 @@ Wightman 共形場理論とする。
 \end{theorem}
 
 (ii) と (iii) において、反転された試験関数 $f_j \circ z^{-1}$ は反対側の半円に台をもち、
-作用素の順序は逆転している。(i)--(iii) はいずれも稠密性を主張していない。「稠密に定義された」
-という語は \cite{T26} の定理 3.10 の前文に現れるが、それは $P(I_\pm)\Omega$ が $\Dom$ の中で
-$\Fields$-強位相について稠密であるという別の事実、すなわち Reeh--Schlieder 性
-（\cite{CRTT25} 付録 A の系 A.3 (i)）を指すものであり、(i)--(iii) のどれもそれに依存しない。
-この稠密性は $I_\pm$ について独立に成り立つ定理であり、それも検証されている
-（第 \ref{sec:status} 節）。両者を合わせると、$\Vt_{\pm i\pi}$ が実際に稠密に定義された
-作用素であることが従う。
+作用素の順序は逆転している。(i)--(iii) はいずれも稠密性を主張していない。$\Vt_\tau$ を
+「稠密に定義された」作用素と呼ぶ根拠は別のところにある。\cite{T26} が $\Dom$ の稠密な
+部分空間として挙げるのは $P_\Xcl(I_+)\Omega$、すなわち $\Xcl$ から作られるベクトルが
+張る部分空間であり、その稠密性は Reeh--Schlieder 性（$P(I_\pm)\Omega$ が $\Dom$ の中で
+$\Fields$-強位相について稠密であること、\cite{CRTT25} 付録 A の系 A.3 (i)）と
+補題 \ref{lem:34} から従う。この稠密性は $I_\pm$ について独立に成り立つ定理であり、
+それも検証されている（第 \ref{sec:status} 節）。(i)--(iii) のどれもそれに依存しない。
 
 \subsection{証明の構成}
 
 証明は二段階に分かれる。第一段階では、試験関数を境界まで解析的に延びる特別な族
-$\Xcl$ に制限し、そこで公式を直接示す（第 \ref{sec:core} 節）。$\Xcl$ から来る試験関数
-だけで作られるベクトル $\varphi_1(f_1)\cdots\varphi_k(f_k)\Omega$ の全体を、以下
-\textbf{解析的芯}と呼ぶ。この段階では
+$\Xcl$ に制限し、そこで公式を直接示す（第 \ref{sec:core} 節）。扱うのは $\Xcl$ から来る
+試験関数だけで作られるベクトル $\varphi_1(f_1)\cdots\varphi_k(f_k)\Omega$ であり、これらが
+張る部分空間を第 \ref{sec:core} 節では $P_\Xcl(I_+)\Omega$ と書く。この段階では
 $\Vt_\tau$ の定義域に属することが構成的に確かめられ、$\tau = i\pi$ における値が
 局所性とスペクトル条件から計算できる。第二段階では、この特別な族が一般の
 台条件付き試験関数の中で稠密であることを用い、極限へ移る（第 \ref{sec:general} 節）。
 極限が定義 \ref{def:vtilde} の条件 ($\Phi$1), ($\Phi$2) を保つことを示すには、
-帯状領域上で一様な評価が必要であり、それが補題 3.8 と補題 3.9 である。
+閉帯上で一様な評価が必要であり、それが補題 3.8 と補題 3.9 である。依存関係は
+図 \ref{fig:flow} のとおりである。
 
-図 \ref{fig:flow} に依存関係を示す。
-
-\begin{figure}[htbp]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[
   font=\small,
@@ -469,12 +551,12 @@ $\Vt_\tau$ の定義域に属することが構成的に確かめられ、$\tau 
 \node[box, right=14mm of ax] (x) {解析的試験関数の族 $\Xcl$\\ (\cite{T26} 定義 3.2)};
 
 \node[box, below=7mm of ax] (d31) {定義 3.1\\ $\Vt_\tau$ と一意性};
-\node[box, below=7mm of x] (b) {複素ブースト $\beta_d(v_\tau)$\\ (定義 3.5)};
+\node[box, below=7mm of x] (b) {複素ブースト $\beta_d(v_\tau)$\\ (\cite{T26} 定義 3.5)};
 
 \node[box, below=7mm of b] (l36) {補題 3.6\\ 帯上の連続性・正則性};
 \node[box, left=9mm of l36] (l34) {補題 3.4\\ $\Xcl$ の稠密性};
 
-\node[box, below=7mm of l36] (l37) {補題 3.7\\ 解析的芯上の PCT 公式};
+\node[box, below=7mm of l36] (l37) {補題 3.7\\ $\Xcl$ から作られる\\ ベクトルに対する PCT 公式};
 \node[box, below=8mm of l37] (l38) {補題 3.8\\ 実軸上の $C^N$ 増大度評価};
 \node[box, below=7mm of l38] (l39) {補題 3.9\\ 帯上一様な評価（最大値原理）};
 \node[box, below=7mm of l39] (thm) {\bfseries 定理 3.10 (i)--(iii)};
@@ -485,20 +567,27 @@ $\Vt_\tau$ の定義域に属することが構成的に確かめられ、$\tau 
 \draw[flow] (x.west) to[out=225,in=75] (l34.north east);
 \draw[flow] (d31.west) to[out=180,in=180] (l37.west);
 \draw[flow] (l36) -- (l37);
-\draw[flow] (l37.east) to[out=0,in=0] (l39.east);
-\draw[flow] (ax.east) to[out=0,in=0] (l38.east);
+\draw[flow] (l37.east) to[out=0,in=0,looseness=0.8] (l39.east);
+% The axioms feed Lemma 3.8 directly, bypassing the right-hand column; the edge is
+% routed outside every box rather than curved through them.
+\path let \p1 = (l37.east), \p2 = (l39.east), \n1 = {max(\x1,\x2) + 12mm} in
+  coordinate (rmargin) at (\n1, 0);
+\coordinate (above) at ([yshift=6mm]ax.north);
+\draw[flow, rounded corners=3pt]
+  (ax.north) -- (above) -- (rmargin |- above) -- (rmargin |- l38) -- (l38.east);
 \draw[flow] (l38) -- (l39);
 \draw[flow] (l39) -- (thm);
 \draw[flow] (l34.west) to[out=180,in=180] (thm.west);
 \end{tikzpicture}
-\caption{証明の依存関係。補題 3.8 は解析的芯を経由せず、公理から直接得られる。
-補題 3.9 は補題 3.8 と、補題 3.7 の両方の主張（下側境界に (i)、上側境界に (ii)）を
-使う。補題 3.4 は、補題 3.7 が扱う試験関数の族が稠密であることを保証し、
+\caption{証明の依存関係。補題 3.8 は $\Xcl$ から作られるベクトルを経由せず、公理から
+直接得られる。
+補題 3.9 は補題 3.8 と補題 3.7 の両方の主張を使う（閉帯上の連続性と正則性に (i)、
+上側境界の評価に (ii)）。下側境界は補題 3.8 が直接押さえる。補題 3.4 は、補題 3.7 が扱う試験関数の族が稠密であることを保証し、
 定理 3.10 の極限操作の出発点になる。}
 \label{fig:flow}
 \end{figure}
 
-\section{解析的芯の上での PCT 公式}
+\section{\texorpdfstring{$\Xcl$}{X} から作られるベクトルに対する PCT 公式}
 \label{sec:core}
 
 \subsection{解析的な試験関数の族}
@@ -511,21 +600,23 @@ $\Oex = \{z \in \mathbb{C} : \abs{z} \ge 1\} \cup \{\infty\}$ とおく。これ
 \label{def:Xcl}
 $\Xcl$ を、$\Oex$ 上 $C^\infty$ 級でその内部において正則、$F(\infty) = 0$、かつすべての $i \ge 0$ に
 対して $F^{(i)}(1) = F^{(i)}(-1) = 0$ を満たす関数 $F : \Oex \to \mathbb{C}$ の全体とする。
-ここで閉集合 $\Oex$ 上 $C^\infty$ 級とは、内部での正則性から定まる全階の導関数が
+ここで閉集合 $\Oex$ 上 $C^\infty$ 級とは、内部での正則性から定まるすべての階の導関数が
 境界 $\Circ$ まで連続に延びることをいう。$F^{(i)}$ はその複素微分であり、
 $F^{(i)}(\pm 1) = 0$ とは、この連続延長の $\pm 1$ における値が $0$ であることをいう。
 $\infty$ における条件は、$w \mapsto F(w^{-1})$ が原点まで正則に延びることとして理解する。
 \end{definition}
 
 端点条件には二つの読み方がある。いま述べた複素微分による読み方と、$F$ を二変数の実関数と
-みなしたときの全階の実偏導関数が $\pm 1$ で消えるという読み方である。$\Oex$ 上 $C^\infty$ 級で
+みなしたときのすべての階の実偏導関数が $\pm 1$ で消えるという読み方である。$\Oex$ 上 $C^\infty$ 級で
 内部において正則な $F$ については両者は同値である。正則性から $n$ 階の実偏導関数はいずれも
 $n$ 階の複素微分 $F^{(n)}$ の定数倍であり、$C^\infty$ 級であることからその等式は境界まで
 連続に延びるからである。以下ではどちらの読み方をとっても違いはない。
 
 制限写像 $\Xcl \to C^\infty(\Circ)$, $F \mapsto F|_{\Circ}$ は単射である。実際、
 $\Circ$ 上で一致する二つの元は Schwarz の鏡像原理と一致の定理により $\Oex$ 上で一致する。
-したがって $\Xcl$ を $C^\infty(\Circ)$ の部分集合とみなす。$F \in \Xcl$ に対し
+したがって $\Xcl$ を $C^\infty(\Circ)$ の部分集合とみなし、その相対位相を入れる
+（\cite{T26} 定義 3.2）。この同一視を形式化がどう扱っているかは第 \ref{sec:status} 節で
+述べる。$F \in \Xcl$ に対し
 $F|_{\Circ} = F|_{I_+} + F|_{I_-}$ であり、両項は零拡張して
 $C_0^\infty(I_\pm)$ の元になる。$\Xcl$ の元は端点で全階平坦だから、この分解が意味をもつ。
 一般の $f \in C^\infty(\Circ)$ に対する同様の分解 $f = f_+ + f_-$ は成り立たない
@@ -543,7 +634,7 @@ $\{F|_{I_+} : F \in \Xcl\}$ は $C_0^\infty(I_+)$ の中で $C^\infty$ 位相に
 $I_-$ についても同様である。
 \end{lemma}
 
-証明は近似列の構成による。$\Oex$ を $\Circ$ の反転で閉円板に写し、ブースト流に沿って
+証明は近似列の構成による。$\Oex$ を $\Circ$ に関する反転で閉円板に写し、ブースト流に沿って
 Gauss 核と畳み込む。第 \ref{sec:cayley} 小節で、この構成が実際にはどのような形で
 実行できるかを述べる。$I_-$ の場合は $F \mapsto \overline{F(\bar{\,\cdot\,})}$ による
 反射から従う。この反射は $\Xcl$ を保ち、二つの制限を交換する。反転 $z \mapsto z^{-1}$ では
@@ -592,20 +683,48 @@ $\beta_d(v_\tau)$ は $\Xcl$ の元を受け取って $C_0^\infty(I_+)$ の元�
 \srcnum{3.6}
 \begin{lemma}[\cite{T26}]
 \label{lem:36}
-$F_1, \dots, F_k \in \Xcl$、$\varphi_1, \dots, \varphi_k \in \Fields$ を共形次元
-$d_1, \dots, d_k$ の場とする。$\tau \mapsto \beta_d(v_\tau)F|_{I_+}$ は $\Strip_{i\pi}$ 上
-連続でその内部で正則であり、$\lambda \in \Dstar$ に対して
-\[
-  G_\lambda(\tau) = \lambda\Bigl(\varphi_1\bigl(\beta_{d_1}(v_\tau)F_1|_{I_+}\bigr)
-    \cdots \varphi_k\bigl(\beta_{d_k}(v_\tau)F_k|_{I_+}\bigr)\Omega\Bigr)
-\]
-もそうである。
+$F, F_1, \dots, F_k \in \Xcl$ とし、$\varphi_1, \dots, \varphi_k \in \Fields$ を共形次元
+$d_1, \dots, d_k$ の場とする。
+\begin{enumerate}
+  \item[(i)] $C_0^\infty(I_+)$ に値をとる写像
+    $\tau \mapsto \beta_d(v_\tau)F|_{I_+}$ は $\Strip_{i\pi}$ 上連続であり、その内部で
+    正則である。
+  \item[(ii)] $\Dom$ に値をとる写像
+    \[
+      \tau \longmapsto \varphi_1\bigl(\beta_{d_1}(v_\tau)F_1|_{I_+}\bigr)
+        \cdots \varphi_k\bigl(\beta_{d_k}(v_\tau)F_k|_{I_+}\bigr)\Omega
+    \]
+    は $\Strip_{i\pi}$ 上連続であり、その内部で正則である。
+\end{enumerate}
 \end{lemma}
 
-$G_\lambda$ の正則性が定義 \ref{def:vtilde} の ($\Phi$1) に必要な形であり、
-$\tau \mapsto \beta_d(v_\tau)F|_{I_+}$ の連続性はそれを導くための中間段階である。
-この中間段階が $C^\infty(\Circ)$ の局所凸位相の中でしか述べられないことは、
-第 \ref{sec:lcs} 小節で扱う論点の一つである。
+\noindent
+値域の位相を明示しておく。(i) の値域 $C_0^\infty(I_+)$ には $C^\infty(\Circ)$ の
+半ノルム $\CN{\cdot}$ が定める位相を入れ、(ii) の値域 $\Dom$ には $\Fields$-強位相を
+入れる。どちらもノルム空間ではないから、この二つはいずれも局所凸空間に値をとる写像の
+連続性と正則性についての主張である。
+
+定義 \ref{def:vtilde} の ($\Phi$1) が要求するのは、しかし、これらではなく、両立汎関数
+$\lambda \in \Dstar$ によって (ii) の写像をスカラー化して得られる複素数値関数
+\begin{equation}
+  \label{eq:Glambda}
+  G_\lambda(\tau) = \lambda\Bigl(\varphi_1\bigl(\beta_{d_1}(v_\tau)F_1|_{I_+}\bigr)
+    \cdots \varphi_k\bigl(\beta_{d_k}(v_\tau)F_k|_{I_+}\bigr)\Omega\Bigr)
+\end{equation}
+の連続性と正則性である。$\lambda$ は $\Fields$-強位相について連続だから、(ii) が
+成り立てば各 $G_\lambda$ についてのこの主張は従う。逆は一般には成り立たない。第 3 節で
+述べたとおり、スカラー化した族がすべて正則であることから $\Dom$ に値をとる意味での
+正則性を導くには、追加の仮定が要るからである。
+
+形式化が確立しているのは (i) と、各 $G_\lambda$ についてのこのスカラー化した主張であって、
+(ii) そのものではない（第 \ref{sec:limits} 節）。スカラー化した主張は、いま述べたとおり
+(ii) の帰結にあたるが、形式化はそれを (ii) を経由せずに、多重線形写像
+$S_{\varphi_1,\dots,\varphi_k,\Omega}$ の連続性と (i) から直接示している。定義
+\ref{def:vtilde} が要求するのはスカラー化した形だけであり、それが定理 \ref{thm:main} に
+至る道筋で実際に使われる形でもあるから、(ii) の $\Dom$ 値の形は以下のどこにも現れない。
+
+(i) の連続性が $C^\infty(\Circ)$ の局所凸位相の中でしか述べられないことと、そこから
+\eqref{eq:Glambda} の連続性へ渡るのに何が要るかは、第 \ref{sec:lcs} 小節で扱う。
 
 \subsection{\texorpdfstring{$\tau = i\pi$ における値}{tau = i*pi における値}}
 
@@ -667,9 +786,9 @@ $f_j := F_j|_{I_+} \in C_0^\infty(I_+)$、$\Phi = \varphi_1(f_1)\cdots\varphi_k(
 \end{enumerate}
 \end{lemma}
 
-(i) の証明は、補題 \ref{lem:36} の $G_\lambda$ が定義 \ref{def:vtilde} の族そのものである
-ことを確かめるものである。$\Strip_{i\pi}$ 上の連続性と内部での正則性は補題 \ref{lem:36}、
-実軸上での $G_\lambda(t) = \lambda(V_t\Phi)$ は複素ブーストが実パラメータで通常の共形作用に
+(i) の証明は、\eqref{eq:Glambda} の $G_\lambda$ が定義 \ref{def:vtilde} の族そのものである
+ことを確かめるものである。$\Strip_{i\pi}$ 上の連続性と内部での正則性は補題 \ref{lem:36}
+（(ii) をスカラー化した形）、実軸上での $G_\lambda(t) = \lambda(V_t\Phi)$ は複素ブーストが実パラメータで通常の共形作用に
 一致することと (W1) の共変性、($\Phi$2) は半群則から従う。(ii) は (i) を $\tau = i\pi$ で
 用い、\eqref{eq:beta-ipi} の符号 $\prod_j (-1)^{d_j-1}$ と \eqref{eq:sign-reversal} の
 $(-1)^k$ を合わせたものである。指数は $\sum_j (d_j - 1) + k = \sum_j d_j$ となり、
@@ -686,7 +805,7 @@ $(-1)^k$ を合わせたものである。指数は $\sum_j (d_j - 1) + k = \sum
 議論ではない。$\Vt_\tau$ は連続作用素ではなく、定義域が試験関数の近似列とともに
 動くからである。示すべきことは、近似列に対応する族 $G_{\lambda,n}$ が
 $\Strip_{i\pi}$ 上で収束し、極限が再び定義 \ref{def:vtilde} の ($\Phi$1), ($\Phi$2) を
-満たすことである。これには帯状領域上で一様な評価が必要であり、二つの補題がそれを与える。
+満たすことである。これには閉帯上で一様な評価が必要であり、二つの補題がそれを与える。
 
 \subsection{実軸上の評価}
 
@@ -713,14 +832,15 @@ $f_j, g_j$ には依存しない。
 そのあとに来るすべての試験関数に対して同じものが働く。これがなければ近似列に沿って
 評価を使うことができない。
 
-証明は独立な二つの部分からなる。一つは、ある $N$ が存在して
-$\lvert\lambda(\varphi_1(h_1)\cdots\varphi_k(h_k)\Omega)\rvert \le \CN{h_1}\cdots\CN{h_k}$
-（$\lambda$ を定数倍したのち）が成り立つことである。これは Fr\'echet 空間の積の上の
+証明は独立な二つの部分からなる。一つは、ある $N$ と、$\varphi_1, \dots, \varphi_k$ と
+$\lambda$ にのみ依存する定数 $C_0 > 0$ が存在して
+$\lvert\lambda(\varphi_1(h_1)\cdots\varphi_k(h_k)\Omega)\rvert \le C_0\, \CN{h_1}\cdots\CN{h_k}$
+が成り立つことである。これは Fr\'echet 空間の積の上の
 連続多重線形写像が生成半ノルムの有限積で押さえられるという標準的な事実
 （\cite{Treves} 第 41 章）による。もう一つは共変性の評価
 $\CN{\beta_d(v_t) f} \le C(t)\CN{f}$ であり、$C$ は高々指数増大である。
-これは \eqref{eq:beta-boost} の閉じた形を角変数で微分することから得られる
-（$N = 0$ での最良の定数は $e^{\abs{d-1}\abs{t}}$ であり、共形次元に依存する。
+これは \eqref{eq:beta-boost} の明示式を角変数で微分することから得られる
+（$N = 0$ での最良の定数は $e^{\abs{d-1}\,\abs{t}}$ であり、共形次元に依存する。
 第 \ref{sec:growth} 小節を見よ）。二つを合わせるには、
 二つの積の差を一つの成分ずつ差し替えて $k$ 項の和に分解する。
 前者が完全な証明でどのような形をとるかは第 \ref{sec:lcs} 小節で、後者については
@@ -756,7 +876,7 @@ $0$ に収束する。したがって
 $\lvert e^{-\tau^2}\mathfrak{h}(\tau)\rvert$ は境界 $\partial\Strip_{i\pi}$ で最大値をとる。
 下側の境界は補題 \ref{lem:38} が直接押さえ、上側の境界は補題 \ref{lem:37} (ii) で
 場を逆順にし試験関数を $z \mapsto z^{-1}$ で引き戻した積に書き換えたのち補題 \ref{lem:38} を適用して押さえる。後者では
-\eqref{eq:cnorm-inv} が効く。上下の境界で得られる $N$ と $C$ は異なるから、
+\eqref{eq:cnorm-inv} を用いる。上下の境界で得られる $N$ と $C$ は異なるから、
 両者の最大値をとって統一する。この最大値原理の段階を完全に書き下したときに何が
 必要になるかは第 \ref{sec:maxprinciple} 小節で述べる。
 
@@ -797,7 +917,7 @@ $(-1)^d \lambda\bigl(V_t \varphi_k(f_k\circ z^{-1})\cdots\varphi_1(f_1\circ z^{-
 \label{sec:uniqueness}
 
 定義 \ref{def:vtilde} の族 $(G_\lambda)$ について、\cite{T26} は「必然的に一意である」と
-記すにとどめる。自然な証明は次のものである。二つの族は $\mathbb{R}$ 上で一致するから、
+記すにとどめる。まず考えられる証明は次のものである。二つの族は $\mathbb{R}$ 上で一致するから、
 Schwarz の鏡像原理により各々が $\mathbb{R}$ の近傍まで正則に延び、一致の定理により
 $\Strip_\tau$ の内部で一致し、連続性により連結な閉帯全体で一致する。
 
@@ -811,7 +931,7 @@ $\Strip_\tau$ の内部で一致し、連続性により連結な閉帯全体で
 $\operatorname{Im} = 0$ を横切って連続である（ここで $\mathbb{R}$ 上での消滅を使う）。この延長の
 長方形上の積分はすべて $0$ になる。実軸をまたぐ長方形についても、高さ $0$ で分割して
 上下それぞれで Cauchy--Goursat を使えばよい。よって Morera の定理により、延長した
-関数は拡大した開帯上で正則であり、拡大帯は凸したがって連結だから、一致の定理から
+関数は拡大した開帯上で正則であり、その帯は凸、したがって連結だから、一致の定理から
 $g \equiv 0$ を得る。遠い側の境界 $\operatorname{Im} = \operatorname{Im}\tau$ には
 極限操作で到達する。$\operatorname{Im}\tau = 0$ のときは内部が空で主張は自明であり、
 $\operatorname{Im}\tau < 0$ の場合は $z \mapsto -z$ で帰着する。
@@ -853,8 +973,8 @@ $d \ge 1$ では極を含めて、それぞれ定理として証明した。
 
 補題 \ref{lem:34} の証明には、$C_0^\infty(I_+)$ の元を $\Xcl$ の元の制限で近似する
 具体的な構成が要る。\cite{T26} は反転で閉円板に移してブースト流に沿って Gauss 核と
-畳み込む、という方針を示す。この方針を実行するとき、円板上の境界解析を素朴に
-組み立てるより見通しのよい座標がある。
+畳み込む、という方針を示す。この方針を実行するとき、円板上で境界での評価を
+直接組み立てるより見通しのよい座標がある。
 
 Cayley 変換 $\zeta(z) = (1+z)/(1-z)$ は $\Circ$ を $i\mathbb{R}$ に、$\Oex$ を閉じた
 左半平面に写す。$\zeta = i e^{x}$ すなわち $\chi(z) = \log(-\zeta(z)) + i\pi/2$ とおくと、
@@ -873,7 +993,8 @@ $x = i\pi/2$、端点 $z = \pm 1$ は $\operatorname{Re} x \to \pm\infty$ に対
 定数倍で押さえ合うことであり、それだけで各半ノルムでの収束が移る。
 
 第三に、そしてこれが最も重要な点だが、\textbf{端点 $\pm 1$ における全階平坦性は
-$\operatorname{Re} x \to \pm\infty$ における超指数減衰にほかならない}。
+$\operatorname{Re} x \to \pm\infty$ において任意の指数関数より速く減衰することに
+ほかならない}。
 補題 \ref{lem:34} の近似列が端点を越えて $C^\infty$ 級であることは、この言い換えのもとで
 証明できる主張になる。
 
@@ -881,20 +1002,20 @@ $\operatorname{Re} x \to \pm\infty$ における超指数減衰にほかなら�
 $[-1, 1]$ になり、これは閉円板の内側にあって $\Oex$ とは除外された二つの端点でしか
 交わらない。素朴な $\log(-i\zeta)$ では分岐切断が下半円周上に来てしまい、そこで近似列が
 正則でなくなる。$\Oex \setminus \{\pm 1\}$ のすべての点（境界点を含む）における
-正則性は、平坦性から $C^\infty$ 級への延長の議論が消費するものだから、この選択は
-本質的である。
+正則性は、平坦性から $C^\infty$ 級への延長の議論が用いるものだから、この分岐の
+取り方は変更できない。
 
 構成そのものは次のようになる。$f$ を上半円に台をもつ元とし、$a$ を $zf$ のこの座標での
-像とする（平坦性の言い換えにより $a$ は超指数的に減衰する）。Gauss 核を $g_s$ と書き、
+像とする（平坦性の言い換えにより $a$ は任意の指数関数より速く減衰する）。Gauss 核を $g_s$ と書き、
 $H_s = g_s * a$ をその平滑化とすると、Gauss 核が整関数だから $H_s$ は整関数であり、近似列を
 $F_s(z) = H_s(\chi(z))/z$、$F_s(\pm 1) = 0$ と定める。因子 $1/z$ により
 $F_s(\infty) = 0$ が自動的に満たされる。出発点を $f$ ではなく $zf$ にとるのはそのためであり、
 最後に $1/z$ を掛けることでもとの $f$ の近似に戻る。$\pm 1$ における平坦性は
 帯上の減衰評価を端点への距離のべきに翻訳したのち、分岐切断を避ける円板上の Cauchy の
-評価で全階に持ち上げて得られる。収束は、平滑化の誤差が重みつき半ノルムのすべてで
+評価ですべての階に持ち上げて得られる。収束は、平滑化の誤差が重みつき半ノルムのすべてで
 小さいことと、座標の間の対応から従う。
 
-各段階が明示的な関数と評価の組であって、抽象的な近似原理を使わない点が、この経路の
+各段階が明示的な関数と評価の組であって、抽象的な近似原理を使わない点が、この構成の
 利点である。$I_-$ の場合を反射で得ることは第 \ref{sec:core} 節で述べたとおりである。
 
 \subsection{端点で接する台と局所性}
@@ -907,7 +1028,7 @@ $g_i \in C_0^\infty(I_+)$ と $h_k \in C_0^\infty(I_-)$ は
 台が交わらないことは従わない。したがって局所性の公理 (W2) を、この組にそのまま
 適用することはできない。
 
-補うべき議論は切断と極限である。$\varepsilon > 0$ に対して、$\pm 1$ の $\varepsilon$ 近傍の
+補うべき議論は切断関数による近似と極限である。$\varepsilon > 0$ に対して、$\pm 1$ の $\varepsilon$ 近傍の
 外で $1$、$\varepsilon/2$ 近傍の内で $0$ となる $C^\infty$ 級の切断関数 $\chi_\varepsilon \in C^\infty(\Circ)$ を
 とる。$\operatorname{supp}(\chi_\varepsilon h_k)$ は開半円 $I_-$ に含まれるから、
 $g_i$ の台とは交わらない。よって (W2) から
@@ -920,8 +1041,8 @@ $[\varphi_i(g_i), \varphi_k(\chi_\varepsilon h_k)] = 0$ であり、
 （$C^\infty(\Circ)$ の位相、$\varepsilon \to 0$）である。両辺に $\lambda \in \Dstar$ を施すと、
 両立性により、いま動かしている第 $k$ 引数について両辺は $C^\infty(\Circ)$ 上連続である。
 したがって $\varepsilon \to 0$ の極限で両辺は $h_k$ に対応する式に収束する。
-すべての両立汎関数について等式が成り立つから、$\Fields$ の正則性によりベクトルとしての
-等式が従う。$h_{k-1}, \dots, h_1$ について同じ操作を繰り返せば \eqref{eq:sign-reversal} を得る。
+すべての両立汎関数について等式が成り立つから、$\Dstar$ が点を分離することにより
+ベクトルとしての等式が従う。$h_{k-1}, \dots, h_1$ について同じ操作を繰り返せば \eqref{eq:sign-reversal} を得る。
 
 極限をベクトルとしてではなくスカラーとして取ることが要点である。$\Dom$ の
 $\Fields$-強位相で $\varphi_k(\chi_\varepsilon h_k)\Phi \to \varphi_k(h_k)\Phi$ を直接
@@ -945,7 +1066,7 @@ $U(r_\theta)\Omega = \Omega$ から、$\varphi(z^n)\Omega$ は共形次元 $-n$ 
 $-(n_1 + \cdots + n_k)$ をもつ。したがって $n > 0$ のとき (W3) から
 $\varphi(z^n)\Omega = 0$ である。
 
-第二段階が橋渡しである。$f \in C^\infty(\Circ)$ が正のモードしかもたないとしても、
+第二段階は、モードごとの主張を一般の試験関数へ移す部分である。$f \in C^\infty(\Circ)$ が正のモードしかもたないとしても、
 $\varphi(f)\Omega$ は一般に $L_0$ の固有ベクトルではない。よって (W3) を
 $\varphi(f)\Omega$ に直接適用することはできない。代わりに両立汎関数を通す。
 $\lambda \in \Dstar$ に対して $f \mapsto \lambda(\varphi(f)\Omega)$ は $C^\infty(\Circ)$ 上
@@ -953,7 +1074,7 @@ $\lambda \in \Dstar$ に対して $f \mapsto \lambda(\varphi(f)\Omega)$ は $C^\
 \[
   \lambda(\varphi(f)\Omega) = \sum_{n > 0} \hat{f}_n\, \lambda(\varphi(z^n)\Omega) = 0
 \]
-となる。$\Fields$ の正則性により $\varphi(f)\Omega = 0$ を得る。
+となる。$\Dstar$ が $\Dom$ の点を分離することにより $\varphi(f)\Omega = 0$ を得る。
 
 $f = (F\circ z^{-1})|_{\Circ}$ が正のモードしかもたないことを確かめる際、$n < 0$ と
 $n = 0$ は別の議論を要する。$F\circ z^{-1}$ は円板上正則だから、$n < 0$ に対する
@@ -969,7 +1090,7 @@ Cauchy の積分公式であり、$F\circ z^{-1}$ が原点で $0$ になると�
 $C^\infty(\Circ)$ は Fr\'echet 空間であってノルム空間ではなく、$\Dom$ には
 $\Fields$-強位相しか入っていない。この枠組みで解析を行うときに、ノルム空間なら
 問題なく使える道具のいくつかが使えない。以下の三つは、それぞれ補題 \ref{lem:38} の
-前半、補題 \ref{lem:38} の組み立て、補題 \ref{lem:36} の中間段階に対応する。
+前半、補題 \ref{lem:38} の組み立て、補題 \ref{lem:36} (i) に対応する。
 
 第一に、補題 \ref{lem:38} の前半で用いる「Fr\'echet 空間の積の上の連続多重線形写像は
 生成半ノルムの有限積で押さえられる」という事実（\cite{Treves} 第 41 章）は、ノルム空間に
@@ -977,16 +1098,19 @@ $\Fields$-強位相しか入っていない。この枠組みで解析を行う�
 半ノルム球の積を含む近傍を取り出し、多重線形性による再スケーリングで評価に変える。
 形式化では、この事実を半ノルム族の基底から直接構成した。
 
-第二に、二つの積の差を評価するときの展開の取り方が効く。
-$\varphi_1(f_1)\cdots\varphi_k(f_k)\Omega - \varphi_1(g_1)\cdots\varphi_k(g_k)\Omega$ を、
-先頭から $j-1$ 個を $g$、$j$ 番目を $f_j - g_j$、残りを $f$ とした $k$ 個の項の和に分ける。
+第二に、二つの積の差を評価するときの展開の取り方が結果を左右する。差
+\[
+  \varphi_1(f_1)\cdots\varphi_k(f_k)\Omega - \varphi_1(g_1)\cdots\varphi_k(g_k)\Omega
+\]
+を、先頭から $j-1$ 個を $g$、$j$ 番目を $f_j - g_j$、残りを $f$ とした $k$ 個の項の和に
+分ける。
 各項はちょうど一つの成分にだけ差をもつから、補題 \ref{lem:38} の右辺の形、すなわち
 $\max_j \CN{f_j - g_j}$ と残りの成分の積という形に正確に合う。$2^k$ 項の完全な展開では
 差が複数の成分に同時に現れる項が生じ、この形にならない。なお、ノルム空間の場合に
 用意されている多重線形写像の差の評価は、定義域に真のノルムを要求するため、
 そのままでは使えない。
 
-第三に、補題 \ref{lem:36} の中間段階、すなわち $\tau \mapsto \beta_d(v_\tau)F|_{I_+}$ の
+第三に、補題 \ref{lem:36} (i) の正則性、すなわち $\tau \mapsto \beta_d(v_\tau)F|_{I_+}$ の
 正則性は、値が局所凸空間 $C^\infty(\Circ)$ に入る関数の正則性である。局所凸空間に値をとる
 正則性には、差分商の収束によるもの、連続汎関数と合成したスカラー値関数の正則性によるもの、
 その中間のものといった複数の定式化があり、Banach 空間の場合と違って一般には互いに
@@ -1024,10 +1148,10 @@ $\theta \mapsto e^{i\Theta(t,\theta)}$ はいずれも $y' = iy/(\cosh t + \cos\
 
 $N = 0$ の場合の最良の定数は明示的に求まる。$\abs{z} = 1$ のとき
 $\cosh t + \operatorname{Re}(z)\sinh t$ はちょうど区間 $[e^{-\abs{t}}, e^{\abs{t}}]$ を動くから、
-共形因子のべき $(\,\cdot\,)^{d-1}$ の上限は $e^{\abs{d-1}\abs{t}}$ であり、$f \equiv 1$ と
+共形因子のべき $(\,\cdot\,)^{d-1}$ の上限は $e^{\abs{d-1}\,\abs{t}}$ であり、$f \equiv 1$ と
 とればこの値が達成される。すなわち
 \[
-  \sup_{f \ne 0} \frac{\norm{\beta_d(v_t)f}_\infty}{\norm{f}_\infty} = e^{\abs{d-1}\abs{t}} .
+  \sup_{f \ne 0} \frac{\norm{\beta_d(v_t)f}_\infty}{\norm{f}_\infty} = e^{\abs{d-1}\,\abs{t}} .
 \]
 $d = 0, 1, 2$ ではこれは順に $e^{\abs{t}}$、$1$、$e^{\abs{t}}$ になる。$d \ge 3$ では
 $\abs{d-1} \ge 2$ だから、$t \ne 0$ に対して $e^{\abs{t}}$ より真に大きく、$t = 0$ では
@@ -1045,12 +1169,13 @@ $\cosh t + \cos\theta\sinh t \ge \cosh t - \abs{\sinh t} = e^{-\abs{t}} > 0$ が
 
 補題 \ref{lem:39} の証明で、帯の内部での定数 $K$ が $F_j, G_j$ に依存することを許し、
 その依存を境界での最大値によって除去する。この段階は Phragm\'en--Lindel\"of 型の
-定理を要する。帯状領域は有界でないから、通常の最大値原理をそのまま適用できず、
+定理を要する。閉帯は有界でないから、通常の最大値原理をそのまま適用できず、
 無限遠での増大度の制御が必要である。
 
 重み $e^{-\tau^2}$ がその役割を果たす。$\Strip_{i\pi}$ 上で
 $\lvert e^{-\tau^2}\rvert = e^{(\operatorname{Im}\tau)^2 - (\operatorname{Re}\tau)^2}
-\le e^{\pi^2} e^{-(\operatorname{Re}\tau)^2}$ である。一方 $\mathfrak{h}$ は帯の上で有界ではない。
+\le e^{\pi^2} e^{-(\operatorname{Re}\tau)^2}$ である。一方、第 \ref{sec:general} 節で
+$\mathfrak{h}$ と書いた量は帯の上で有界ではない。
 補題 \ref{lem:38} の $C(t)$ が $\abs{t}$ について高々指数増大であることしか主張しないから、
 そこから得られるのは
 $\abs{\mathfrak{h}(\tau)} \le K e^{\kappa\abs{\operatorname{Re}\tau}}$
@@ -1088,7 +1213,7 @@ $\max_j \CN{f_j - g_j}$ は、書き換えの前後で\textbf{等しい}。等�
 出所は \eqref{eq:gh} である。$\varphi_j(g_j)\Omega = -\varphi_j(h_j)\Omega$ という
 真空消滅による置き換えを $k$ 回行い、そのたびに $-1$ が出る。局所性が担うのは、
 置き換えて得られた $h_j$ を最終的な順序の位置へ移動させることだけであり、
-その移動は符号を生じない。第 \ref{sec:locality} 小節の切断と極限の議論は、
+その移動は符号を生じない。第 \ref{sec:locality} 小節の切断関数と極限の議論は、
 この符号のない移動を正当化するためのものである。
 
 補題 \ref{lem:37} (ii) の最終的な符号 $(-1)^{\sum_j d_j}$ は、この $(-1)^k$ と
@@ -1112,13 +1237,14 @@ $\beta_d(r_\pi)$ に一致する（\eqref{eq:beta} で回転の共形因子が $
 対合であり、$I_+$ に台をもつ関数と $I_-$ に台をもつ関数を交換し、反転 $z \mapsto z^{-1}$ と
 可換である。
 
-これらから、両立汎関数の $U(r_\pi)$ による輸送が $\Dstar$ 全体の上で定義され、
+これらから、$U(r_\pi)$ による両立汎関数の引き戻し
+$\lambda \mapsto \lambda \circ U(r_\pi)$ が $\Dstar$ を $\Dstar$ に写し、
 定義 \ref{def:vtilde} の条件が対応することがわかる。すなわち $\Phi$ について
 $\Dom(\Vt_{-\tau})$ に属することと $U(r_\pi)\Phi$ について $\Dom(\Vt_\tau)$ に属することが
-同値になり、値も対応する。よって下半円に台をもつ列を $r_\pi$ で上半円へ回し、
-(ii) を適用し、定義域と値を戻し、最後に得られた積を回し戻せばよい。回し戻しの段階では
-$\beta_d(r_\pi)$ と反転の可換性から、もとの列を逆順にし試験関数を引き戻した符号つきの積に
-正確に着地する。
+同値になり、値も対応する。よって下半円に台をもつ列を $r_\pi$ で上半円へ移し、
+(ii) を適用し、定義域と値の対応で戻し、最後に得られた積に再び $r_\pi$ を施せばよい。
+この最後の段階では、$\beta_d(r_\pi)$ と反転の可換性により、得られる式はもとの列を逆順にし
+試験関数を引き戻した符号つきの積に一致する。
 
 「一般性を失うことなく」が正当であることは、この一連の対応が実際に構成できることに
 ほかならない。
@@ -1130,7 +1256,7 @@ $\Xcl$ の元については $F|_{\Circ} = F|_{I_+} + F|_{I_-}$ という分解�
 一般の $f \in C^\infty(\Circ)$ については、$\operatorname{supp} f_\pm \subseteq I_\pm$ かつ
 $f = f_+ + f_-$ となる $f_\pm \in C^\infty(\Circ)$ は存在しない。$f(\pm 1) \ne 0$ ならば、
 $f_+$ と $f_-$ のいずれかが端点で $0$ にならず、規約 \ref{conv:supp} の意味での
-台条件と両立しないからである。
+台条件を満たさないからである。
 
 証明のいくつかの箇所で、単項式の稠密性や $f = f_+ + f_-$ の形の分解は、議論を
 短くする近道に見える。いずれも使えない。第 \ref{sec:mirror} 小節で $\beta_d(r_\pi)$ との一致を単項式の稠密性ではなく
@@ -1139,7 +1265,8 @@ $f_+$ と $f_-$ のいずれかが端点で $0$ にならず、規約 \ref{conv:
 \subsection{台の規約の読み方}
 \label{sec:supp-reading}
 
-\cite{T26} は一貫して $\operatorname{supp} f \subset I_\pm$ と書く。規約 \ref{conv:supp} が
+\cite{T26} は一貫して $\operatorname{supp} f \subset I_\pm$ と書く（記号は原論文のまま
+であり、真の包含を意味しない）。規約 \ref{conv:supp} が
 述べるとおり、これを閉包の意味に読むのが正しい。理由は \cite{T26} 自身の記述にある。
 \cite{T26} 定義 3.3 は $P_{\Xcl}(I_+) \subseteq P(I_+)$ を主張する。ここで
 $P_{\Xcl}(I_+)$ は $F \in \Xcl$ に対する $\varphi(F|_{I_+})$ が生成する部分代数である。
@@ -1151,7 +1278,7 @@ $P(I_+)\Omega$ への移行を「$f \in C_0^\infty(I_+)$ を近似する」と�
 閉包の読み方は開の読み方より弱い仮定を課すから、この規約のもとで証明された定理は
 開の読み方のもとでの定理を含む。逆ではない。$\operatorname{supp} f$ が開半円に
 コンパクトに含まれることを要求すれば、それは定理を特殊化したことになる。
-第 \ref{sec:locality} 小節の切断と極限の議論が必要になるのは、まさに閉包の読み方を
+第 \ref{sec:locality} 小節の切断関数と極限の議論が必要になるのは、まさに閉包の読み方を
 採るからである。
 
 \section{形式化の状態と検証の意味}
@@ -1170,13 +1297,13 @@ $P(I_+)\Omega$ への移行を「$f \in C_0^\infty(I_+)$ を近似する」と�
 この版で確立されていることと、まだ確立されていないことを分けて述べる。形式化は
 継続中であり、この版より後の状態については何も述べない。
 
-本稿の公開時点において、この開発リポジトリは公開されていない。したがって本節と
-第 \ref{sec:limits} 節の記述を読者が独立に確かめることは、現時点ではできない。
-これらは検証済みの事実の報告であって、読者に検証の手順を示すものではない。
-上のコミット識別子は版を一意に指定するから、ソースが利用可能になった時点で、
-以下のすべての主張はその版に対して確かめられる。
+本稿の保存版には、上のコミットにおける形式化のソース一式が本稿とともに収められる。
+本節と第 \ref{sec:limits} 節の主張は、したがってそのソースに対して確かめられる。
+開発リポジトリそのものへのアクセスは前提としない。上のコミット識別子は版を一意に
+指定するから、そのソースと以下の記述との対応は一意に定まる。
 
 \subsection{証明済みの結果}
+\label{sec:proved}
 
 第 \ref{sec:setting} 節から第 \ref{sec:general} 節までに述べた道筋のうち、
 次のものはすべて機械的に検証された証明をもつ。
@@ -1188,18 +1315,24 @@ $P(I_+)\Omega$ への移行を「$f \in C_0^\infty(I_+)$ を近似する」と�
 \hline
 \cite{T26} 定義 3.1 & $\Vt_\tau$、族 $(G_\lambda)$ の一意性、$\Psi$ の一意性、線形性 \\
  & 真空 $\Omega$ の不変性、実平行移動則 \eqref{eq:translation}、実パラメータの場合 \\
-\cite{CRTT25} 補題 2.10 (i) & $t \mapsto V_t\Phi$ の $\Fields$-強連続性 \\
+（\cite{CRTT25} 補題 2.10 (i) の & 各 $\lambda \in \Dstar$ に対する $t \mapsto \lambda(V_t\Phi)$ の連続性 \\
+\ ブーストについての & \\
+\ スカラー化した形） & \\
 （その証明が用いる事実） & $t \mapsto \beta_d(v_t)f$、$\theta \mapsto \beta_d(r_\theta)f$ の連続性 \\
-\cite{T26} 定義 3.2 & 解析的試験関数の族 $\Xcl$、制限写像の単射性 \\
+\cite{T26} 定義 3.2 & 解析的試験関数の族 $\Xcl$、制限による同一視（下記）、\\
+ & $C^\infty(\Circ)$ からの相対位相 \\
  & 端点条件の二つの読み方（複素微分・実偏導関数）の同値性 \\
 \cite{T26} 補題 3.4 & $\{F|_{I_\pm}\}$ の $C_0^\infty(I_\pm)$ における稠密性 \\
 \cite{CRTT25} 系 A.3 (i) & Reeh--Schlieder 性：$P(I_\pm)\Omega$ の $\Dom$ における稠密性 \\
-（本稿で導いた帰結） & 解析的芯 $P_\Xcl(I_\pm)\Omega$ の稠密性 \\
+\ （$I = I_\pm$ の場合） & \\
+（本稿で導いた帰結） & $P_\Xcl(I_\pm)\Omega$ の $\Dom$ における稠密性 \\
 \cite{T26} 定義 3.5 & 複素ブースト $\beta_d(v_\tau)$（$d = 0$ の可除特異点を込めて）、半群則 \\
-\cite{T26} 補題 3.6 & $\tau \mapsto \beta_d(v_\tau)F|_{I_+}$ と $G_\lambda$ の、$\Strip_{i\pi}$ 上の \\
- & 連続性と内部での正則性 \\
-(W3) 橋渡し & 正モードのみをもつ試験関数に対する $\varphi(f)\Omega = 0$ \\
-\cite{T26} 補題 3.7 & (i) 解析的芯上の $\Vt_\tau$ の値、(ii) $\tau = i\pi$ における符号 \\
+\cite{T26} 補題 3.6 (i) & $\tau \mapsto \beta_d(v_\tau)F|_{I_+}$ の $\Strip_{i\pi}$ 上の連続性と \\
+ & 内部での正則性 \\
+（補題 3.6 (ii) を & 各 $G_\lambda$、すなわち \eqref{eq:Glambda} の $\Strip_{i\pi}$ 上の \\
+\ スカラー化した形） & 連続性と内部での正則性 \\
+（(W3) から導いた帰結） & 正モードのみをもつ試験関数に対する $\varphi(f)\Omega = 0$ \\
+\cite{T26} 補題 3.7 & (i) $P_\Xcl(I_+)\Omega$ 上の $\Vt_\tau$ の値、(ii) $\tau = i\pi$ における符号 \\
 \cite{T26} 補題 3.8 & 実軸上の $C^N$ 増大度評価 \\
 \cite{T26} 補題 3.9 & 帯上一様な評価 \\
 \cite{T26} 定理 3.10 & (i) 定義域への包含、(ii) 上半円の公式、(iii) 下半円の公式 \\
@@ -1207,18 +1340,38 @@ $P(I_+)\Omega$ への移行を「$f \in C_0^\infty(I_+)$ を近似する」と�
 \end{tabular}
 \end{center}
 
-出典欄が括弧書きの行は、その主張が原論文の番号つき結果そのものではなく、その証明が用いる
-事実、または本稿の開発で導いた帰結であることを示す。
+出典欄が括弧書きの行は、その主張が原論文の番号つき結果そのものではないことを示す。
+三つの場合がある。番号つき結果の証明が用いる事実であるか、本稿の開発で導いた帰結であるか、
+あるいは番号つき結果を両立汎関数でスカラー化した形であって、原論文の主張よりは弱いが、
+定義 \ref{def:vtilde} と定理 \ref{thm:main} に至る道筋が実際に用いるものである。
+
+\paragraph{制限による同一視について。}
+\cite{T26} 定義 3.2 は、$\Xcl$ の元 $F$ をその円周への制限 $F|_{\Circ}$ と同一視して
+$\Xcl$ を $C^\infty(\Circ)$ の部分集合とみなし、相対位相を入れる。この同一視を支えるのが
+第 \ref{sec:core} 節で述べた、$\Circ$ 上で一致する $\Xcl$ の二つの元は $\Oex$ 上で
+一致するという事実である。形式化はこれを同値の形で確立している。すなわち二つの元の
+円周への制限が一致することと、それらが $\Oex$ の各点で一致することとは同値である。
+相対位相はこの制限写像に沿って $C^\infty(\Circ)$ から引き戻したものとして入れてある。
+
+同値の形をとることには理由がある。形式化における $\Xcl$ の元は、$\Oex$ 上の関数ではなく
+$\mathbb{C}$ 全体で定義された関数として保持されており、開単位円板の内部での値には
+何の条件も課されていない。$\Xcl$ を定める条件はいずれもその領域に言及しないから、
+そこでの値は数学的な内容をもたない自由度である。この表し方のもとでは、制限写像は
+文字どおりには単射でない。同じ $\Oex$ 上の関数を表す元が、円板の内部で違う値をとる
+ことがあるからである。単射性が成り立つのは $\Oex$ 上の関数としてみたときであり、
+上の同値が述べているのがそれである。定義 3.2 が要求する同一視は $\Oex$ 上の関数に
+ついてのものだから、この同値がその内容の忠実な形にあたる。これは数学の側の問題ではなく、
+対象をどう表すかの問題であり、形式化が明示を強いる種類の区別の一例である。
 
 第 \ref{sec:gaps} 節で述べた補いの議論は、いずれもこれらの証明の内部にある。
 すなわち一意性（第 \ref{sec:uniqueness} 小節）、$d = 0$ の可除特異点
 （第 \ref{sec:d0} 小節）、近似列の構成（第 \ref{sec:cayley} 小節）、
-切断と極限による局所性の適用（第 \ref{sec:locality} 小節）、
-(W3) の橋渡しと零モード（第 \ref{sec:w3} 小節）、
+切断関数と極限による局所性の適用（第 \ref{sec:locality} 小節）、
+(W3) の一般の試験関数への適用と零モードの扱い（第 \ref{sec:w3} 小節）、
 局所凸空間上の多重線形評価（第 \ref{sec:lcs} 小節）、
 角度の持ち上げと $C^N$ 増大度（第 \ref{sec:growth} 小節）、
 Gauss 重みつき最大値原理（第 \ref{sec:maxprinciple} 小節）、
-$\pi$ 回転による下半円の輸送（第 \ref{sec:mirror} 小節）は、
+$\pi$ 回転による下半円の場合の上半円の場合への帰着（第 \ref{sec:mirror} 小節）は、
 いずれも省略や仮定ではなく証明された補題として存在する。
 
 定理 3.10 の三つの主張は、公理系を満たす\textbf{すべての}
@@ -1230,22 +1383,49 @@ $(\Dom, \Fields, U, \Omega)$ とその公理を仮定として受け取り、結
 
 形式化された証明について、機械的に確認されているのは次のことである。
 
-第一に、上表のすべての結果について、証明に未完成の箇所がない。証明支援系には
-「この部分は後で埋める」と宣言して先へ進む機能があるが、この開発ではその宣言は
-一つも使われていない。自動的な検査がその不在を確認している。
+第一に、第 \ref{sec:proved} 小節の表にあるすべての結果について、証明に未完成の箇所がない。証明支援系には、証明の
+一部を「後で埋める」と宣言したまま先へ進む機能があるが、この開発ではその宣言は一つも
+使われていない。自動的な検査がその不在を開発全体にわたって確認している。
+
+これとは別に、開発には定理 3.10 とそこに至る主張を原論文の語彙のまま書き並べた一覧が
+ある。そこに並ぶ主張はいずれも別の場所で証明されており、この一覧に残っている未充足の
+項目は一つだけである。すなわち、公理系を満たす理論そのものが、まだ与えられていない
+対象として置かれている。置かれているのは「この対象はまだ与えられていない」ということ自体を
+表す別種の対象であって、求める対象そのものではない。したがってそれを使って何かを証明する
+ことはできない。上の表のどの結果もそれに
+依存しておらず、いずれも公理系を満たす理論を任意に与えたときの主張として証明されている。
+第 \ref{sec:limits} 節の「具体的なモデルは構成していない」という項目が、この点にあたる。
 
 第二に、証明が依拠する論理的な仮定が明示されている。Lean のカーネルは、ある定理の証明が
-どの公理に（推移的に）依存するかを機械的に列挙できる。固定した版において、
-上表の結果を含む \auditcount\ 個の命題、すなわち定義・補題・定理として
-書き下されたもののすべてについてこの列挙を実行し、現れる公理が
+どの公理に（推移的に）依存するかを機械的に列挙できる。固定した版では、上の表の結果を含む
+\auditcount\ 件の宣言についてこの列挙を実行し、現れる公理が
 \[
   \{\,\text{propext},\ \text{Classical.choice},\ \text{Quot.sound}\,\}
 \]
 に含まれることが確認されている。この三つはそれぞれ命題の外延性、選択公理、
 商型の健全性に対応し、Lean と mathlib が古典数学を展開するために用いる標準的な
-論理的基礎をなす。本開発はこれ以外の公理を導入していない。導入すれば、この検査が
-その時点で失敗する。したがってこの検査が排除しているのは、本開発に固有の公理の追加や
-検証の抜け道であって、上の三つを含む基礎そのものではない。
+論理的基礎をなす。本開発はこれ以外の公理を導入していない。新たな公理を導入し、列挙の
+対象となる宣言のいずれかがそれに依存すれば、その宣言についての列挙にその公理が現れ、
+検査は失敗する。公理の宣言そのものを禁じる別の検査もある。この検査には、所有者が
+明示的に承認した場合の例外が用意されているが、固定した版でその例外は一つも使われて
+いない。したがってこの二つが排除しているのは、
+本開発に固有の公理の追加や、それによる検証の迂回であって、上の三つを含む基礎そのもの
+ではない。
+
+ここで\textbf{宣言}とは、形式化の中で名前を与えて書き下したもの一つ一つ、すなわち定理
+だけでなく定義も含む。列挙の対象がこの \auditcount\ 件で
+尽きていること、いいかえて検査から漏れた定理がないことは、別の機械的な検査が確かめて
+いる。この検査は、形式化のすべてのファイルが全体の入口となる一つのモジュールから
+到達可能であること、および、そこで公開されている定理がすべて上の列挙の対象一覧に
+現れることを検証する。固定した版でこの検査が数える公開された定理は \coveragecount\ 件で
+ある。
+
+二つの数は数える単位が違う。\auditcount\ は公理の列挙を実行した宣言の件数であり、
+定理のほかに定義とそれに準じるものを含む。\coveragecount\ はそのうち、公開された定理
+として宣言されているものだけを数えたものである。したがって \coveragecount\ 件の定理は
+いずれも \auditcount\ 件の中に含まれており、差はもっぱら定理でない宣言に対応する。
+定理でない宣言についても公理の列挙は意味をもつ。定義がどの公理に依存するかは、
+その定義を用いる定理の依存関係に伝わるからである。
 
 この列挙が扱うのは論理的な公理だけであり、次の二つはそれとは別の事柄である。
 一つは、証明項を検査する Lean のカーネルと、それを動かすコンパイラおよび実行環境である。
@@ -1254,12 +1434,13 @@ $(\Dom, \Fields, U, \Omega)$ とその公理を仮定として受け取り、結
 よって検査された証明をもつ。すなわち mathlib への依存は信頼の追加ではなく、
 検査済みの証明の再利用である。
 
-第三に、確認されていないことを述べる。上の検査は、Lean で書かれた主張が
+第三に、確認されていないことを述べる。上の二つの検査は、Lean で書かれた主張が
 \cite{T26} の主張と同じ数学的内容をもつことを保証しない。それは翻訳の忠実さの
 問題であって、証明の正しさの問題ではない。定理を弱めたり、特別な場合に限定したり、
 都合のよい仮定を追加で置いたりすることも、これらの検査では捉えられない。それを防ぐのは
 検査ではなく、原論文の主張と Lean の主張を照合する人間の作業である。本稿の
-第 \ref{sec:gaps} 節と第 \ref{sec:status} 節の対応表は、その照合の出発点として書かれている。
+第 \ref{sec:gaps} 節と、第 \ref{sec:proved} 小節の対応表は、その照合の出発点として
+書かれている。
 
 \section{限界と未着手の項目}
 \label{sec:limits}
@@ -1275,20 +1456,14 @@ $x\Omega = 0$ ならば $x = 0$ であること（\cite{CRTT25} 付録 A の系 
 $I_\pm$ について述べられており、その (i)--(iii) は Reeh--Schlieder 性を使わないから、
 これらは定理の範囲の制限ではなく、それに付随する結果の範囲の制限である。
 
-\paragraph{\texorpdfstring{補題 3.6 の $\Dom$ 値の形は扱っていない。}{補題 3.6 の D 値の形は扱っていない。}}
-補題 \ref{lem:36} について確立されているのは、試験関数の空間に値をとる写像
-$\tau \mapsto \beta_d(v_\tau)F|_{I_+}$ の連続性と正則性、および両立汎関数でスカラー化した
-$G_\lambda$ の連続性と正則性である。積 $\varphi_1(\beta_{d_1}(v_\tau)F_1|_{I_+})\cdots\Omega$ を
-$\Dom$ に値をとる $\tau$ の写像とみたときの、$\Fields$-強位相についての連続性と正則性は
-扱っていない。定義 \ref{def:vtilde} が要求するのはスカラー化した形だけであり、第 3 節で
-述べたとおり、スカラー化した形から $\Dom$ 値の形が一般に従うわけではない。
-
-\paragraph{\texorpdfstring{$\Xcl$ に相対位相を入れていない。}{解析的試験関数の族に相対位相を入れていない。}}
-\cite{T26} 定義 3.2 は制限写像の単射性を用いて $\Xcl$ を $C^\infty(\Circ)$ の部分集合と
-みなし、相対位相を入れる。形式化はこの単射性までを証明し、$\Xcl$ 自身には位相を
-入れていない。補題 \ref{lem:34} の稠密性は $C^\infty(\Circ)$ の位相について述べられて
-おり、$\Xcl$ の内部での収束に関する主張は行っていない。定理 \ref{thm:main} の証明が
-必要とするのは制限 $F|_{I_+}$ の側の収束だけだから、この省略は証明に影響しない。
+\paragraph{\texorpdfstring{補題 3.6 (ii) の $\Dom$ 値の形は扱っていない。}{補題 3.6 (ii) の D 値の形は扱っていない。}}
+補題 \ref{lem:36} について確立されているのは (i) と、(ii) を両立汎関数でスカラー化した
+形、すなわち各 $G_\lambda$ の連続性と正則性である。(ii) そのもの、つまり積
+$\varphi_1(\beta_{d_1}(v_\tau)F_1|_{I_+})\cdots\Omega$ を $\Dom$ に値をとる $\tau$ の写像と
+みたときの $\Fields$-強位相についての連続性と正則性は扱っていない。第 3 節と
+第 \ref{sec:core} 節で述べたとおり、定義 \ref{def:vtilde} が要求するのはスカラー化した形
+だけであり、定理 \ref{thm:main} に至る道筋もそれしか使わない。またスカラー化した形から
+$\Dom$ 値の形が一般に従うわけではないから、この二つの間には実際に隔たりがある。
 
 \paragraph{具体的なモデルは構成していない。}
 定理は公理系を満たすすべての理論について述べられているが、そのような理論が

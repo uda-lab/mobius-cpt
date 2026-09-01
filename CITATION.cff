@@ -5,13 +5,16 @@ abstract: >-
   Tener (Comm. Math. Phys. 407 (2026), no. 6, paper no. 128) proves a PCT theorem for
   Möbius-covariant Wightman conformal field theories on the circle in a setting that assumes
   neither a Hilbert space nor unitarity: the boost flow of such a theory admits an analytic
-  continuation to the closed strip 0 <= Im tau <= pi, and at the far edge tau = i*pi that
-  continuation reverses the order of any product of fields smeared inside the upper semicircle,
+  continuation, as a family of partially defined operators, to the closed strip
+  0 <= Im tau <= pi; at the far edge tau = i*pi that continuation is defined on every product of
+  fields smeared inside the upper semicircle, and there it reverses the order of the product,
   reflects each test function through z -> 1/z, and multiplies the result by (-1)^d, where d is
   the sum of the conformal dimensions. This repository contains a machine-checked formalisation
-  of that theorem in Lean 4 with mathlib, covering Definition 3.1 and Lemmas 3.4, 3.6, 3.7, 3.8,
-  3.9 leading to Theorem 3.10, together with the Reeh-Schlieder property for the two reference
-  semicircles, which is what makes the continued operators densely defined. It also contains a
+  of that theorem in Lean 4 with mathlib, covering Definition 3.1, Lemma 3.4, Lemma 3.6(i)
+  together with the scalarised consequence of Lemma 3.6(ii) that Definition 3.1 requires, and
+  Lemmas 3.7, 3.8, 3.9 leading to Theorem 3.10, together with the Reeh-Schlieder property for
+  the two reference semicircles, which together with Lemma 3.4 is what supports calling the
+  continued operators densely defined. It also contains a
   mathematician-facing research note (Japanese body, English title and abstract) that presents
   the proof architecture as ordinary mathematics, records the formalisation status at a pinned
   revision, and sets out the points at which the published proof compresses an argument that a
@@ -25,11 +28,11 @@ authors:
     # orcid: "https://orcid.org/XXXX-XXXX-XXXX-XXXX"   # to be supplied by the author
     # affiliation: ""                                   # to be supplied by the author
 version: "0.1.0"
-date-released: "2026-08-31"
+date-released: "2026-09-01"
 license: Apache-2.0
 repository-code: "https://github.com/uda-lab/mobius-cpt"
 url: "https://github.com/uda-lab/mobius-cpt"
-commit: 9664674d88e40ba0158d684d28e2153f4809f7f7
+commit: fad7a6224ae608a56be5f212ece8837d209199bd
 keywords:
   - PCT theorem
   - conformal field theory
