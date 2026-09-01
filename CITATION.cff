@@ -32,6 +32,14 @@ date-released: "2026-09-01"
 license: Apache-2.0
 repository-code: "https://github.com/uda-lab/mobius-cpt"
 url: "https://github.com/uda-lab/mobius-cpt"
+doi: 10.5281/zenodo.22222446
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22222446
+    description: "Version DOI (v0.1.0)"
+  - type: doi
+    value: 10.5281/zenodo.22222445
+    description: "Concept DOI (all versions)"
 commit: fad7a6224ae608a56be5f212ece8837d209199bd
 keywords:
   - PCT theorem
