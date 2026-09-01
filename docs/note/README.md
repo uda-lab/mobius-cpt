@@ -44,12 +44,13 @@ in the reference environment and on a stock TeX Live without being edited:
 2. **`HaranoAjiMincho-Regular.otf` and `-Bold.otf`, `HaranoAjiGothic-Regular.otf` and `-Bold.otf`,
    by file name.** Part of every TeX Live since 2020 (the `haranoaji` package, in
    `texlive-lang-japanese` on Debian), so this route needs no download.
-3. **The `Noto Serif CJK JP` and `Noto Sans CJK JP` families, by family name.** This one goes
-   through fontconfig, so it needs the families installed system-wide (`fonts-noto-cjk`) and a
-   populated fontconfig cache (`fontconfig`, then `fc-cache -f`).
+3. **The `Noto Serif CJK JP` and `Noto Sans CJK JP` families, Regular *and* Bold, by family
+   name.** This one goes through fontconfig, so it needs the families installed system-wide
+   (`fonts-noto-cjk`) and a populated fontconfig cache (`fontconfig`, then `fc-cache -f`).
 
-**A route is taken only when every face it needs is present.** Each is guarded by one probe per
-face, and any failing probe drops the whole route. A half-installed route — an interrupted
+**A route is taken only when every face it needs is present**, bold included — the document sets
+Japanese in bold as well as in the regular weight. Each route is guarded by one probe per face,
+and any failing probe drops the whole route. A half-installed route — an interrupted
 download into `fonts/`, a partial manual font installation — therefore falls through to the next
 one instead of being selected and then failing on the missing face. If no route is available in
 full the build stops with a `\PackageError` naming all three and the files each needs.

@@ -19,7 +19,9 @@
 % present, so that a half-installed route -- an interrupted download into \jafontdir, a
 % partial manual font installation -- falls through to the next route instead of being
 % selected and then failing on the missing face.  Hence one probe per face, any failing
-% probe dropping the whole route.  (b) A later route is probed only if the earlier ones did
+% probe dropping the whole route -- the document sets Japanese in bold as well as in the
+% regular weight, so a route offering only the regular faces is incomplete.  (b) A later
+% route is probed only if the earlier ones did
 % not succeed, so that the reference build touches no font outside \jafontdir; probing by
 % family name reaches into system font directories, which makes the build environment
 % dependent and is reported as such.  Hence the probes are guarded, not run up front.
@@ -55,11 +57,13 @@
 \ifjafontset\else
   \jafontCtrue
   \IfFontExistsTF{Noto Serif CJK JP}{}{\jafontCfalse}
+  \IfFontExistsTF{Noto Serif CJK JP Bold}{}{\jafontCfalse}
   \IfFontExistsTF{Noto Sans CJK JP}{}{\jafontCfalse}
+  \IfFontExistsTF{Noto Sans CJK JP Bold}{}{\jafontCfalse}
   \ifjafontC
-    \setCJKmainfont{Noto Serif CJK JP}
-    \setCJKsansfont{Noto Sans CJK JP}
-    \setCJKmonofont{Noto Sans CJK JP}
+    \setCJKmainfont[BoldFont={Noto Serif CJK JP Bold}]{Noto Serif CJK JP}
+    \setCJKsansfont[BoldFont={Noto Sans CJK JP Bold}]{Noto Sans CJK JP}
+    \setCJKmonofont[BoldFont={Noto Sans CJK JP Bold}]{Noto Sans CJK JP}
     \jafontsettrue
   \fi
 \fi
@@ -69,8 +73,8 @@
     This document needs one of, complete: (1) NotoSerifCJKjp-Regular/Bold.otf and
     NotoSansCJKjp-Regular/Bold.otf in the directory \jafontdir/ (see docs/note/README.md);
     (2) HaranoAjiMincho-Regular/Bold.otf and HaranoAjiGothic-Regular/Bold.otf, part of
-    TeX Live 2020 and later; (3) the Noto Serif CJK JP and Noto Sans CJK JP families
-    installed system-wide and visible to fontconfig.}
+    TeX Live 2020 and later; (3) the Noto Serif CJK JP and Noto Sans CJK JP families,
+    Regular and Bold, installed system-wide and visible to fontconfig.}
 \fi
 
 \usepackage{amsmath,amssymb,amsthm}
