@@ -38,17 +38,21 @@ loads for link borders. Without either, `xelatex` stops with a file-not-found er
 The document picks a Japanese font by trying three routes in order, so that the same file builds
 in the reference environment and on a stock TeX Live without being edited:
 
-1. **`\jafontdir/NotoSerifCJKjp-*.otf`, `\jafontdir/NotoSansCJKjp-*.otf`, by file name.**
-   `\jafontdir` defaults to `fonts/` relative to the `.tex` file. This is the reference route and
-   the one the archival PDF uses. It is taken only if **all four** files are present, so a
-   partially populated `fonts/` falls through to the routes below instead of failing.
-2. **Harano Aji Mincho / Gothic, by file name.** Part of every TeX Live since 2020 (the
-   `haranoaji` package, in `texlive-lang-japanese` on Debian), so this route needs no download.
-3. **The `Noto Serif CJK JP` / `Noto Sans CJK JP` families, by family name.** This one goes
+1. **`\jafontdir/NotoSerifCJKjp-Regular.otf` and `-Bold.otf`, `\jafontdir/NotoSansCJKjp-Regular.otf`
+   and `-Bold.otf`, by file name.** `\jafontdir` defaults to `fonts/` relative to the `.tex` file.
+   This is the reference route and the one the archival PDF uses.
+2. **`HaranoAjiMincho-Regular.otf` and `-Bold.otf`, `HaranoAjiGothic-Regular.otf` and `-Bold.otf`,
+   by file name.** Part of every TeX Live since 2020 (the `haranoaji` package, in
+   `texlive-lang-japanese` on Debian), so this route needs no download.
+3. **The `Noto Serif CJK JP` and `Noto Sans CJK JP` families, by family name.** This one goes
    through fontconfig, so it needs the families installed system-wide (`fonts-noto-cjk`) and a
    populated fontconfig cache (`fontconfig`, then `fc-cache -f`).
 
-If none of the three is available the build stops with a `\PackageError` naming all three.
+**A route is taken only when every face it needs is present.** Each is guarded by one probe per
+face, and any failing probe drops the whole route. A half-installed route — an interrupted
+download into `fonts/`, a partial manual font installation — therefore falls through to the next
+one instead of being selected and then failing on the missing face. If no route is available in
+full the build stops with a `\PackageError` naming all three and the files each needs.
 
 For route 1, place these four files in `fonts/`:
 
