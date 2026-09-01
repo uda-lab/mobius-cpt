@@ -107,9 +107,10 @@
 Tener (Comm.\ Math.\ Phys.\ \textbf{407} (2026), no.~6, paper no.~128) proves a PCT theorem for
 M\"obius-covariant Wightman conformal field theories on the circle in a setting that assumes
 neither a Hilbert space nor unitarity: the boost flow of such a theory admits an analytic
-continuation to the closed strip $0 \le \operatorname{Im}\tau \le \pi$, and at the far edge
-$\tau = i\pi$ that continuation reverses the order of any product of fields smeared inside the
-upper semicircle, reflects each test function through $z \mapsto z^{-1}$, and multiplies the
+continuation, as a family of \emph{partially defined} operators, to the closed strip
+$0 \le \operatorname{Im}\tau \le \pi$; at the far edge $\tau = i\pi$ that continuation is
+defined on every product of fields smeared inside the upper semicircle, and there it reverses
+the order of the product, reflects each test function through $z \mapsto z^{-1}$, and multiplies the
 result by $(-1)^{d}$, where $d$ is the sum of the conformal dimensions. This is the
 analytic-continuation and order-reversal statement on which the PCT involution and the
 Bisognano--Wichmann property are subsequently built; those constructions require further
@@ -191,10 +192,11 @@ Fourier モードの議論などである。これらはいずれも \cite{T26} 
 \paragraph{範囲と非目標。}
 本稿と、本稿が報告する形式化の主たる対象は、\cite{T26} の第 3 節、すなわち定義 3.1 から
 定理 3.10 までである。これに加えて、基準となる半円 $I_\pm$ に対する Reeh--Schlieder 性、
-すなわち $P(I_\pm)\Omega$ の稠密性（\cite{CRTT25} 付録 A の系 A.3 (i)）も形式化した。
-定理 3.10 の (i)--(iii) 自身はこれを用いないが、\cite{T26} が定理 3.10 の前文で
-$\Vt_{\pm i\pi}$ を「稠密に定義された」作用素と呼ぶとき、その語を支えているのが
-この稠密性だからである。次のものは扱わない。Haag--Kastler の意味での共形ネットとその頂点作用素代数との
+すなわち $P(I_\pm)\Omega$ の $\Dom$ における稠密性も形式化した（\cite{CRTT25} 付録 A の
+系 A.3 (i) は一般の真の開区間について述べており、その $I = I_\pm$ の場合にあたる）。
+\cite{T26} が $\Vt_\tau$ を「稠密に定義された」作用素と呼ぶとき、その語を支えているのは
+$P_\Xcl(I_\pm)\Omega$ が $\Dom$ の中で稠密であることであり、これは上の Reeh--Schlieder 性と
+補題 3.4 から従う。定理 3.10 の (i)--(iii) 自身はこの稠密性を用いない。次のものは扱わない。Haag--Kastler の意味での共形ネットとその頂点作用素代数との
 対応（\cite{CKLW18}）、
 Tomita--Takesaki 理論、Bisognano--Wichmann 性（\cite{T26} 第 4 節）、不変 Hermite 形式と
 PCT 対合、および M\"obius 頂点代数との同値（\cite{CRTT25}）。これらは定理の動機を
@@ -306,7 +308,9 @@ $\Phi \in \Dom$ に対して多重線形写像
 \]
 を定める。代数的双対の元 $\lambda \in \Dom^*$ が $\Fields$ と\textbf{両立する}とは、
 すべてのそのような組に対して $\lambda \circ S_{\varphi_1,\dots,\varphi_k,\Phi}$ が
-分離連続であることをいう（$C^\infty(\Circ)$ が Fr\'echet 空間だから同時連続と同値である）。
+同時連続であることをいう。これは \cite{T26} 定義 2.4 の語法である。\cite{CRTT25} 定義 2.5 は
+同じものを分離連続で述べるが、$C^\infty(\Circ)$ が Fr\'echet 空間だから両者は同値であり
+（第 \ref{sec:lcs} 小節）、以下どちらで読んでも違いはない。
 両立する汎関数の全体を $\Dstar$ と書く。前小節の Fourier に関する注意から、両立する
 $\lambda$ は単項式の組における値で決まる。
 
@@ -431,7 +435,8 @@ $V_t\Psi = V_t\Psi'$ であり、したがって $\Psi = \Psi'$ である。族 
 
 定義から直ちに従う性質を挙げる。$\tau \in \mathbb{R}$ ならば $\Dom(\Vt_\tau) = \Dom$ かつ
 $\Vt_\tau = V_\tau$ である（$G_\lambda(t) = \lambda(V_t\Phi)$, $\Psi = V_\tau\Phi$ と
-とればよい。ただし $G_\lambda$ の連続性には上に述べた \cite{CRTT25} 補題 2.10 (i) が要る）。
+とればよい。ただし $G_\lambda$ の連続性には、上に述べた \cite{CRTT25} 補題 2.10 (i) の、
+ブーストについてスカラー化した形が要る）。
 また (W4) から、すべての $\tau$ に対して $\Omega \in \Dom(\Vt_\tau)$ かつ
 $\Vt_\tau\Omega = \Omega$ である（定数族 $G_\lambda \equiv \lambda(\Omega)$ をとる）。
 さらに次の\textbf{実平行移動則}が成り立つ。$\tau \in \mathbb{C}$ と $t \in \mathbb{R}$ に対して
@@ -468,13 +473,13 @@ Wightman 共形場理論とする。
 \end{theorem}
 
 (ii) と (iii) において、反転された試験関数 $f_j \circ z^{-1}$ は反対側の半円に台をもち、
-作用素の順序は逆転している。(i)--(iii) はいずれも稠密性を主張していない。「稠密に定義された」
-という語は \cite{T26} の定理 3.10 の前文に現れるが、それは $P(I_\pm)\Omega$ が $\Dom$ の中で
-$\Fields$-強位相について稠密であるという別の事実、すなわち Reeh--Schlieder 性
-（\cite{CRTT25} 付録 A の系 A.3 (i)）を指すものであり、(i)--(iii) のどれもそれに依存しない。
-この稠密性は $I_\pm$ について独立に成り立つ定理であり、それも検証されている
-（第 \ref{sec:status} 節）。両者を合わせると、$\Vt_{\pm i\pi}$ が実際に稠密に定義された
-作用素であることが従う。
+作用素の順序は逆転している。(i)--(iii) はいずれも稠密性を主張していない。$\Vt_\tau$ を
+「稠密に定義された」作用素と呼ぶ根拠は別のところにある。\cite{T26} が $\Dom$ の稠密な
+部分空間として挙げるのは $P_\Xcl(I_+)\Omega$、すなわち $\Xcl$ から作られるベクトルの
+全体であり、その稠密性は Reeh--Schlieder 性（$P(I_\pm)\Omega$ が $\Dom$ の中で
+$\Fields$-強位相について稠密であること、\cite{CRTT25} 付録 A の系 A.3 (i)）と
+補題 \ref{lem:34} から従う。この稠密性は $I_\pm$ について独立に成り立つ定理であり、
+それも検証されている（第 \ref{sec:status} 節）。(i)--(iii) のどれもそれに依存しない。
 
 \subsection{証明の構成}
 
@@ -778,9 +783,10 @@ $f_j, g_j$ には依存しない。
 そのあとに来るすべての試験関数に対して同じものが働く。これがなければ近似列に沿って
 評価を使うことができない。
 
-証明は独立な二つの部分からなる。一つは、ある $N$ が存在して
-$\lvert\lambda(\varphi_1(h_1)\cdots\varphi_k(h_k)\Omega)\rvert \le \CN{h_1}\cdots\CN{h_k}$
-（$\lambda$ を定数倍したのち）が成り立つことである。これは Fr\'echet 空間の積の上の
+証明は独立な二つの部分からなる。一つは、ある $N$ と、$\varphi_1, \dots, \varphi_k$ と
+$\lambda$ にのみ依存する定数 $C_0 > 0$ が存在して
+$\lvert\lambda(\varphi_1(h_1)\cdots\varphi_k(h_k)\Omega)\rvert \le C_0\, \CN{h_1}\cdots\CN{h_k}$
+が成り立つことである。これは Fr\'echet 空間の積の上の
 連続多重線形写像が生成半ノルムの有限積で押さえられるという標準的な事実
 （\cite{Treves} 第 41 章）による。もう一つは共変性の評価
 $\CN{\beta_d(v_t) f} \le C(t)\CN{f}$ であり、$C$ は高々指数増大である。
@@ -1252,13 +1258,16 @@ $P(I_+)\Omega$ への移行を「$f \in C_0^\infty(I_+)$ を近似する」と�
 \hline
 \cite{T26} 定義 3.1 & $\Vt_\tau$、族 $(G_\lambda)$ の一意性、$\Psi$ の一意性、線形性 \\
  & 真空 $\Omega$ の不変性、実平行移動則 \eqref{eq:translation}、実パラメータの場合 \\
-\cite{CRTT25} 補題 2.10 (i) & $t \mapsto V_t\Phi$ の $\Fields$-強連続性 \\
+（\cite{CRTT25} 補題 2.10 (i) の & 各 $\lambda \in \Dstar$ に対する $t \mapsto \lambda(V_t\Phi)$ の連続性 \\
+\ ブーストについての & \\
+\ スカラー化した形） & \\
 （その証明が用いる事実） & $t \mapsto \beta_d(v_t)f$、$\theta \mapsto \beta_d(r_\theta)f$ の連続性 \\
 \cite{T26} 定義 3.2 & 解析的試験関数の族 $\Xcl$、制限による同一視（下記）、\\
  & $C^\infty(\Circ)$ からの相対位相 \\
  & 端点条件の二つの読み方（複素微分・実偏導関数）の同値性 \\
 \cite{T26} 補題 3.4 & $\{F|_{I_\pm}\}$ の $C_0^\infty(I_\pm)$ における稠密性 \\
 \cite{CRTT25} 系 A.3 (i) & Reeh--Schlieder 性：$P(I_\pm)\Omega$ の $\Dom$ における稠密性 \\
+\ （$I = I_\pm$ の場合） & \\
 （本稿で導いた帰結） & $P_\Xcl(I_\pm)\Omega$ の $\Dom$ における稠密性 \\
 \cite{T26} 定義 3.5 & 複素ブースト $\beta_d(v_\tau)$（$d = 0$ の可除特異点を込めて）、半群則 \\
 \cite{T26} 補題 3.6 (i) & $\tau \mapsto \beta_d(v_\tau)F|_{I_+}$ の $\Strip_{i\pi}$ 上の連続性と \\
@@ -1315,9 +1324,16 @@ $(\Dom, \Fields, U, \Omega)$ とその公理を仮定として受け取り、結
 
 形式化された証明について、機械的に確認されているのは次のことである。
 
-第一に、上表のすべての結果について、証明に未完成の箇所がない。証明支援系には
-「この部分は後で埋める」と宣言して先へ進む機能があるが、この開発ではその宣言は
-一つも使われていない。自動的な検査がその不在を確認している。
+第一に、上表のすべての結果について、証明に未完成の箇所がない。証明支援系には、証明の
+一部を「後で埋める」と宣言したまま先へ進む機能があるが、この開発ではその宣言は一つも
+使われていない。自動的な検査がその不在を開発全体にわたって確認している。
+
+これとは別に、開発には定理 3.10 に至る主張を原論文の語彙のまま書き並べた一覧があり、
+そこには公理系を満たす理論そのものが、まだ与えられていない対象として一つ置かれている。
+置かれているのは「その対象が与えられていない」ことを型の上で表明する項であって、対象
+そのものではないから、それを使って何かを証明することはできない。上表のどの結果もそれに
+依存しておらず、いずれも公理系を満たす理論を任意に与えたときの主張として証明されている。
+第 \ref{sec:limits} 節の「具体的なモデルは構成していない」という項目が、この点にあたる。
 
 第二に、証明が依拠する論理的な仮定が明示されている。Lean のカーネルは、ある定理の証明が
 どの公理に（推移的に）依存するかを機械的に列挙できる。固定した版では、上表の結果を含む
